@@ -1,0 +1,21 @@
+CREATE TABLE `users` (
+	`id` serial AUTO_INCREMENT NOT NULL,
+	`created_datetime` datetime NOT NULL DEFAULT now(),
+	`updated_datetime` datetime,
+	`is_administrator` boolean NOT NULL DEFAULT false,
+	`title` varchar(255),
+	`first_name` varchar(255) NOT NULL,
+	`last_name` varchar(255) NOT NULL,
+	`other_name` varchar(255),
+	`email_address` varchar(255),
+	`phone_number` varchar(255),
+	`membership_number` varchar(255),
+	`password` varchar(255),
+	`date_of_birth` date,
+	`membership_start_datetime` datetime,
+	`membership_end_datetime` datetime,
+	CONSTRAINT `users_id` PRIMARY KEY(`id`),
+	CONSTRAINT `users_email_address_unique` UNIQUE(`email_address`),
+	CONSTRAINT `users_phone_number_unique` UNIQUE(`phone_number`),
+	CONSTRAINT `users_membership_number_unique` UNIQUE(`membership_number`)
+);

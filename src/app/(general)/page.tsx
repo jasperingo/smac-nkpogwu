@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { usersTable } from '@/database/schema';
 import { database } from '@/database/connection';
 
-export default async function Home() {
+export default async function GeneralHomePage() {
   // const users = await database.select().from(usersTable);
 
   return (
