@@ -2,17 +2,28 @@
 
 import { useState } from 'react';
 
-export default function FormField(
+export default function FormInputField(
   { 
     id, 
     name, 
     label, 
     error,
+    value,
     autoComplete,
     placeholder,
     type = 'text',
     required = true,
-  }: { type?: string; name: string; id: string; label: string; error?: string | null; required?: boolean; placeholder?: string; autoComplete?: string; }
+  }: { 
+    id: string;
+    name: string; 
+    label: string; 
+    type?: string; 
+    value?: string | number; 
+    error?: string | null; 
+    required?: boolean; 
+    placeholder?: string; 
+    autoComplete?: string; 
+  }
 ) {
    const [visible, setVisible] = useState(false);
 
@@ -23,11 +34,12 @@ export default function FormField(
       <input 
         name={name} 
         id={`${id}-input`} 
+        defaultValue={value}
         required={required}
         placeholder={placeholder}
         autoComplete={autoComplete}
         type={type === 'password' && visible ? 'text' : type} 
-        className="inline-block w-full p-2 border border-primary outline-0 disabled:bg-gray-300" 
+        className={`inline-block w-full p-2 border border-primary outline-0 disabled:bg-gray-300 user-invalid:border-red-600 ${error && 'border-red-600'}`}
       />
 
       {
@@ -37,7 +49,7 @@ export default function FormField(
           </button>
         }
         
-      { error && <span className="block text-sm text-red-600">Input error</span> }
+      { error && <span className="block text-sm text-red-600">{ error }</span> }
     </div>
   );
 }
