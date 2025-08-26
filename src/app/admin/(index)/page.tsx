@@ -1,7 +1,8 @@
 import z from 'zod';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { setSession } from '@/utils/session';
 import AdminIndexForm, { FormState } from './form';
+import { getSession, setSession } from '@/utils/session';
 import { authenticateByEmailAddress, authenticateByPhoneNumber } from '@/services/authentication-service';
 
 const validationSchema = z.object({
@@ -50,6 +51,16 @@ export async function adminSignIn(state: FormState, formData: FormData): Promise
   };
 }
 
+export const metadata: Metadata = {
+  title: 'Admin sign in - ST Matthew\'s Anglican Church',
+};
+
 export default async function AdminIndexPage() {
+  const session = await getSession();
+  
+  if (session !== null) {
+    redirect('/admin/dashboard');
+  }
+
   return <AdminIndexForm action={adminSignIn} />;
 }
