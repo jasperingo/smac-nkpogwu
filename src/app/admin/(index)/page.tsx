@@ -1,5 +1,8 @@
 import z from 'zod';
+import { redirect } from 'next/navigation';
+import { setSession } from '@/utils/session';
 import AdminIndexForm, { FormState } from './form';
+import { authenticateByEmailAddress, authenticateByPhoneNumber } from '@/services/authentication-service';
 
 const validationSchema = z.object({
   identifier: z.union([z.email(), z.string().length(11).startsWith('0')], 'Invalid identifier provided'),
@@ -29,6 +32,16 @@ export async function adminSignIn(state: FormState, formData: FormData): Promise
       },
       values: { id: identifier, password: password },
     };
+  }
+
+  const user = identifier.includes('@') 
+    ? await authenticateByEmailAddress(identifier, password)
+    : await authenticateByPhoneNumber(identifier, password);
+
+  if (user !== null) {
+    await setSession({ userId: user.id, userIsAdmin: user.isAdministrator });
+
+    redirect('/admin/dashboard');
   }
 
   return { 

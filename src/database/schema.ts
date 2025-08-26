@@ -1,4 +1,4 @@
-import { InferSelectModel, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { boolean, date, datetime, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
 
 export const usersTable = mysqlTable('users', {
@@ -18,5 +18,3 @@ export const usersTable = mysqlTable('users', {
   membershipStartDatetime: datetime('membership_start_datetime'),
   membershipEndDatetime: datetime('membership_end_datetime'),
 });
-
-type SelectUser = InferSelectModel<typeof usersTable>;
