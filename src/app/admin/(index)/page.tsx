@@ -1,5 +1,4 @@
 import z from 'zod';
-import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import AdminIndexForm, { FormState } from './form';
 import { getSession, setSession } from '@/utils/session';
@@ -51,10 +50,6 @@ export async function adminSignIn(state: FormState, formData: FormData): Promise
   };
 }
 
-export const metadata: Metadata = {
-  title: 'Admin sign in - ST Matthew\'s Anglican Church',
-};
-
 export default async function AdminIndexPage() {
   const session = await getSession();
   
@@ -62,5 +57,9 @@ export default async function AdminIndexPage() {
     redirect('/admin/dashboard');
   }
 
-  return <AdminIndexForm action={adminSignIn} />;
+  return (
+    <section className="bg-foreground my-20 mx-2 md:w-96 md:mx-auto">
+      <AdminIndexForm action={adminSignIn} />
+    </section>
+  );
 }

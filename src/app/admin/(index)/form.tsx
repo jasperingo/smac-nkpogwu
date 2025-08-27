@@ -25,7 +25,7 @@ export default function AdminIndexForm({ action }: { action: (state: FormState, 
   }, [state]);
 
   return (
-    <form action={formAction} className="my-20 px-2 py-8 border border-black bg-foreground md:w-96 md:mx-auto">
+    <form action={formAction} className="px-2 py-8 border border-black">
       <fieldset disabled={isPending}>
 
         <FormInputField id="identifier" name="identifier" label="Email address or Phone number" value={state.values.id} error={state.errors.fields.id} />
