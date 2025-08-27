@@ -1,7 +1,7 @@
 
 export default function BouncePingProgressBar() {
   return (
-    <div className="mt-8">
+    <div className="py-8">
 
       <div className="flex gap-4 justify-center animate-bounce">
         <div className="relative flex size-8">

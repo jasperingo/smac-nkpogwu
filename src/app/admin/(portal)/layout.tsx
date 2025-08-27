@@ -24,5 +24,5 @@ export default async function AdminPortalLayout({ children }: Readonly<{ childre
     );
   }
 
-  return <div className="container mx-auto px-2">{children}</div>;
+  return <div className="p-4">{children}</div>;
 }
