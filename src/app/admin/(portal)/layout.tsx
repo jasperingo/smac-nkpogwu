@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/utils/session';
+import Breadcrumbs from '@/components/breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Admin Portal - ST Matthew\'s Anglican Church',
@@ -24,5 +25,11 @@ export default async function AdminPortalLayout({ children }: Readonly<{ childre
     );
   }
 
-  return <div className="p-4">{children}</div>;
+  return (
+    <div className="p-4">
+      <Breadcrumbs excludeRoot />
+      
+      {children}
+    </div>
+  );
 }

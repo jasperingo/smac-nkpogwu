@@ -66,9 +66,8 @@ export default function AdminLayoutHeader({ session }: Readonly<{ session: Sessi
                 <li className="mb-4" key={item.href}>
                   <Link
                     href={item.href}
-                    active-class="text-color-secondary"
-                    className={`flex gap-2 items-center p-2 border border-primary font-bold hover:bg-gray-200 
-                      ${item.href === path ? 'bg-primary text-on-primary' : 'bg-foreground text-primary'}`}
+                    className={`flex gap-2 items-center p-2 border border-primary font-bold  
+                      ${path.startsWith(item.href) ? 'bg-primary text-on-primary hover:bg-primary-variant' : 'bg-foreground text-primary hover:bg-gray-200'}`}
                     onClick={toggleNav}
                   >
                     <item.icon />
