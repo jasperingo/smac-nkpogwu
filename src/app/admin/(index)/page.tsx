@@ -1,12 +1,18 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
 import AdminIndexForm, { FormState } from './form';
+import { userConstraints } from '@/models/constraints';
 import { getSession, setSession } from '@/utils/session';
 import { authenticateByEmailAddress, authenticateByPhoneNumber } from '@/services/authentication-service';
 
 const validationSchema = z.object({
-  identifier: z.union([z.email(), z.string().length(11).startsWith('0')], 'Invalid identifier provided'),
-  password: z.string('Invalid password provided').min(6, 'Password should be more than 5 characters').max(30, 'Password should be less than 31 characters'),
+  identifier: z.union([
+    z.email(), 
+    z.string().length(userConstraints.phoneNumberLength).startsWith(userConstraints.phoneNumberPrefix)
+  ], 'Invalid identifier provided'),
+  password: z.string('Invalid password provided')
+    .min(userConstraints.passwordMin, { error: (issue) => `Password should be more than ${(issue.minimum as number) - 1} characters`, })
+    .max(userConstraints.passwordMax, { error: (issue) => `Password should be less than ${(issue.maximum as number) + 1} characters`, }),
 });
 
 export async function adminSignIn(state: FormState, formData: FormData): Promise<FormState> {
