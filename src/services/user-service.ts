@@ -40,6 +40,10 @@ export async function findUserByEmailAddress(emailAddress: string) {
   return users.length === 0 ? null : users[0];
 }
 
+export async function findUsers() {
+  return database.select().from(usersTable);
+}
+
 export async function createUser(dto: CreateUserDto) {
   const password = await (dto.password !== null ? hashExecute(dto.password) : null);
   
