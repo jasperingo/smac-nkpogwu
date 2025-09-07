@@ -2,9 +2,11 @@
 
 import { eq } from 'drizzle-orm';
 import { hashExecute } from '@/utils/hash';
-import { CreateUserDto } from '@/models/dto';
+import { UserEntity } from '@/models/entity';
 import { usersTable } from '@/database/schema';
 import { database } from '@/database/connection';
+import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
+import { CreateUserDto, FindUsersDto, PaginatedListDto } from '@/models/dto';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
   const users = await database.select({ id: usersTable.id })
@@ -40,8 +42,12 @@ export async function findUserByEmailAddress(emailAddress: string) {
   return users.length === 0 ? null : users[0];
 }
 
-export async function findUsers() {
-  return database.select().from(usersTable);
+export async function findUsers(dto: FindUsersDto): Promise<PaginatedListDto<UserEntity>> {
+  const count = await database.$count(usersTable);
+
+  const users = await database.select().from(usersTable).limit(dto.pageLimit).offset(calculatePaginationOffset(dto.page, dto.pageLimit));
+
+  return { data: users, currentPage: dto.page, totalItems: count, totalPages: calculatePaginationPages(count, dto.pageLimit) };
 }
 
 export async function createUser(dto: CreateUserDto) {
