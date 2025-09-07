@@ -5,8 +5,8 @@ import { hashExecute } from '@/utils/hash';
 import { UserEntity } from '@/models/entity';
 import { usersTable } from '@/database/schema';
 import { database } from '@/database/connection';
-import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateUserDto, FindUsersDto, PaginatedListDto } from '@/models/dto';
+import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
   const users = await database.select({ id: usersTable.id })
