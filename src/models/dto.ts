@@ -7,6 +7,8 @@ export type PaginatedListDto<T> = {
   totalPages: number;
 };
 
+export type PaginationDto = { page: number; pageLimit: number; };
+
 export type CreateUserDto = Pick<UserEntity, 
   | 'firstName' 
   | 'lastName' 
@@ -18,4 +20,4 @@ export type CreateUserDto = Pick<UserEntity,
   | 'membershipNumber'
 >;
 
-export type FindUsersDto = { page: number; pageLimit: number; };
+export type FindUsersDto = { search?: string; } & PaginationDto;

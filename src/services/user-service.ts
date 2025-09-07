@@ -1,6 +1,6 @@
 'use server'
 
-import { eq } from 'drizzle-orm';
+import { eq, like, or, sql } from 'drizzle-orm';
 import { hashExecute } from '@/utils/hash';
 import { UserEntity } from '@/models/entity';
 import { usersTable } from '@/database/schema';
@@ -43,9 +43,25 @@ export async function findUserByEmailAddress(emailAddress: string) {
 }
 
 export async function findUsers(dto: FindUsersDto): Promise<PaginatedListDto<UserEntity>> {
-  const count = await database.$count(usersTable);
+  const where =  dto.search === undefined 
+    ? undefined 
+    : (
+      or(
+        eq(usersTable.emailAddress, dto.search),
+        eq(usersTable.phoneNumber, dto.search),
+        eq(usersTable.membershipNumber, dto.search),
+        isNaN(Number(dto.search)) ? undefined : eq(usersTable.id, Number(dto.search)),
+        like(sql`CONCAT(${usersTable.firstName}, ' ', ${usersTable.lastName})`, `%${dto.search}%`)
+      )
+    );
 
-  const users = await database.select().from(usersTable).limit(dto.pageLimit).offset(calculatePaginationOffset(dto.page, dto.pageLimit));
+  const count = await database.$count(usersTable, where);
+
+  const users = await database.select()
+    .from(usersTable)
+    .where(where)
+    .limit(dto.pageLimit)
+    .offset(calculatePaginationOffset(dto.page, dto.pageLimit));
 
   return { data: users, currentPage: dto.page, totalItems: count, totalPages: calculatePaginationPages(count, dto.pageLimit) };
 }

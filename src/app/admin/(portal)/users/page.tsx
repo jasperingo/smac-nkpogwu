@@ -1,12 +1,13 @@
+import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { ReactElement } from 'react';
 import { findUsers } from '@/services/user-service';
 import { resolvePaginationParams } from '@/utils/pagination';
 
-export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ page: string | undefined }> }) {
-  const search = await searchParams;
+export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
+  const { page, search } = await searchParams;
 
-  const users = await findUsers({ ...resolvePaginationParams(search.page) });
+  const users = await findUsers({ ...resolvePaginationParams(page), search: search?.length === 0 ? undefined : search });
 
   const pageLinks: ReactElement[] = [];
 
@@ -14,7 +15,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
     pageLinks.push((
       <li key={i}>
         <Link 
-          href={`/admin/users?page=${i}`} 
+          href={`/admin/users?page=${i}${search ? `&search=${search}` : ''}`} 
           className={`block px-2 py-1 border border-primary hover:bg-primary-variant ${i === users.currentPage && 'bg-primary text-on-primary'}`}
         >{ i }</Link>
       </li>
@@ -34,6 +35,20 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
         </li>
       </ul>
 
+      <form action="/admin/users" className="my-4">
+        <input 
+          type="search" 
+          name="search" 
+          defaultValue={search}
+          placeholder="Search by ID, Name, Email, Phone or Membership" 
+          className="inline-block w-full p-2 pr-12 outline-0 border border-primary" 
+        />
+
+        <button type="submit" className="-ml-16 px-4 py-1 align-middle text-center text-primary bg-foreground hover:bg-gray-300">
+          <Search />
+          <span className="sr-only">Submit search form</span>
+        </button>
+      </form>
 
       <div className="my-4 w-full overflow-auto">
         <table className="table-auto w-full">
@@ -77,7 +92,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             users.currentPage > 1 
             ? (
                 <Link 
-                  href={`/admin/users?page=${users.currentPage - 1}`} 
+                  href={`/admin/users?page=${users.currentPage - 1}${search ? `&search=${search}` : ''}`} 
                   className="block px-2 py-1 border border-primary hover:bg-primary-variant"
                 >Previous</Link>
               )
@@ -94,7 +109,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             users.currentPage < users.totalPages
             ? (
                 <Link 
-                  href={`/admin/users?page=${users.currentPage + 1}`} 
+                  href={`/admin/users?page=${users.currentPage + 1}${search ? `&search=${search}` : ''}`} 
                   className="block px-2 py-1 border border-primary hover:bg-primary-variant"
                 >Next</Link>
               )
