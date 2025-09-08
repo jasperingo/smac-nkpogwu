@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { boolean, date, datetime, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
+import { boolean, date, datetime, mysqlEnum, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
 
 export const usersTable = mysqlTable('users', {
   id: serial().primaryKey(),
@@ -10,6 +10,7 @@ export const usersTable = mysqlTable('users', {
   firstName: varchar('first_name', { length: 255 }).notNull(),
   lastName: varchar('last_name', { length: 255 }).notNull(),
   otherName: varchar('other_name', { length: 255 }),
+  gender: mysqlEnum(['MALE', 'FEMALE']).notNull(),
   emailAddress: varchar('email_address', { length: 255 }).unique(),
   phoneNumber: varchar('phone_number', { length: 255 }).unique(),
   membershipNumber: varchar('membership_number', { length: 255 }).unique(),

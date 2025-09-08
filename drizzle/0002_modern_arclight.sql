@@ -1,0 +1,1 @@
+ALTER TABLE `users` MODIFY COLUMN `gender` enum('MALE','FEMALE') NOT NULL;
