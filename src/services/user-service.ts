@@ -5,7 +5,7 @@ import { hashExecute } from '@/utils/hash';
 import { UserEntity } from '@/models/entity';
 import { usersTable } from '@/database/schema';
 import { database } from '@/database/connection';
-import { CreateUserDto, FindUsersDto, PaginatedListDto } from '@/models/dto';
+import { CreateUserDto, FindUsersDto, PaginatedListDto, UpdateUserDto } from '@/models/dto';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
@@ -72,4 +72,12 @@ export async function createUser(dto: CreateUserDto) {
   const result = await database.insert(usersTable).values({ ...dto, password }).$returningId();
 
   return findUserById(result[0].id);
+}
+
+export async function updateUser(userId: number, dto: UpdateUserDto) {
+  dto.password = await (dto.password !== undefined ? (dto.password !== null ? hashExecute(dto.password) : null) : undefined);
+  
+  await database.update(usersTable).set({ ...dto, updatedDatetime: sql`NOW()` }).where(eq(usersTable.id, userId));
+
+  return findUserById(userId);
 }

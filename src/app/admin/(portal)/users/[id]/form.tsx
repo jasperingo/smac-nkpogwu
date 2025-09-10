@@ -10,6 +10,7 @@ import { UserEntity, UserEntityGender } from '@/models/entity';
 import { getDateInputString, getYesterdayDateString } from '@/utils/datetime';
 
 export type FormState = { 
+  success: boolean;
   values: { 
     firstName: string; 
     lastName: string;
@@ -37,7 +38,7 @@ export type FormState = {
   };
 };
 
-const initialErrorState: FormState['errors'] = { 
+export const initialErrorState: FormState['errors'] = { 
   message: null, 
   fields: { 
     firstName: null, 
@@ -56,6 +57,7 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
   const dateOfBirthMax = getYesterdayDateString();
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, { 
+    success: false,
     errors: initialErrorState,
     values: { 
       firstName: user.firstName, 
@@ -71,13 +73,17 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
   });
 
   useEffect(() => {
-    if (state.errors.message) {
+    if (state.success) {
+      toast('User details updated', { type: 'success' });
+    } else if (state.errors.message) {
       toast(state.errors.message, { type: 'error' });
-    }
+    } 
   }, [state]);
 
   return (
     <ButtonForm text="Update user" isPending={isPending} action={formAction}>
+      <input type="hidden" name="userId" defaultValue={user.id} />
+
       <FormInputField 
         id="first-name" 
         name="firstName" 
@@ -127,8 +133,8 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
         name="phoneNumber" 
         label="Phone number" 
         type="tel" 
-        min={userConstraints.phoneNumberLength}
-        max={userConstraints.phoneNumberLength}
+        minLength={userConstraints.phoneNumberLength}
+        maxLength={userConstraints.phoneNumberLength}
         required={false} 
         value={state.values.phoneNumber} 
         error={state.errors.fields.phoneNumber} 
@@ -139,8 +145,8 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
         name="password" 
         label="Password" 
         type="password" 
-        min={userConstraints.passwordMin}
-        max={userConstraints.passwordMax}
+        minLength={userConstraints.passwordMin}
+        maxLength={userConstraints.passwordMax}
         required={false} 
         value={state.values.password} 
         error={state.errors.fields.password} 

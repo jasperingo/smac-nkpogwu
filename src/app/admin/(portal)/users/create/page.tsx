@@ -20,7 +20,7 @@ const validationSchema = z.object({
       .length(userConstraints.phoneNumberLength, 'Invalid phone number')
       .startsWith(userConstraints.phoneNumberPrefix, 'Invalid phone number')
       .refine(async (phone) => !(await userExistByPhoneNumber(phone)), 'User with phone number already exists')
-    ]),
+  ]),
   password: z.union([
     z.literal(''), 
     z.string('Invalid password provided')
@@ -97,6 +97,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     user = await createUser({
       firstName, 
       lastName,
+      gender: 'MALE',
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
       phoneNumber: phoneNumber.length === 0 ? null : phoneNumber,
