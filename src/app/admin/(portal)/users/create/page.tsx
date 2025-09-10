@@ -1,37 +1,29 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
-import { UserEntity } from '@/models/entity';
-import { userConstraints } from '@/models/constraints';
-import AdminCreateUserForm, { FormState } from './form';
-import { createUser, userExistByEmailAddress, userExistByPhoneNumber } from '@/services/user-service';
+import { 
+  userDateOfBirthValidation, 
+  userEmailAddressValidation, 
+  userFirstNameValidation, 
+  userGenderValidation, 
+  userLastNameValidation, 
+  userMembershipValidation, 
+  userOtherNameValidation, 
+  userPasswordValidation, 
+  userPhoneNumberValidation 
+} from '@/validations/user-validation';
+import { createUser } from '@/services/user-service';
+import AdminCreateUserForm, { FormState, initialState } from './form';
 
 const validationSchema = z.object({
-  firstName: z.string().nonempty('This field is required'),
-  lastName: z.string().nonempty('This field is required'),
-  otherName: z.union([z.literal(''), z.string()]),
-  emailAddress: z.union([
-    z.literal(''), 
-    z.email('Invalid email address')
-      .refine(async (email) => !(await userExistByEmailAddress(email)), 'User with email address already exists')
-  ]),
-  phoneNumber: z.union([
-    z.literal(''), 
-    z.string()
-      .length(userConstraints.phoneNumberLength, 'Invalid phone number')
-      .startsWith(userConstraints.phoneNumberPrefix, 'Invalid phone number')
-      .refine(async (phone) => !(await userExistByPhoneNumber(phone)), 'User with phone number already exists')
-  ]),
-  password: z.union([
-    z.literal(''), 
-    z.string('Invalid password provided')
-      .min(userConstraints.passwordMin, { error: (issue) => `Password should be more than ${(issue.minimum as number) - 1} characters`, })
-      .max(userConstraints.passwordMax, { error: (issue) => `Password should be less than ${(issue.maximum as number) + 1} characters`, })
-  ]),
-  dateOfBirth: z.union([
-    z.literal(''), 
-    z.date('Invalid date of birth').refine((date) => date.getTime() <= Date.now(), 'Date of birth cannot be in the future')
-  ]),
-  membershipNumber: z.union([z.literal(''), z.string()]),
+  firstName: userFirstNameValidation,
+  lastName: userLastNameValidation,
+  otherName: userOtherNameValidation,
+  gender: userGenderValidation,
+  emailAddress: userEmailAddressValidation,
+  phoneNumber: userPhoneNumberValidation,
+  password: userPasswordValidation,
+  dateOfBirth: userDateOfBirthValidation,
+  membershipNumber: userMembershipValidation,
 });
 
 export async function userCreate(state: FormState, formData: FormData): Promise<FormState> {
@@ -40,20 +32,30 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
   const otherName = formData.get('otherName') as string;
+  const gender = formData.get('gender') as string;
   const emailAddress = formData.get('emailAddress') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
   const password = formData.get('password') as string;
   const dateOfBirth = formData.get('dateOfBirth') as string;
   const membershipNumber = formData.get('membershipNumber') as string;
 
-  // for (const [k, v] of formData.entries()) {
-  //   console.log('Key: ', k, ' & Value: ', v);
-  // }
+  const formStateValues: FormState['values'] = { 
+    firstName, 
+    lastName,
+    otherName,
+    gender,
+    emailAddress,
+    phoneNumber,
+    password,
+    dateOfBirth,
+    membershipNumber,
+  };
 
   const validatedResult = await validationSchema.safeParseAsync({
     firstName, 
     lastName,
     otherName,
+    gender,
     emailAddress,
     phoneNumber,
     password,
@@ -65,12 +67,14 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     const errors = z.flattenError(validatedResult.error);
 
     return { 
+      values: formStateValues,
       errors: { 
         message: null, 
         fields: {
           firstName: errors.fieldErrors.firstName?.[0] ?? null,
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
           otherName: errors.fieldErrors.otherName?.[0] ?? null,
+          gender: errors.fieldErrors.gender?.[0] ?? null,
           emailAddress: errors.fieldErrors.emailAddress?.[0] ?? null,
           phoneNumber: errors.fieldErrors.phoneNumber?.[0] ?? null,
           password: errors.fieldErrors.password?.[0] ?? null,
@@ -78,26 +82,16 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           membershipNumber: errors.fieldErrors.membershipNumber?.[0] ?? null,
         }, 
       },
-      values: { 
-        firstName, 
-        lastName,
-        otherName,
-        emailAddress,
-        phoneNumber,
-        password,
-        dateOfBirth,
-        membershipNumber,
-      },
     };
   }
 
-  let user: UserEntity | null;
+  let userId: number;
 
   try {
-    user = await createUser({
+    userId = await createUser({
       firstName, 
       lastName,
-      gender: 'MALE',
+      gender: gender as any,
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
       phoneNumber: phoneNumber.length === 0 ? null : phoneNumber,
@@ -105,39 +99,17 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       dateOfBirth: dateOfBirth.length === 0 ? null : new Date(dateOfBirth),
       membershipNumber: membershipNumber.length === 0 ? null : membershipNumber,
     });
-
-    if (user === null) {
-      throw new Error('Error create user: return value is null');
-    }
   } catch (error) {
     return { 
-      values: { 
-        firstName, 
-        lastName,
-        otherName,
-        emailAddress,
-        phoneNumber,
-        password,
-        dateOfBirth,
-        membershipNumber,
-      },
+      values: formStateValues,
       errors: { 
+        fields: initialState.errors.fields,
         message: error instanceof Error ? error.message : error as string, 
-        fields: { 
-          firstName: null, 
-          lastName: null, 
-          otherName: null, 
-          emailAddress: null, 
-          phoneNumber: null, 
-          password: null,
-          dateOfBirth: null,
-          membershipNumber: null,
-        } 
       }
     };
   }
 
-  redirect(`/admin/users/${user.id}`);
+  redirect(`/admin/users/${userId}`);
 }
 
 export default async function AdminCreateUserPage() {

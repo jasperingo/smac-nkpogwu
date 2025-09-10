@@ -2,16 +2,19 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { UserEntityGender } from '@/models/entity';
 import { userConstraints } from '@/models/constraints';
 import { getYesterdayDateString } from '@/utils/datetime';
+import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
-import FormSubmitButton from '@/components/form-submit-button';
+import FormSelectField from '@/components/form-select-field';
 
 export type FormState = { 
   values: { 
     firstName: string; 
     lastName: string;
     otherName: string;
+    gender: string;
     emailAddress: string; 
     phoneNumber: string; 
     password: string;
@@ -24,6 +27,7 @@ export type FormState = {
       firstName: string | null; 
       lastName: string | null; 
       otherName: string | null; 
+      gender: string | null; 
       emailAddress: string | null; 
       phoneNumber: string | null; 
       password: string | null; 
@@ -33,11 +37,12 @@ export type FormState = {
   };
 };
 
-const initialState: FormState = { 
+export const initialState: FormState = { 
   values: { 
     firstName: '', 
     lastName: '', 
     otherName: '', 
+    gender: '', 
     emailAddress: '', 
     phoneNumber: '', 
     password: '',
@@ -50,6 +55,7 @@ const initialState: FormState = {
       firstName: null, 
       lastName: null, 
       otherName: null, 
+      gender: null, 
       emailAddress: null, 
       phoneNumber: null, 
       password: null,
@@ -71,92 +77,97 @@ export default function AdminCreateUserForm({ action }: { action: (state: FormSt
   }, [state]);
 
   return (
-    <form action={formAction} className="px-2 py-8 border border-black md:w-96 md:mx-auto">
-      <fieldset disabled={isPending}>
+    <ButtonForm text="Create user" isPending={isPending} action={formAction}>
 
-        <FormInputField 
-          id="first-name" 
-          name="firstName" 
-          label="First name" 
-          value={state.values.firstName} 
-          error={state.errors.fields.firstName} 
-        />
+      <FormInputField 
+        id="first-name" 
+        name="firstName" 
+        label="First name" 
+        value={state.values.firstName} 
+        error={state.errors.fields.firstName} 
+      />
 
-        <FormInputField 
-          id="last-name" 
-          name="lastName" 
-          label="Last name" 
-          value={state.values.lastName} 
-          error={state.errors.fields.lastName} 
-        />
+      <FormInputField 
+        id="last-name" 
+        name="lastName" 
+        label="Last name" 
+        value={state.values.lastName} 
+        error={state.errors.fields.lastName} 
+      />
 
-        <FormInputField 
-          id="other-name" 
-          name="otherName" 
-          label="Other name" 
-          required={false} 
-          value={state.values.otherName} 
-          error={state.errors.fields.otherName} 
-        />
+      <FormInputField 
+        id="other-name" 
+        name="otherName" 
+        label="Other name" 
+        required={false} 
+        value={state.values.otherName} 
+        error={state.errors.fields.otherName} 
+      />
 
-        <FormInputField 
-          id="email-address" 
-          name="emailAddress" 
-          label="Email address" 
-          type="email" 
-          required={false} 
-          value={state.values.emailAddress} 
-          error={state.errors.fields.emailAddress} 
-        />
+      <FormSelectField 
+        id="gender" 
+        name="gender" 
+        label="Gender" 
+        options={UserEntityGender.map((g) => ({ value: g }))}
+        value={state.values.gender} 
+        error={state.errors.fields.gender} 
+      />
 
-        <FormInputField 
-          id="phone-number" 
-          name="phoneNumber" 
-          label="Phone number" 
-          type="tel" 
-          min={userConstraints.phoneNumberLength}
-          max={userConstraints.phoneNumberLength}
-          required={false} 
-          value={state.values.phoneNumber} 
-          error={state.errors.fields.phoneNumber} 
-        />
+      <FormInputField 
+        id="email-address" 
+        name="emailAddress" 
+        label="Email address" 
+        type="email" 
+        required={false} 
+        value={state.values.emailAddress} 
+        error={state.errors.fields.emailAddress} 
+      />
 
-        <FormInputField 
-          id="password" 
-          name="password" 
-          label="Password" 
-          type="password" 
-          min={userConstraints.passwordMin}
-          max={userConstraints.passwordMax}
-          required={false} 
-          value={state.values.password} 
-          error={state.errors.fields.password} 
-        />
+      <FormInputField 
+        id="phone-number" 
+        name="phoneNumber" 
+        label="Phone number" 
+        type="tel" 
+        minLength={userConstraints.phoneNumberLength}
+        maxLength={userConstraints.phoneNumberLength}
+        required={false} 
+        value={state.values.phoneNumber} 
+        error={state.errors.fields.phoneNumber} 
+      />
 
-        <FormInputField 
-          id="date-of-birth" 
-          name="dateOfBirth" 
-          label="Date of birth" 
-          type="date" 
-          max={dateOfBirthMax}
-          required={false} 
-          value={state.values.dateOfBirth} 
-          error={state.errors.fields.dateOfBirth} 
-        />
+      <FormInputField 
+        id="password" 
+        name="password" 
+        label="Password" 
+        type="password" 
+        minLength={userConstraints.passwordMin}
+        maxLength={userConstraints.passwordMax}
+        required={false} 
+        value={state.values.password} 
+        error={state.errors.fields.password} 
+      />
 
-        <FormInputField 
-          id="membership-number" 
-          name="membershipNumber" 
-          label="Membership number" 
-          type="number" 
-          required={false} 
-          value={state.values.membershipNumber} 
-          error={state.errors.fields.membershipNumber} 
-        />
+      <FormInputField 
+        id="date-of-birth" 
+        name="dateOfBirth" 
+        label="Date of birth" 
+        type="date" 
+        max={dateOfBirthMax}
+        required={false} 
+        value={state.values.dateOfBirth} 
+        error={state.errors.fields.dateOfBirth} 
+      />
 
-        <FormSubmitButton text="Create user" loading={isPending} />
+      <FormInputField 
+        id="membership-number" 
+        name="membershipNumber" 
+        label="Membership number" 
+        type="number" 
+        required={false} 
+        value={state.values.membershipNumber} 
+        error={state.errors.fields.membershipNumber} 
+      />
 
-      </fieldset>
-    </form>
+    </ButtonForm>
   );
 }

@@ -67,11 +67,11 @@ export async function findUsers(dto: FindUsersDto): Promise<PaginatedListDto<Use
 }
 
 export async function createUser(dto: CreateUserDto) {
-  const password = await (dto.password !== null ? hashExecute(dto.password) : null);
+  dto.password = await (dto.password !== null ? hashExecute(dto.password) : null);
   
-  const result = await database.insert(usersTable).values({ ...dto, password }).$returningId();
+  const result = await database.insert(usersTable).values({ ...dto }).$returningId();
 
-  return findUserById(result[0].id);
+  return result[0].id;
 }
 
 export async function updateUser(userId: number, dto: UpdateUserDto) {
