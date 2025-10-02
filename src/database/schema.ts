@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
-import { boolean, date, datetime, mysqlEnum, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, boolean, date, datetime, foreignKey, mysqlEnum, mysqlTable, serial, text, varchar } from 'drizzle-orm/mysql-core';
 
-export const userTableGenderEnum = ['MALE', 'FEMALE'] as const;
+export const usersTableGenderEnum = ['MALE', 'FEMALE'] as const;
 
 export const usersTable = mysqlTable('users', {
   id: serial().primaryKey(),
@@ -12,7 +12,7 @@ export const usersTable = mysqlTable('users', {
   firstName: varchar('first_name', { length: 255 }).notNull(),
   lastName: varchar('last_name', { length: 255 }).notNull(),
   otherName: varchar('other_name', { length: 255 }),
-  gender: mysqlEnum(userTableGenderEnum).notNull(),
+  gender: mysqlEnum(usersTableGenderEnum).notNull(),
   emailAddress: varchar('email_address', { length: 255 }).unique(),
   phoneNumber: varchar('phone_number', { length: 255 }).unique(),
   membershipNumber: varchar('membership_number', { length: 255 }).unique(),
@@ -21,3 +21,24 @@ export const usersTable = mysqlTable('users', {
   membershipStartDatetime: datetime('membership_start_datetime'),
   membershipEndDatetime: datetime('membership_end_datetime'),
 });
+
+
+export const groupsTablePrivacyEnum = ['PUBLIC', 'PRIVATE'] as const;
+
+export const groupsTable = mysqlTable('groups', {
+  id: serial().primaryKey(),
+  createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
+  updatedDatetime: datetime('updated_datetime'),
+  parentId: bigint('parent_id', { mode: 'number', unsigned: true }),
+  name: varchar({ length: 255 }).notNull().unique(),
+  description: text(),
+  privacy: mysqlEnum(groupsTablePrivacyEnum).notNull().default(groupsTablePrivacyEnum[0]),
+  spotlighted: boolean().notNull().default(false),
+}, (table) => [
+  foreignKey({
+    columns: [table.parentId], 
+    foreignColumns: [table.id] 
+  })
+    .onDelete('cascade')
+    .onUpdate('cascade'),
+]);
