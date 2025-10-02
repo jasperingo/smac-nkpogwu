@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, LogOut, Menu, Users, X } from 'lucide-react';
+import { LayoutDashboard, LogOut, Menu, Shapes, Users, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Session } from '@/utils/session';
@@ -16,6 +16,11 @@ const navItems = [
     icon: Users,
     href: '/admin/users',
     text: "Users",
+  },
+  {
+    icon: Shapes,
+    href: '/admin/groups',
+    text: "Groups",
   },
   {
     icon: LogOut,
