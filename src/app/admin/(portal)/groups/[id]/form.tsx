@@ -6,7 +6,6 @@ import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
-import { getYesterdayDateString } from '@/utils/datetime';
 import FormTextAreaField from '@/components/form-textarea-field';
 
 export type FormState = { 
@@ -39,8 +38,6 @@ export const initialErrorState: FormState['errors'] = {
 };
 
 export default function AdminUpdateGroupForm({ group, action }: { group: GroupEntity; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
-  const dateOfBirthMax = getYesterdayDateString();
-
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, { 
     success: false,
     errors: initialErrorState,

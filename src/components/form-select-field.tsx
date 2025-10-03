@@ -2,6 +2,8 @@
 
 export type FormSelectFieldOption = { value: string; text?: string; };
 
+// There is a React bug with select retaining old value after form submission
+
 export default function FormSelectField(
   { 
     id, 
