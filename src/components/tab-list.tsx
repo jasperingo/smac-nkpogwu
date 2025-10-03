@@ -1,0 +1,23 @@
+'use client'
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+export default function TabList({ items }: Readonly<{ items: { href: string; text: string; }[]; }>) {
+  const path = usePathname();
+
+  return (
+    <ul className="mb-4 flex gap-2 items-center overflow-auto">
+      { 
+        items.map((i) => (
+          <li key={i.href}>
+            <Link
+              href={i.href}
+              className={`block py-1 px-2 font-bold bg-foreground hover:bg-gray-100 ${i.href === path ? 'border-b-4 border-primary' : ''}`}
+            >{ i.text }</Link>
+          </li>
+        ))
+      }
+    </ul>
+  );
+}

@@ -1,10 +1,10 @@
 'use server'
 
-import { eq, like, or } from 'drizzle-orm';
+import { eq, like, or, sql } from 'drizzle-orm';
 import { groupsTable } from '@/database/schema';
 import { database } from '@/database/connection';
 import { GroupEntity } from '@/models/entity';
-import { CreateGroupDto, FindGroupsDto, PaginatedListDto } from '@/models/dto';
+import { CreateGroupDto, FindGroupsDto, PaginatedListDto, UpdateGroupDto } from '@/models/dto';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 
 export async function groupExistByName(name: string) {
@@ -13,6 +13,12 @@ export async function groupExistByName(name: string) {
     .where(eq(groupsTable.name, name));
 
   return groups.length > 0;
+}
+
+export async function findGroupById(id: number) {
+  const users = await database.select().from(groupsTable).where(eq(groupsTable.id, id));
+
+  return users.length === 0 ? null : users[0];
 }
 
 export async function findGroups(dto: FindGroupsDto): Promise<PaginatedListDto<GroupEntity>> {
@@ -41,4 +47,10 @@ export async function createGroup(dto: CreateGroupDto) {
   const result = await database.insert(groupsTable).values({ ...dto }).$returningId();
 
   return result[0].id;
+}
+
+export async function updateGroup(groupId: number, dto: UpdateGroupDto) {
+  await database.update(groupsTable).set({ ...dto, updatedDatetime: sql`NOW()` }).where(eq(groupsTable.id, groupId));
+
+  return findGroupById(groupId);
 }
