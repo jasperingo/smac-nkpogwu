@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { ReactElement } from 'react';
+import MenuList from '@/components/menu-list';
 import { findUsers } from '@/services/user-service';
 import { resolvePaginationParams } from '@/utils/pagination';
 
@@ -25,15 +26,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   return (
     <section className="bg-foreground p-4">
 
-      <ul className="flex gap-2 items-center flex-wrap justify-end">
-        <li>
-          <Link
-            href="users/create"
-            active-class="text-color-secondary"
-            className="block p-2 border border-primary bg-primary text-on-primary hover:bg-primary-variant"
-          >Add user</Link>
-        </li>
-      </ul>
+      <MenuList items={[ { href: 'users/create', text: 'Add user' } ]} />
 
       <form action="/admin/users" className="my-4">
         <input 

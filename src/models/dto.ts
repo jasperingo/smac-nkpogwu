@@ -1,4 +1,4 @@
-import { UserEntity } from './entity';
+import { GroupEntity, UserEntity } from './entity';
 
 export type PaginatedListDto<T> = {
   data: T[];
@@ -24,3 +24,5 @@ export type CreateUserDto = Pick<UserEntity,
 export type UpdateUserDto = Partial<CreateUserDto>;
 
 export type FindUsersDto = { search?: string; } & PaginationDto;
+
+export type CreateGroupDto = Pick<GroupEntity, 'name' | 'privacy' | 'spotlighted' | 'description'>;
