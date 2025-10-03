@@ -1,4 +1,3 @@
-
 export default function BouncePingProgressBar() {
   return (
     <div className="py-8">

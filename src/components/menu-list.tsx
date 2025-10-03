@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link';
 
 export default function MenuList({ items }: Readonly<{ items: { href: string; text: string; }[]; }>) {
