@@ -5,8 +5,8 @@ import {
   groupPrivacyValidation, 
   groupSpotlightedValidation 
 } from '@/validations/groups-validation';
-import { findGroupById, updateGroup } from '@/services/group-service';
-import AdminUpdateGroupForm, { FormState, initialErrorState } from './form';
+import AdminUpdateGroupForm, { type FormState } from './form';
+import { findGroupAndParentById, updateGroup } from '@/services/group-service';
 
 const validationSchema = z.object({
   name: groupNameValidation.optional(),
@@ -61,12 +61,20 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
     });
  
     if (group === null) {
-      throw new Error('Error updating group: return value is null');
+      throw new Error('Update group return value is null');
     }
 
     return {
       success: true,
-      errors: initialErrorState,
+      errors: { 
+        message: null, 
+        fields: { 
+          name: null, 
+          privacy: null, 
+          description: null, 
+          spotlighted: null,
+        },
+      },
       values: {
         name: group.name,
         privacy: group.privacy, 
@@ -75,11 +83,18 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
       },
     };
   } catch (error) {
+    console.error('Error updating group: ', error);
+
     return { 
       success: false,
       values: formStateValues,
       errors: { 
-        fields: initialErrorState.fields,
+        fields: { 
+          name: null, 
+          privacy: null, 
+          description: null, 
+          spotlighted: null,
+        },
         message: error instanceof Error ? error.message : error as string, 
       },
     };
@@ -89,12 +104,12 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
 export default async function AdminGroupPage({ params }: Readonly<{ params: Promise<{ id: string }>; }>) {
   const id = Number((await params).id);
 
-  const group = (await findGroupById(id))!;
+  const { groups, parent } = (await findGroupAndParentById(id))!;
 
   return (
     <section className="bg-foreground p-4">
 
-      <AdminUpdateGroupForm group={group} action={groupUpdate} />
+      <AdminUpdateGroupForm group={groups} parent={parent} action={groupUpdate} />
 
     </section>
   );

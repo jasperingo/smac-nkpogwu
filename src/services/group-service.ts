@@ -1,6 +1,7 @@
 'use server'
 
 import { eq, like, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/mysql-core';
 import { groupsTable } from '@/database/schema';
 import { database } from '@/database/connection';
 import { GroupEntity } from '@/models/entity';
@@ -16,9 +17,20 @@ export async function groupExistByName(name: string) {
 }
 
 export async function findGroupById(id: number) {
-  const users = await database.select().from(groupsTable).where(eq(groupsTable.id, id));
+  const groups = await database.select().from(groupsTable).where(eq(groupsTable.id, id));
 
-  return users.length === 0 ? null : users[0];
+  return groups.length === 0 ? null : groups[0];
+}
+
+export async function findGroupAndParentById(id: number) {
+  const parentTable = alias(groupsTable, "parent");
+
+  const groups = await database.select()
+    .from(groupsTable)
+    .leftJoin(parentTable, eq(groupsTable.parentId, parentTable.id))
+    .where(eq(groupsTable.id, id));
+
+  return groups.length === 0 ? null : groups[0];
 }
 
 export async function findGroups(dto: FindGroupsDto): Promise<PaginatedListDto<GroupEntity>> {
@@ -64,7 +76,11 @@ export async function createGroup(dto: CreateGroupDto) {
 }
 
 export async function updateGroup(groupId: number, dto: UpdateGroupDto) {
-  await database.update(groupsTable).set({ ...dto, updatedDatetime: sql`NOW()` }).where(eq(groupsTable.id, groupId));
+  const result = await database.update(groupsTable).set({ ...dto, updatedDatetime: sql`NOW()` }).where(eq(groupsTable.id, groupId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero groups table rows updated');
+  }
 
   return findGroupById(groupId);
 }

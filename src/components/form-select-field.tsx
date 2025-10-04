@@ -15,6 +15,7 @@ export default function FormSelectField(
     autoComplete,
     placeholder = '',
     required = true,
+    disabled = false,
   }: { 
     id: string;
     name: string; 
@@ -22,6 +23,7 @@ export default function FormSelectField(
     value?: string | number; 
     error?: string | null; 
     required?: boolean; 
+    disabled?: boolean; 
     placeholder?: string; 
     autoComplete?: string; 
     options: FormSelectFieldOption[];
@@ -39,6 +41,7 @@ export default function FormSelectField(
         id={`${id}-input`} 
         defaultValue={value}
         required={required}
+        disabled={disabled}
         autoComplete={autoComplete}
         className={`inline-block w-full p-2 border border-primary outline-0 disabled:bg-gray-300 user-invalid:border-red-600 ${error && 'border-red-600'}`}
       >

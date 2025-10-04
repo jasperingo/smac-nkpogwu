@@ -2,11 +2,11 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { GroupEntityPrivacy } from '@/models/entity';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import FormTextAreaField from '@/components/form-textarea-field';
+import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
 
 export type FormState = { 
   values: { 
@@ -26,26 +26,26 @@ export type FormState = {
   };
 };
 
-export const initialState: FormState = { 
-  values: { 
-    name: '', 
-    description: '', 
-    spotlighted: 'true', 
-    privacy: GroupEntityPrivacy[0], 
-  },
-  errors: { 
-    message: null, 
-    fields: { 
-      name: null, 
-      privacy: null, 
-      description: null, 
-      spotlighted: null,
-    } 
-  },
+export const initialErrorState: FormState['errors'] = { 
+  message: null, 
+  fields: { 
+    name: null, 
+    privacy: null, 
+    description: null, 
+    spotlighted: null,
+  } 
 };
 
-export default function AdminCreateGroupForm({ action }: { action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
-  const [state, formAction, isPending] = useActionState<FormState, FormData>(action, initialState);
+export default function AdminCreateGroupForm({ group, action }: { group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
+  const [state, formAction, isPending] = useActionState<FormState, FormData>(action, {
+    errors: initialErrorState,
+    values: { 
+      name: '', 
+      description: '',
+      spotlighted: 'true', 
+      privacy: group?.privacy ?? GroupEntityPrivacy[0], 
+    },
+  });
 
   useEffect(() => {
     if (state.errors.message) {
@@ -55,6 +55,20 @@ export default function AdminCreateGroupForm({ action }: { action: (state: FormS
 
   return (
     <ButtonForm text="Create group" isPending={isPending} action={formAction}>
+      {
+        group !== null && (
+          <>
+            <div className="mb-4 border p-2 col-span-full">
+              <div className="font-bold">Parent Group</div>
+              <div>ID: { group.id }</div>
+              <div>Name: { group.name }</div>
+              <div>Privacy: { group.privacy }</div>
+            </div>
+
+            <input type="hidden" name="parentId" defaultValue={group.id} />
+          </>
+        )
+      }
 
       <FormInputField 
         id="name" 
@@ -68,6 +82,7 @@ export default function AdminCreateGroupForm({ action }: { action: (state: FormS
         id="privacy" 
         name="privacy" 
         label="Privacy" 
+        disabled={group !== null && group.privacy === GroupEntityPrivacy[1]}
         options={GroupEntityPrivacy.map((value) => ({ value }))}
         value={state.values.privacy} 
         error={state.errors.fields.privacy} 

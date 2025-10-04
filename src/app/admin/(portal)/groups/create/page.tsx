@@ -6,8 +6,8 @@ import {
   groupPrivacyValidation, 
   groupSpotlightedValidation 
 } from '@/validations/groups-validation';
-import { createGroup } from '@/services/group-service';
-import AdminCreateGroupForm, { FormState, initialState } from './form';
+import { createGroup, findGroupById } from '@/services/group-service';
+import AdminCreateGroupForm, { type FormState } from './form';
 
 const validationSchema = z.object({
   name: groupNameValidation,
@@ -19,6 +19,7 @@ const validationSchema = z.object({
 export async function groupCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
+  const parentId = Number(formData.get('parentId')); // TODO: In v2 check that ID exists
   const name = formData.get('name') as string;
   const privacy = formData.get('privacy') as string;
   const spotlighted = formData.get('spotlighted') as string;
@@ -57,13 +58,21 @@ export async function groupCreate(state: FormState, formData: FormData): Promise
       name, 
       privacy: privacy as any,
       spotlighted: spotlighted === 'true',
+      parentId: isNaN(parentId) || parentId < 1 ? null : parentId,
       description: description.length === 0 ? null : description,
     });
   } catch (error) {
+    console.error('Error creating group: ', error);
+
     return { 
       values: formStateValues,
       errors: { 
-        fields: initialState.errors.fields,
+        fields: {
+          name: null, 
+          privacy: null, 
+          description: null, 
+          spotlighted: null,
+        },
         message: error instanceof Error ? error.message : error as string, 
       }
     };
@@ -72,12 +81,15 @@ export async function groupCreate(state: FormState, formData: FormData): Promise
   redirect(`/admin/groups/${groupId}`);
 }
 
-export default async function AdminCreateGroupPage() {
+export default async function AdminCreateGroupPage({ searchParams }: { searchParams: Promise<{ parentId?: string; }> }) {
+  const parentId = Number((await searchParams).parentId);
+
+  const group = isNaN(parentId) ? null : (await findGroupById(parentId));
 
   return (
     <section className="bg-foreground p-4">
 
-      <AdminCreateGroupForm action={groupCreate} />
+      <AdminCreateGroupForm group={group} action={groupCreate} />
 
     </section>
   );

@@ -5,8 +5,8 @@ import { toast } from 'react-toastify';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
-import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
 import FormTextAreaField from '@/components/form-textarea-field';
+import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
 
 export type FormState = { 
   success: boolean;
@@ -34,10 +34,12 @@ export const initialErrorState: FormState['errors'] = {
     privacy: null, 
     description: null, 
     spotlighted: null,
-  } 
+  },
 };
 
-export default function AdminUpdateGroupForm({ group, action }: { group: GroupEntity; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
+export default function AdminUpdateGroupForm(
+  { group, parent, action }: { group: GroupEntity; parent: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }
+) {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, { 
     success: false,
     errors: initialErrorState,
@@ -61,6 +63,17 @@ export default function AdminUpdateGroupForm({ group, action }: { group: GroupEn
     <ButtonForm text="Update group" isPending={isPending} action={formAction}>
       <input type="hidden" name="groupId" defaultValue={group.id} />
 
+      {
+        parent !== null && (
+          <div className="mb-4 border p-2 col-span-full">
+            <div className="font-bold">Parent Group</div>
+            <div>ID: { parent.id }</div>
+            <div>Name: { parent.name }</div>
+            <div>Privacy: { parent.privacy }</div>
+          </div>
+        )
+      }
+
       <FormInputField 
         id="name" 
         name="name" 
@@ -73,6 +86,7 @@ export default function AdminUpdateGroupForm({ group, action }: { group: GroupEn
         id="privacy" 
         name="privacy" 
         label="Privacy" 
+        disabled={group !== null && group.privacy === GroupEntityPrivacy[1]}
         options={GroupEntityPrivacy.map((value) => ({ value }))}
         value={state.values.privacy} 
         error={state.errors.fields.privacy} 
