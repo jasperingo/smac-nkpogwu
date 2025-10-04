@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function MenuList({ items }: Readonly<{ items: { href: string; text: string; }[]; }>) {
   return (
-    <ul className="flex gap-2 items-center flex-wrap justify-end">
+    <ul className="mb-4 flex gap-2 items-center flex-wrap justify-end">
       { 
         items.map((i) => (
           <li key={i.href}>

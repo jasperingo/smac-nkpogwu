@@ -19,7 +19,7 @@ export default function ButtonForm(
 ) {
   return (
     <form action={action} className="px-2 py-8 border border-black">
-      <fieldset disabled={isPending}>
+      <fieldset disabled={isPending} className="min-w-full">
 
         <div className={responsiveness === 'grid' ? 'md:grid md:gap-x-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : ''}>
           { children }

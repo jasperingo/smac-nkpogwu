@@ -6,7 +6,7 @@ export default function GenericTable<T>(
     emptyText = 'No item available' 
   }: Readonly<{ 
     items: T[]; 
-    headings: string[]; 
+    headings: Readonly<string[]>; 
     emptyText?: string; 
     renderItem: (item: T) => React.ReactNode; 
   }>
