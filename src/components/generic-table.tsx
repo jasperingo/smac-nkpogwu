@@ -12,7 +12,7 @@ export default function GenericTable<T>(
   }>
 ) {
   return (
-    <div className="my-4 w-full overflow-auto">
+    <div className="mb-4 w-full overflow-auto">
       <table className="table-auto w-full">
         <thead>
           <tr>

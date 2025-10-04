@@ -36,14 +36,19 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
 
       
       <TabList 
+        path={`/admin/groups/${group.id}`}
         items={[
           { 
             text: 'Details',
-            href: `/admin/groups/${group.id}`,
+            href: '',
+          },
+          { 
+            text: 'Members',
+            href: '/members',
           },
           { 
             text: 'Sub groups',
-            href: `/admin/groups/${group.id}/sub-groups`,
+            href: '/sub-groups',
           },
         ]} 
       />
