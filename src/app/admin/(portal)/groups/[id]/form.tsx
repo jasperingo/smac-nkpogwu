@@ -86,7 +86,6 @@ export default function AdminUpdateGroupForm(
         id="privacy" 
         name="privacy" 
         label="Privacy" 
-        disabled={group !== null && group.privacy === GroupEntityPrivacy[1]}
         options={GroupEntityPrivacy.map((value) => ({ value }))}
         value={state.values.privacy} 
         error={state.errors.fields.privacy} 
