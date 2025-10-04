@@ -1,7 +1,7 @@
 import MenuList from '@/components/menu-list';
 import GenericTable from '@/components/generic-table';
-import GroupTableRow from '@/components/group-table-row';
 import PaginationList from '@/components/pagination-list';
+import GroupTableRow, { groupTableHeadings } from '@/components/group-table-row';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { findGroupsByParentId } from '@/services/group-service';
 
@@ -20,8 +20,8 @@ export default async function AdminGroupSubGroupsPage(
       <MenuList items={[ { href: `/admin/groups/create?parentId=${id}`, text: 'Add group' } ]} />
 
       <GenericTable
-        headings={[ 'ID', 'Name', 'Privacy', 'Spotlight', 'Action' ]}
         items={groups.data}
+        headings={groupTableHeadings}
         renderItem={(group) => <GroupTableRow key={group.id} group={group} />}
       />
 

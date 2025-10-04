@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { GroupEntity } from '@/models/entity';
 
+export const groupTableHeadings = [ 'ID', 'Name', 'Privacy', 'Spotlight', 'Action' ] as const;
+
 export default function GroupTableRow({ group }: { group: GroupEntity }) {
   return (
      <tr>
