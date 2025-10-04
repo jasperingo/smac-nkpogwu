@@ -29,6 +29,13 @@
       "when": 1759447916973,
       "tag": "0003_ambiguous_talkback",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1759589960178,
+      "tag": "0004_known_crystal",
+      "breakpoints": true
     }
   ]
 }

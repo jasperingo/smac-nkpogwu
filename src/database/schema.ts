@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { bigint, boolean, date, datetime, foreignKey, mysqlEnum, mysqlTable, serial, text, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, boolean, date, datetime, foreignKey, mysqlEnum, mysqlTable, serial, text, unique, varchar } from 'drizzle-orm/mysql-core';
 
 export const usersTableGenderEnum = ['MALE', 'FEMALE'] as const;
 
@@ -38,7 +38,24 @@ export const groupsTable = mysqlTable('groups', {
   foreignKey({
     columns: [table.parentId], 
     foreignColumns: [table.id] 
-  })
-    .onDelete('cascade')
-    .onUpdate('cascade'),
+  }).onDelete('cascade').onUpdate('cascade'),
+]);
+
+
+export const groupMembersTable = mysqlTable('group_members', {
+  id: serial().primaryKey(),
+  createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
+  updatedDatetime: datetime('updated_datetime'),
+  userId: bigint('user_id', { mode: 'number', unsigned: true }).notNull(),
+  groupId: bigint('group_id', { mode: 'number', unsigned: true }).notNull(),
+}, (table) => [
+  unique().on(table.userId, table.groupId),
+  foreignKey({
+    columns: [table.userId], 
+    foreignColumns: [usersTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+  foreignKey({
+    columns: [table.groupId], 
+    foreignColumns: [groupsTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
 ]);

@@ -1,7 +1,7 @@
 
 export const generalConstraints = {
   paginationDefault: 1,
-  paginationLimit: 2,
+  paginationLimit: 5,
 } as const;
 
 export const userConstraints = {
