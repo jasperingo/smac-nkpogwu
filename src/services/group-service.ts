@@ -4,8 +4,8 @@ import { eq, like, or, sql } from 'drizzle-orm';
 import { groupsTable } from '@/database/schema';
 import { database } from '@/database/connection';
 import { GroupEntity } from '@/models/entity';
-import { CreateGroupDto, FindGroupsDto, PaginatedListDto, UpdateGroupDto } from '@/models/dto';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
+import { CreateGroupDto, FindGroupsDto, PaginatedListDto, PaginationDto, UpdateGroupDto } from '@/models/dto';
 
 export async function groupExistByName(name: string) {
   const groups = await database.select({ id: groupsTable.id })
@@ -41,6 +41,20 @@ export async function findGroups(dto: FindGroupsDto): Promise<PaginatedListDto<G
     .offset(calculatePaginationOffset(dto.page, dto.pageLimit));
 
   return { data: groups, currentPage: dto.page, totalItems: count, totalPages: calculatePaginationPages(count, dto.pageLimit) };
+}
+
+export async function findGroupsByParentId(parentId: number, pagination: PaginationDto): Promise<PaginatedListDto<GroupEntity>> {
+  const where = eq(groupsTable.parentId, parentId);
+
+  const count = await database.$count(groupsTable, where);
+
+  const groups = await database.select()
+    .from(groupsTable)
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { data: groups, currentPage: pagination.page, totalItems: count, totalPages: calculatePaginationPages(count, pagination.pageLimit) };
 }
 
 export async function createGroup(dto: CreateGroupDto) {

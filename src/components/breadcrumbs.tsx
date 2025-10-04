@@ -19,7 +19,7 @@ export default function Breadcrumbs({ excludeRoot }: Readonly<{ excludeRoot?: bo
         { 
           crumbs.map((p, i) => (
             <li key={p} className="flex gap-2 items-center">
-              <span>{ p.substring(0, 1).toUpperCase().concat(p.substring(1).toLowerCase()) }</span>
+              <span>{ p.substring(0, 1).toUpperCase().concat(p.substring(1).toLowerCase()).replace('-', ' ') }</span>
 
               { i < crumbs.length - 1 && <ChevronRight /> }
             </li>

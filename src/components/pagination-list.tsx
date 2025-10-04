@@ -2,11 +2,13 @@ import Link from 'next/link';
 import { ReactElement } from 'react';
 import { PaginatedListDto } from '@/models/dto';
 
-export default function PaginationList({ path, pagination, params }: { path: string; pagination: PaginatedListDto<any>, params: Map<string, string | undefined> }) {
+export default function PaginationList({ path, pagination, params }: { path: string; pagination: PaginatedListDto<any>, params?: Map<string, string | undefined> }) {
   let queryParams = '';
 
-  for (const [key, value] of params.entries()) {
-    queryParams += value ? `&${key}=${value}` : '';
+  if (params) {
+    for (const [key, value] of params.entries()) {
+      queryParams += value ? `&${key}=${value}` : '';
+    }
   }
   
   const pageLinks: ReactElement[] = [];

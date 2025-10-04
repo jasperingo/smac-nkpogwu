@@ -41,10 +41,10 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
             text: 'Details',
             href: `/admin/groups/${group.id}`,
           },
-          // { 
-          //   text: 'Groups',
-          //   href: `/admin/groups/${group.id}/groups`,
-          // },
+          { 
+            text: 'Sub groups',
+            href: `/admin/groups/${group.id}/sub-groups`,
+          },
         ]} 
       />
 

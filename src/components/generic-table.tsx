@@ -1,5 +1,15 @@
 export default function GenericTable<T>(
-  { items, headings, renderItem }: Readonly<{ items: T[]; headings: string[];  renderItem: (item: T) => React.ReactNode; }>
+  { 
+    items, 
+    headings, 
+    renderItem, 
+    emptyText = 'No item available' 
+  }: Readonly<{ 
+    items: T[]; 
+    headings: string[]; 
+    emptyText?: string; 
+    renderItem: (item: T) => React.ReactNode; 
+  }>
 ) {
   return (
     <div className="my-4 w-full overflow-auto">
@@ -10,7 +20,17 @@ export default function GenericTable<T>(
           </tr>
         </thead>
 
-        <tbody>{ items.map(renderItem) }</tbody>
+        <tbody>
+          { items.map(renderItem) }
+        
+          { 
+            items.length === 0 && (
+              <tr>
+                <td colSpan={headings.length} className="px-4 py-8 text-center border">{ emptyText }</td>
+              </tr>
+            )
+          }
+        </tbody>
 
       </table>
     </div>
