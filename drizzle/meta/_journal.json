@@ -36,6 +36,13 @@
       "when": 1759589960178,
       "tag": "0004_known_crystal",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1760192119873,
+      "tag": "0005_mute_mastermind",
+      "breakpoints": true
     }
   ]
 }

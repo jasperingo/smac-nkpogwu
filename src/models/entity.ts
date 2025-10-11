@@ -1,5 +1,12 @@
 import { InferSelectModel } from 'drizzle-orm';
-import { groupMembersTable, groupsTable, groupsTablePrivacyEnum, usersTable, usersTableGenderEnum } from '@/database/schema';
+import { 
+  groupMembersTable, 
+  groupsTable, 
+  groupsTablePrivacyEnum, 
+  rolesTable, 
+  usersTable, 
+  usersTableGenderEnum 
+} from '@/database/schema';
 
 export type UserEntity = InferSelectModel<typeof usersTable>;
 
@@ -10,3 +17,5 @@ export type GroupEntity = InferSelectModel<typeof groupsTable>;
 export const GroupEntityPrivacy = groupsTablePrivacyEnum;
 
 export type GroupMemberEntity = InferSelectModel<typeof groupMembersTable>;
+
+export type RoleEntity = InferSelectModel<typeof rolesTable>;
