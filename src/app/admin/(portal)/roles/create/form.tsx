@@ -6,22 +6,19 @@ import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import FormTextAreaField from '@/components/form-textarea-field';
-import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
 
 export type FormState = { 
   values: { 
     name: string; 
-    privacy: string;
     description: string;
-    spotlighted: string; 
+    contactable: string; 
   };
   errors: { 
     message: string | null; 
     fields: { 
       name: string | null; 
-      privacy: string | null; 
       description: string | null; 
-      spotlighted: string | null;
+      contactable: string | null;
     }; 
   };
 };
@@ -29,21 +26,19 @@ export type FormState = {
 export const initialErrorState: FormState['errors'] = { 
   message: null, 
   fields: { 
-    name: null, 
-    privacy: null, 
+    name: null,
     description: null, 
-    spotlighted: null,
+    contactable: null,
   } 
 };
 
-export default function AdminCreateGroupForm({ group, action }: { group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
+export default function AdminCreateRoleForm({ action }: { action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, {
     errors: initialErrorState,
     values: { 
       name: '', 
       description: '',
-      spotlighted: 'false', 
-      privacy: group?.privacy ?? GroupEntityPrivacy[0], 
+      contactable: 'false', 
     },
   });
 
@@ -54,22 +49,8 @@ export default function AdminCreateGroupForm({ group, action }: { group: GroupEn
   }, [state]);
 
   return (
-    <ButtonForm text="Create group" isPending={isPending} action={formAction}>
-      {
-        group !== null && (
-          <>
-            <div className="mb-4 border p-2 col-span-full">
-              <div className="font-bold">Parent Group</div>
-              <div>ID: { group.id }</div>
-              <div>Name: { group.name }</div>
-              <div>Privacy: { group.privacy }</div>
-            </div>
-
-            <input type="hidden" name="parentId" defaultValue={group.id} />
-          </>
-        )
-      }
-
+    <ButtonForm text="Create role" isPending={isPending} action={formAction}>
+   
       <FormInputField 
         id="name" 
         name="name" 
@@ -79,21 +60,12 @@ export default function AdminCreateGroupForm({ group, action }: { group: GroupEn
       />
 
       <FormSelectField 
-        id="privacy" 
-        name="privacy" 
-        label="Privacy" 
-        options={GroupEntityPrivacy.map((value) => ({ value }))}
-        value={state.values.privacy} 
-        error={state.errors.fields.privacy} 
-      />
-
-      <FormSelectField 
         id="spotlighted" 
         name="spotlighted" 
-        label="Spotlight" 
+        label="Is contact" 
         options={[ { value: 'true', text: 'Yes' }, { value: 'false', text: 'No' } ]}
-        value={state.values.spotlighted} 
-        error={state.errors.fields.spotlighted} 
+        value={state.values.contactable} 
+        error={state.errors.fields.contactable} 
       />
 
       <FormTextAreaField 

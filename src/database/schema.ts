@@ -1,5 +1,17 @@
 import { sql } from 'drizzle-orm';
-import { bigint, boolean, date, datetime, foreignKey, mysqlEnum, mysqlTable, serial, text, unique, varchar } from 'drizzle-orm/mysql-core';
+import { 
+  bigint, 
+  boolean, 
+  date, 
+  datetime, 
+  foreignKey, 
+  mysqlEnum, 
+  mysqlTable, 
+  serial, 
+  text, 
+  unique, 
+  varchar 
+} from 'drizzle-orm/mysql-core';
 
 export const usersTableGenderEnum = ['MALE', 'FEMALE'] as const;
 
@@ -66,9 +78,11 @@ export const rolesTable = mysqlTable('roles', {
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   groupId: bigint('group_id', { mode: 'number', unsigned: true }),
-  name: varchar({ length: 255 }).notNull().unique(),
+  name: varchar({ length: 255 }).notNull(),
   description: text(),
+  contactable: boolean().notNull().default(false),
 }, (table) => [
+  unique().on(table.name, table.groupId),
   foreignKey({
     columns: [table.groupId], 
     foreignColumns: [groupsTable.id] 

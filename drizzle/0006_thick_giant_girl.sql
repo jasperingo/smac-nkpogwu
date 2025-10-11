@@ -1,0 +1,1 @@
+ALTER TABLE `roles` ADD `contactable` boolean DEFAULT false NOT NULL;

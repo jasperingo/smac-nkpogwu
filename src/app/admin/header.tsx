@@ -1,10 +1,18 @@
 'use client'
 
-import { LayoutDashboard, LogOut, Menu, Shapes, Users, X } from 'lucide-react';
+import { 
+  Award, 
+  LayoutDashboard, 
+  LogOut, 
+  Menu, 
+  Shapes, 
+  Users, 
+  X 
+} from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Session } from '@/utils/session';
 import { usePathname } from 'next/navigation';
+import { Session } from '@/utils/session';
 
 const navItems = [
   {
@@ -21,6 +29,11 @@ const navItems = [
     icon: Shapes,
     href: '/admin/groups',
     text: "Groups",
+  },
+  {
+    icon: Award,
+    href: '/admin/roles',
+    text: "Roles",
   },
   {
     icon: LogOut,

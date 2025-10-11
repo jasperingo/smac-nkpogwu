@@ -6,7 +6,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <section className="bg-foreground p-4">
-      <AdminPageHeading text="Dashboard" />
+      Dashboard
 
     </section>
   );
