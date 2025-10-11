@@ -17,6 +17,7 @@ const validationSchema = z.object({
 export async function roleUpdate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
+  const groupId = Number(formData.get('groupId'));
   const roleId = Number(formData.get('roleId'));
   const name = formData.get('name') as string;
   const contactable = formData.get('contactable') as string;
@@ -25,6 +26,7 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
   const formStateValues: FormState['values'] = { name, contactable, description };
 
   const validatedResult = await validationSchema.safeParseAsync({
+    groupId,
     name: name !== state.values.name || state.errors.fields.name !== null ? name : undefined, 
     spotlighted: contactable !== state.values.contactable || state.errors.fields.contactable !== null ? contactable === 'true' : undefined,
     description: description !== state.values.description || state.errors.fields.description !== null ? description : undefined,
@@ -95,12 +97,12 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
 export default async function AdminRolePage({ params }: Readonly<{ params: Promise<{ id: string }>; }>) {
   const id = Number((await params).id);
   
-  const { roles } = (await findRoleAndGroupById(id))!;
+  const { roles, groups } = (await findRoleAndGroupById(id))!;
 
   return (
     <section className="bg-foreground p-4">
 
-      <AdminUpdateRoleForm role={roles} action={roleUpdate} />
+      <AdminUpdateRoleForm role={roles} group={groups} action={roleUpdate} />
 
     </section>
   );

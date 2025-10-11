@@ -1,5 +1,6 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
+import { findGroupById } from '@/services/group-service';
 import AdminCreateRoleForm, { type FormState } from './form';
 import { createRole, roleExistByName, roleExistByNameAndGroupId } from '@/services/role-service';
 import { roleContactableValidation, roleDescriptionValidation, roleNameValidation } from '@/validations/roles-validation';
@@ -10,11 +11,15 @@ const validationSchema = z.object({
   contactable: roleContactableValidation,
   description: roleDescriptionValidation,
 })
-.refine(async (dto) => dto.groupId ? !(await roleExistByNameAndGroupId(dto.name, dto.groupId)) : !(await roleExistByName(dto.name)), 'Role with name already exists');
+.refine(
+  async (dto) => dto.groupId ? !(await roleExistByNameAndGroupId(dto.name, dto.groupId)) : !(await roleExistByName(dto.name)), 
+  'Role with name already exists'
+);
 
 export async function roleCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
+  const groupId = Number(formData.get('groupId')); // TODO: In v2 check that ID exists
   const name = formData.get('name') as string;
   const contactable = formData.get('contactable') as string;
   const description = formData.get('description') as string;
@@ -23,6 +28,7 @@ export async function roleCreate(state: FormState, formData: FormData): Promise<
 
   const validatedResult = await validationSchema.safeParseAsync({
     name, 
+    groupId,
     description,
     contactable: contactable === 'true',
   });
@@ -48,8 +54,8 @@ export async function roleCreate(state: FormState, formData: FormData): Promise<
   try {
     roleId = await createRole({
       name, 
+      groupId,
       contactable: contactable === 'true',
-      groupId: null,
       description: description.length === 0 ? null : description,
     });
   } catch (error) {
@@ -72,14 +78,14 @@ export async function roleCreate(state: FormState, formData: FormData): Promise<
 }
 
 export default async function AdminCreateRolePage({ searchParams }: { searchParams: Promise<{ groupId?: string; }> }) {
-  // const parentId = Number((await searchParams).parentId);
+  const groupId = Number((await searchParams).groupId);
 
-  // const group = isNaN(parentId) ? null : (await findGroupById(parentId));
+  const group = isNaN(groupId) ? null : (await findGroupById(groupId));
 
   return (
     <section className="bg-foreground p-4">
 
-      <AdminCreateRoleForm action={roleCreate} />
+      <AdminCreateRoleForm group={group} action={roleCreate} />
 
     </section>
   );

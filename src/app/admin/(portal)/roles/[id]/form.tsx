@@ -6,7 +6,7 @@ import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import FormTextAreaField from '@/components/form-textarea-field';
-import { RoleEntity } from '@/models/entity';
+import { GroupEntity, RoleEntity } from '@/models/entity';
 
 export type FormState = { 
   success: boolean;
@@ -35,7 +35,7 @@ export const initialErrorState: FormState['errors'] = {
 };
 
 export default function AdminUpdateRoleForm(
-  { role, action }: { role: RoleEntity; action: (state: FormState, formData: FormData) => Promise<FormState>; }
+  { role, group, action }: { role: RoleEntity; group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }
 ) {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, { 
     success: false,
@@ -58,6 +58,21 @@ export default function AdminUpdateRoleForm(
   return (
     <ButtonForm text="Update role" isPending={isPending} action={formAction}>
       <input type="hidden" name="roleId" defaultValue={role.id} />
+
+      {
+        group !== null && (
+          <>
+            <div className="mb-4 border p-2 col-span-full">
+              <div className="font-bold">Group</div>
+              <div>ID: { group.id }</div>
+              <div>Name: { group.name }</div>
+            </div>
+
+            
+            <input type="hidden" name="groupId" defaultValue={group.id} />
+          </>
+        )
+      }
 
       <FormInputField 
         id="name" 

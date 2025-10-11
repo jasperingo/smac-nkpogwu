@@ -36,7 +36,9 @@ export const initialErrorState: FormState['errors'] = {
   } 
 };
 
-export default function AdminCreateGroupForm({ group, action }: { group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
+export default function AdminCreateGroupForm(
+  { group, action }: { group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }
+) {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, {
     errors: initialErrorState,
     values: { 

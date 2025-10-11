@@ -18,7 +18,7 @@ export default async function AdminRoleLayout({ params, children }: Readonly<{ p
   return (
     <>
       <div className="bg-foreground p-4 mb-4">
-        <div className="mb-2 font-bold text-center text-lg md:text-xl">{ role.roles.name }</div>
+        <div className="mb-2 font-bold text-center text-lg md:text-xl">{ role.roles.name } { role.groups && `(${role.groups.name})` }</div>
 
         <div className="w-fit mx-auto py-1 px-4 text-on-primary bg-primary-variant">ID: { role.roles.id }</div>
       </div>

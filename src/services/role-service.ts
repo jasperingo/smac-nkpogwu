@@ -69,6 +69,28 @@ export async function findRolesAndGroup(
   };
 }
 
+export async function findRolesByGroupId(
+  groupId: number, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<RoleEntity>> {
+  const where = eq(rolesTable.groupId, groupId);
+
+  const count = await database.$count(rolesTable, where);
+
+  const roles = await database.select()
+    .from(rolesTable)
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: roles, 
+    totalItems: count, 
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
 export async function createRole(dto: CreateRoleDto) {
   const result = await database.insert(rolesTable).values({ ...dto }).$returningId();
 
