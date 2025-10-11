@@ -27,8 +27,10 @@ export type FindUsersDto = { search?: string; } & PaginationDto;
 
 export type CreateGroupDto = Pick<GroupEntity, 'name' | 'privacy' | 'spotlighted' | 'description' | 'parentId'>;
 
-export type UpdateGroupDto = Partial<CreateGroupDto>;
+export type UpdateGroupDto = Omit<Partial<CreateGroupDto>, 'parentId'>;
 
 export type FindGroupsDto = { search?: string; } & PaginationDto;
 
 export type CreateRoleDto = Pick<RoleEntity, 'name' | 'contactable' | 'description' | 'groupId'>;
+
+export type UpdateRoleDto = Omit<Partial<CreateRoleDto>, 'groupId'>;
