@@ -60,8 +60,8 @@ export default function AdminCreateRoleForm({ action }: { action: (state: FormSt
       />
 
       <FormSelectField 
-        id="spotlighted" 
-        name="spotlighted" 
+        id="contactable" 
+        name="contactable" 
         label="Is contact" 
         options={[ { value: 'true', text: 'Yes' }, { value: 'false', text: 'No' } ]}
         value={state.values.contactable} 
