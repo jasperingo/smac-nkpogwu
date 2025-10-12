@@ -1,11 +1,11 @@
 'use server'
 
-import { eq } from 'drizzle-orm';
+import { and, count, eq, isNull, like, not, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
-import { groupMembersTable, usersTable } from '@/database/schema';
 import { PaginatedListDto, PaginationDto } from '@/models/dto';
 import { GroupMemberEntity, UserEntity } from '@/models/entity';
+import { groupMembersTable, roleAssigneesTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 
 export async function findGroupMembersAndUsersByGroupId(
@@ -16,7 +16,7 @@ export async function findGroupMembersAndUsersByGroupId(
   
   const leftTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
   
-  const groups = await database.select()
+  const members = await database.select()
     .from(leftTable)
     .leftJoin(usersTable, eq(leftTable.userId, usersTable.id))
     .where(eq(leftTable.groupId, groupId))
@@ -24,10 +24,54 @@ export async function findGroupMembersAndUsersByGroupId(
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
   return { 
-    data: groups, 
+    data: members, 
     totalItems: count, 
     currentPage: pagination.page, 
     totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
+export async function findGroupMembersAndUsersNotInRole(
+  dto: { roleId: number; search?: string; }, pagination: PaginationDto
+): Promise<PaginatedListDto<{ users: UserEntity | null; groupMembers: GroupMemberEntity; }>> {
+  const leftTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
+
+  const where = and(
+    or(
+      isNull(roleAssigneesTable.roleId),
+      not(eq(roleAssigneesTable.roleId, dto.roleId))
+    ),
+    dto.search === undefined 
+      ? undefined 
+      : or(
+          eq(usersTable.emailAddress, dto.search),
+          eq(usersTable.phoneNumber, dto.search),
+          eq(usersTable.membershipNumber, dto.search),
+          isNaN(Number(dto.search)) ? undefined : eq(usersTable.id, Number(dto.search)),
+          isNaN(Number(dto.search)) ? undefined : eq(leftTable.id, Number(dto.search)),
+          like(sql`CONCAT(${usersTable.firstName}, ' ', ${usersTable.lastName})`, `%${dto.search}%`)
+        )
+  );
+  
+  const membersCount = await database.select({ value: count(leftTable.id) })
+    .from(leftTable)
+    .leftJoin(usersTable, eq(usersTable.id, leftTable.userId))
+    .leftJoin(roleAssigneesTable, eq(roleAssigneesTable.groupMemberId, leftTable.id))
+    .where(where);
+
+  const members = await database.select()
+    .from(leftTable)
+    .leftJoin(usersTable, eq(usersTable.id, leftTable.userId))
+    .leftJoin(roleAssigneesTable, eq(roleAssigneesTable.groupMemberId, leftTable.id))
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: members, 
+    currentPage: pagination.page, 
+    totalItems: membersCount[0].value, 
+    totalPages: calculatePaginationPages(membersCount[0].value, pagination.pageLimit) 
   };
 }
 

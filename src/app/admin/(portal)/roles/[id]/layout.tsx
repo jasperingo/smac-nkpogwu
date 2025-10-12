@@ -32,7 +32,7 @@ export default async function AdminRoleLayout({ params, children }: Readonly<{ p
           },
           { 
             text: 'Assignees',
-            href: role.groups ? '/group-assignees' : '/user-assignees',
+            href: '/assignees',
           },
         ]} 
       />

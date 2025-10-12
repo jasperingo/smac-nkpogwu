@@ -49,7 +49,14 @@ export default function AdminCreateGroupMemberForm(
         renderItem={(user) => (
           <tr key={user.id}>
             <td className="p-2 border">
-              <input type="radio" name="userId" value={user.id} defaultChecked={user.id === state.value} className="w-6 h-6" />
+              <input 
+                type="radio" 
+                name="userId" 
+                value={user.id} 
+                defaultChecked={user.id === state.value} 
+                className="w-6 h-6" 
+                required 
+              />
             </td>
             <td className="p-2 border">{ user.id }</td>
             <td className="p-2 border">{ user.firstName } { user.lastName }</td>
