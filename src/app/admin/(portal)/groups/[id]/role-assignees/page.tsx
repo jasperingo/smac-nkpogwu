@@ -1,30 +1,28 @@
 import Link from 'next/link';
-import MenuList from '@/components/menu-list';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import { resolvePaginationParams } from '@/utils/pagination';
-import { findRoleAssigneesAndUsersByRoleId } from '@/services/role-assignee-service';
+import { findRoleAssigneesAndUsersByGroupId } from '@/services/role-assignee-service';
 
-export default async function AdminRoleAssigneesPage(
+export default async function AdminGroupRoleAssigneesPage(
   { params, searchParams }: Readonly<{ params: Promise<{ id: string }>; searchParams: Promise<{ page?: string; }>; }>
 ) {
   const id = Number((await params).id);
 
   const { page } = await searchParams;
   
-  const assignees = await findRoleAssigneesAndUsersByRoleId(id, resolvePaginationParams(page));
+  const assignees = await findRoleAssigneesAndUsersByGroupId(id, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">
 
-      <MenuList items={[ { href: 'assignees/create', text: 'Add assignee' } ]} />
-
       <GenericTable
-        headings={[ 'ID', 'Name', 'Email', 'Phone', 'Membership', 'Action' ]}
+        headings={[ 'ID', 'Role', 'Name', 'Email', 'Phone', 'Membership', 'Action' ]}
         items={assignees.data}
         renderItem={(assignee) => (
           <tr key={assignee.roleAssignees.id}>
             <td className="p-2 border">{ assignee.roleAssignees.id }</td>
+            <td className="p-2 border">{ assignee.roles?.name }</td>
             <td className="p-2 border">{ assignee.users?.firstName } { assignee.users?.lastName }</td>
             <td className="p-2 border">{ assignee.users?.emailAddress ?? '(not set)' }</td>
             <td className="p-2 border">{ assignee.users?.phoneNumber ?? '(not set)' }</td>
@@ -39,7 +37,7 @@ export default async function AdminRoleAssigneesPage(
         )}
       />
 
-      <PaginationList path={`/admin/roles/${id}/assignees`} pagination={assignees} />
+      <PaginationList path={`/admin/groups/${id}/role-assignees`} pagination={assignees} />
 
     </section>
   );

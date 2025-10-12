@@ -54,6 +54,10 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
             text: 'Roles',
             href: '/roles',
           },
+          { 
+            text: 'Role assignees',
+            href: '/role-assignees',
+          },
         ]} 
       />
 
