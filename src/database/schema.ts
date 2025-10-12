@@ -88,3 +88,29 @@ export const rolesTable = mysqlTable('roles', {
     foreignColumns: [groupsTable.id] 
   }).onDelete('cascade').onUpdate('cascade'),
 ]);
+
+
+export const roleAssigneesTable = mysqlTable('role_assignees', {
+  id: serial().primaryKey(),
+  createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
+  updatedDatetime: datetime('updated_datetime'),
+  roleId: bigint('role_id', { mode: 'number', unsigned: true }).notNull(),
+  userId: bigint('user_id', { mode: 'number', unsigned: true }),
+  groupMemberId: bigint('group_member_id', { mode: 'number', unsigned: true }),
+}, (table) => [
+  unique().on(table.roleId, table.userId),
+  unique().on(table.roleId, table.groupMemberId),
+  foreignKey({
+    columns: [table.roleId], 
+    foreignColumns: [rolesTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+  foreignKey({
+    columns: [table.userId], 
+    foreignColumns: [usersTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+  foreignKey({
+    columns: [table.groupMemberId], 
+    foreignColumns: [groupMembersTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+]);
+
