@@ -114,3 +114,25 @@ export const roleAssigneesTable = mysqlTable('role_assignees', {
   }).onDelete('cascade').onUpdate('cascade'),
 ]);
 
+
+export const programsTable = mysqlTable('programs', {
+  id: serial().primaryKey(),
+  createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
+  updatedDatetime: datetime('updated_datetime'),
+  userId: bigint('user_id', { mode: 'number', unsigned: true }),
+  groupId: bigint('group_id', { mode: 'number', unsigned: true }),
+  name: varchar({ length: 255 }).notNull(),
+  theme: varchar({ length: 255 }),
+  topic: varchar({ length: 255 }),
+  description: text(),
+}, (table) => [
+  foreignKey({
+    columns: [table.groupId], 
+    foreignColumns: [groupsTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+  foreignKey({
+    columns: [table.userId], 
+    foreignColumns: [usersTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+]);
+

@@ -64,6 +64,13 @@
       "when": 1760274383701,
       "tag": "0008_parallel_kabuki",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1760391178824,
+      "tag": "0009_naive_hellcat",
+      "breakpoints": true
     }
   ]
 }
