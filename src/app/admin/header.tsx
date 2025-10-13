@@ -2,6 +2,7 @@
 
 import { 
   Award, 
+  CalendarFold, 
   LayoutDashboard, 
   LogOut, 
   Menu, 
@@ -34,6 +35,11 @@ const navItems = [
     icon: Award,
     href: '/admin/roles',
     text: "Roles",
+  },
+  {
+    icon: CalendarFold,
+    href: '/admin/programs',
+    text: "Programs",
   },
   {
     icon: LogOut,
