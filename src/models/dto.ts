@@ -1,4 +1,4 @@
-import { GroupEntity, RoleEntity, UserEntity } from './entity';
+import { GroupEntity, ProgramEntity, RoleEntity, UserEntity } from './entity';
 
 export type PaginatedListDto<T> = {
   data: T[];
@@ -34,3 +34,10 @@ export type FindGroupsDto = { search?: string; } & PaginationDto;
 export type CreateRoleDto = Pick<RoleEntity, 'name' | 'contactable' | 'description' | 'groupId'>;
 
 export type UpdateRoleDto = Omit<Partial<CreateRoleDto>, 'groupId'>;
+
+export type CreateProgramDto = Pick<ProgramEntity, 
+  | 'name' 
+  | 'theme'
+  | 'topic'
+  | 'description'
+>;

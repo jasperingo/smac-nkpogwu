@@ -1,12 +1,12 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
-import { createGroup, findGroupById } from '@/services/group-service';
 import { 
   programDescriptionValidation, 
   programNameValidation, 
   programThemeValidation, 
   programTopicValidation 
 } from '@/validations/programs-validation';
+import { createProgram } from '@/services/program-service';
 import AdminCreateProgramForm, { type FormState } from './form';
 
 const validationSchema = z.object({
@@ -51,37 +51,33 @@ export async function programCreate(state: FormState, formData: FormData): Promi
     };
   }
 
-  // let groupId: number;
+  let programId: number;
 
-  // try {
-  //   groupId = await createGroup({
-  //     name, 
-  //     privacy: privacy as any,
-  //     spotlighted: spotlighted === 'true',
-  //     parentId: isNaN(parentId) || parentId < 1 ? null : parentId,
-  //     description: description.length === 0 ? null : description,
-  //   });
-  // } catch (error) {
-  //   console.error('Error creating group: ', error);
+  try {
+    programId = await createProgram({
+      name, 
+      theme: theme.length === 0 ? null : theme,
+      topic: topic.length === 0 ? null : topic,
+      description: description.length === 0 ? null : description,
+    });
+  } catch (error) {
+    console.error('Error creating program: ', error);
 
-  //   return { 
-  //     values: formStateValues,
-  //     errors: { 
-  //       fields: {
-  //         name: null, 
-  //         privacy: null, 
-  //         description: null, 
-  //         spotlighted: null,
-  //       },
-  //       message: error instanceof Error ? error.message : error as string, 
-  //     }
-  //   };
-  // }
+    return { 
+      values: formStateValues,
+      errors: { 
+        fields: {
+          name: null, 
+          theme: null, 
+          topic: null,
+          description: null, 
+        },
+        message: error instanceof Error ? error.message : error as string, 
+      }
+    };
+  }
 
-  // redirect(`/admin/groups/${groupId}`);
-
-  
-  return state;
+  redirect(`/admin/programs/${programId}`);
 }
 
 export default async function AdminCreateProgramPage({ searchParams }: { searchParams: Promise<{ parentId?: string; }> }) {
