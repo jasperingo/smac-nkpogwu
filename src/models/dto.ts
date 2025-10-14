@@ -41,3 +41,5 @@ export type CreateProgramDto = Pick<ProgramEntity,
   | 'topic'
   | 'description'
 >;
+
+export type UpdateProgramDto = Partial<CreateProgramDto>;
