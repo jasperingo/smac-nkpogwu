@@ -12,7 +12,7 @@ import {
   userPhoneNumberValidation 
 } from '@/validations/user-validation';
 import { createUser } from '@/services/user-service';
-import AdminCreateUserForm, { FormState, initialState } from './form';
+import AdminCreateUserForm, { type FormState } from './form';
 
 const validationSchema = z.object({
   firstName: userFirstNameValidation,
@@ -100,12 +100,24 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       membershipNumber: membershipNumber.length === 0 ? null : membershipNumber,
     });
   } catch (error) {
+    console.error('Error creating user: ', error);
+
     return { 
       values: formStateValues,
       errors: { 
-        fields: initialState.errors.fields,
+        fields: { 
+          firstName: null, 
+          lastName: null, 
+          otherName: null, 
+          gender: null, 
+          emailAddress: null, 
+          phoneNumber: null, 
+          password: null,
+          dateOfBirth: null,
+          membershipNumber: null,
+        },
         message: error instanceof Error ? error.message : error as string, 
-      }
+      },
     };
   }
 

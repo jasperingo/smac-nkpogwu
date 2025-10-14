@@ -61,7 +61,7 @@ export const initialState: FormState = {
       password: null,
       dateOfBirth: null,
       membershipNumber: null,
-    } 
+    },
   },
 };
 

@@ -137,7 +137,11 @@ export async function createUser(dto: CreateUserDto) {
 export async function updateUser(userId: number, dto: UpdateUserDto) {
   dto.password = await (dto.password !== undefined ? (dto.password !== null ? hashExecute(dto.password) : null) : undefined);
   
-  await database.update(usersTable).set({ ...dto, updatedDatetime: sql`NOW()` }).where(eq(usersTable.id, userId));
+  const result = await database.update(usersTable).set({ ...dto, updatedDatetime: sql`NOW()` }).where(eq(usersTable.id, userId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero users table rows updated');
+  }
 
   return findUserById(userId);
 }

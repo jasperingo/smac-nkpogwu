@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import TabList from '@/components/tab-list';
 import { findRoleAndGroupById } from '@/services/role-service';
+import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function AdminRoleLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
   const id = Number((await params).id);
@@ -17,11 +18,7 @@ export default async function AdminRoleLayout({ params, children }: Readonly<{ p
 
   return (
     <>
-      <div className="bg-foreground p-4 mb-4">
-        <div className="mb-2 font-bold text-center text-lg md:text-xl">{ role.roles.name } { role.groups && `(${role.groups.name})` }</div>
-
-        <div className="w-fit mx-auto py-1 px-4 text-on-primary bg-primary-variant">ID: { role.roles.id }</div>
-      </div>
+      <ItemPageTopDetails id={role.roles.id} title={`${ role.roles.name }${ role.groups ? ` (${role.groups.name})` : '' }`} />
 
       <TabList 
         path={`/admin/roles/${id}`}

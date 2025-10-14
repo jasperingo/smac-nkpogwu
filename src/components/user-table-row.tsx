@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import ActionLink from './action-link';
 import { UserEntity } from '@/models/entity';
 
 export const userTableHeadings = [ 'ID', 'Name', 'Email', 'Phone', 'Membership', 'Action' ] as const;
@@ -12,10 +12,7 @@ export default function UserTableRow({ user }: { user: UserEntity }) {
         <td className="p-2 border">{ user.phoneNumber ?? '(not set)' }</td>
         <td className="p-2 border">{ user.membershipNumber ?? '(not set)' }</td>
         <td className="p-2 border">
-          <Link 
-            href={`/admin/users/${user.id}`}
-            className="text-sm py-1 px-2 bg-primary text-on-primary hover:bg-primary-variant"
-          >Profile</Link>
+          <ActionLink href={`/admin/users/${user.id}`}>Profile</ActionLink>
         </td>
     </tr>
   );

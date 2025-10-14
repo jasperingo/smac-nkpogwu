@@ -11,8 +11,8 @@ import {
   userPhoneNumberValidation 
 } from '@/validations/user-validation';
 import { getDateInputString } from '@/utils/datetime';
+import AdminUpdateUserForm, { type FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
-import AdminUpdateUserForm, { FormState, initialErrorState } from './form';
 
 const validationSchema = z.object({
   firstName: userFirstNameValidation.optional(),
@@ -101,12 +101,25 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     });
  
     if (user === null) {
-      throw new Error('Error updating user: return value is null');
+      throw new Error('Update user return value is null');
     }
 
     return {
       success: true,
-      errors: initialErrorState,
+      errors: { 
+        message: null, 
+        fields: { 
+          firstName: null, 
+          lastName: null, 
+          otherName: null, 
+          gender: null, 
+          emailAddress: null, 
+          phoneNumber: null, 
+          password: null,
+          dateOfBirth: null,
+          membershipNumber: null,
+        },
+      },
       values: {
         firstName: user.firstName,
         lastName: user.lastName, 
@@ -120,11 +133,23 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       },
     };
   } catch (error) {
+    console.error('Error updating user: ', error);
+
     return { 
       success: false,
       values: formStateValues,
       errors: { 
-        fields: initialErrorState.fields,
+        fields: {
+          firstName: null, 
+          lastName: null, 
+          otherName: null, 
+          gender: null, 
+          emailAddress: null, 
+          phoneNumber: null, 
+          password: null,
+          dateOfBirth: null,
+          membershipNumber: null,
+        },
         message: error instanceof Error ? error.message : error as string, 
       },
     };
