@@ -4,8 +4,8 @@ import { and, count, eq, isNull, like, not, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
 import { PaginatedListDto, PaginationDto } from '@/models/dto';
-import { GroupMemberEntity, UserEntity } from '@/models/entity';
-import { groupMembersTable, roleAssigneesTable, usersTable } from '@/database/schema';
+import { GroupEntity, GroupMemberEntity, UserEntity } from '@/models/entity';
+import { groupMembersTable, groupsTable, roleAssigneesTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 
 export async function findGroupMembersAndUsersByGroupId(
@@ -20,6 +20,29 @@ export async function findGroupMembersAndUsersByGroupId(
     .from(leftTable)
     .leftJoin(usersTable, eq(leftTable.userId, usersTable.id))
     .where(eq(leftTable.groupId, groupId))
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: members, 
+    totalItems: count, 
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
+export async function findGroupMembersAndGroupsByUserId(
+  userId: number, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<{ groupMembers: GroupMemberEntity; groups: GroupEntity | null; }>> {
+  const count = await database.$count(groupMembersTable, eq(groupMembersTable.groupId, userId));
+  
+  const leftTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
+  
+  const members = await database.select()
+    .from(leftTable)
+    .leftJoin(groupsTable, eq(leftTable.userId, groupsTable.id))
+    .where(eq(leftTable.userId, userId))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
