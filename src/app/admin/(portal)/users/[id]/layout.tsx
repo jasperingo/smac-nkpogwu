@@ -31,6 +31,10 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
             text: 'Groups',
             href: '/groups',
           },
+          { 
+            text: 'Roles',
+            href: '/roles',
+          },
         ]} 
       />
 

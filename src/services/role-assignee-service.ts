@@ -5,8 +5,8 @@ import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
 import { PaginatedListDto, PaginationDto } from '@/models/dto';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
-import { GroupMemberEntity, RoleAssigneeEntity, RoleEntity, UserEntity } from '@/models/entity';
-import { groupMembersTable, roleAssigneesTable, rolesTable, usersTable } from '@/database/schema';
+import { GroupEntity, GroupMemberEntity, RoleAssigneeEntity, RoleEntity, UserEntity } from '@/models/entity';
+import { groupMembersTable, groupsTable, roleAssigneesTable, rolesTable, usersTable } from '@/database/schema';
 
 export async function findRoleAssigneesAndUsersByRoleId(
   roleId: number, 
@@ -52,6 +52,37 @@ export async function findRoleAssigneesAndUsersByGroupId(
     .leftJoin(rolesTable, eq(rolesTable.id, leftTable.roleId))
     .leftJoin(groupMemberAliasTable, eq(leftTable.groupMemberId, groupMemberAliasTable.id))
     .leftJoin(usersTable, or(eq(leftTable.userId, usersTable.id), eq(groupMemberAliasTable.userId, usersTable.id)))
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: assignees, 
+    currentPage: pagination.page, 
+    totalItems: assigneesCount[0].value, 
+    totalPages: calculatePaginationPages(assigneesCount[0].value, pagination.pageLimit),
+  };
+}
+
+export async function findRoleAssigneesAndGroupsByUserId(
+  userId: number, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<{ roleAssignees: RoleAssigneeEntity; roles: RoleEntity | null; groupMembers: GroupMemberEntity | null; groups: GroupEntity | null; }>> {
+  const leftTable = alias(roleAssigneesTable, "roleAssignees"); // used alias so result property is roleAssignees and not role_assignees
+  const groupMemberAliasTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
+
+   const where = or(eq(leftTable.userId, userId), eq(groupMemberAliasTable.userId, userId));
+
+   const assigneesCount = await database.select({ value: count(leftTable.id) })
+    .from(leftTable)
+    .leftJoin(groupMemberAliasTable, eq(leftTable.groupMemberId, groupMemberAliasTable.id))
+    .where(where);
+  
+  const assignees = await database.select()
+    .from(leftTable)
+    .leftJoin(rolesTable, eq(rolesTable.id, leftTable.roleId))
+    .leftJoin(groupMemberAliasTable, eq(leftTable.groupMemberId, groupMemberAliasTable.id))
+    .leftJoin(groupsTable, eq(groupMemberAliasTable.groupId, groupsTable.id))
     .where(where)
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
