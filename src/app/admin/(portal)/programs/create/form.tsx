@@ -96,6 +96,7 @@ export default function AdminCreateProgramForm(
                 items={[
                   { term: 'ID', details: group.id, displayRow: true },
                   { term: 'Name', details: group.name, displayRow: true },
+                  { term: 'Privacy', details: group.privacy, displayRow: true },
                 ]} 
               />
             </div>

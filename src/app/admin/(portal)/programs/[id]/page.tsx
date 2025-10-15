@@ -6,7 +6,7 @@ import {
   programTopicValidation 
 } from '@/validations/programs-validation';
 import AdminUpdateProgramForm, { FormState } from './form';
-import { findProgramById, updateProgam } from '@/services/program-service';
+import { findProgramAndUserAndGroupById, findProgramById, updateProgam } from '@/services/program-service';
 
 const validationSchema = z.object({
   name: programNameValidation.optional(),
@@ -103,12 +103,12 @@ export async function programUpdate(state: FormState, formData: FormData): Promi
 export default async function AdminProgramPage({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);
 
-  const program = (await findProgramById(id))!;
+  const program = (await findProgramAndUserAndGroupById(id))!;
 
   return (
     <section className="bg-foreground p-4">
       
-      <AdminUpdateProgramForm  program={program} action={programUpdate} />
+      <AdminUpdateProgramForm program={program.programs} user={program.users} group={program.groups} action={programUpdate} />
 
     </section>
   );

@@ -1,15 +1,15 @@
-import Link from 'next/link';
 import MenuList from '@/components/menu-list';
+import ActionLink from '@/components/action-link';
 import SearchForm from '@/components/search-form';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
-import { findPrograms } from '@/services/program-service';
 import { resolvePaginationParams } from '@/utils/pagination';
+import { findProgramsAndUsersAndGroups } from '@/services/program-service';
 
 export default async function AdminProgramsPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
   const { page, search } = await searchParams;
 
-  const programs = await findPrograms(search?.length === 0 ? null : (search ?? null), resolvePaginationParams(page));
+  const programs = await findProgramsAndUsersAndGroups(search?.length === 0 ? null : (search ?? null), resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">
@@ -20,18 +20,17 @@ export default async function AdminProgramsPage({ searchParams }: { searchParams
       
       <GenericTable
         items={programs.data}
-        headings={[ 'ID', 'Name', 'Theme', 'Topic', 'Action' ]}
+        headings={[ 'ID', 'Name', 'Theme', 'Topic', 'User', 'Group', 'Action' ]}
         renderItem={(program) => (
-          <tr key={program.id}>
-            <td className="p-2 border">{ program.id }</td>
-            <td className="p-2 border">{ program.name }</td>
-            <td className="p-2 border">{ program.theme ?? '(Not set)' }</td>
-            <td className="p-2 border">{ program.topic ?? '(Not set)' }</td>
+          <tr key={program.programs.id}>
+            <td className="p-2 border">{ program.programs.id }</td>
+            <td className="p-2 border">{ program.programs.name }</td>
+            <td className="p-2 border">{ program.programs.theme ?? '(Not set)' }</td>
+            <td className="p-2 border">{ program.programs.topic ?? '(Not set)' }</td>
+            <td className="p-2 border">{ program.users ? `${program.users.firstName} ${program.users.lastName}` : '(Not set)' }</td>
+            <td className="p-2 border">{ program.groups ? program.groups.name : '(Not set)' }</td>
             <td className="p-2 border">
-              <Link 
-                href={`/admin/programs/${program.id}`}
-                className="text-sm py-1 px-2 bg-primary text-on-primary hover:bg-primary-variant"
-              >Details</Link>
+              <ActionLink href={`/admin/programs/${program.programs.id}`}>Details</ActionLink>
             </td>
           </tr>
         )}
