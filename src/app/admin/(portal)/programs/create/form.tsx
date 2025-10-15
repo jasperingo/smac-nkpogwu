@@ -2,9 +2,11 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { GroupEntity } from '@/models/entity';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormTextAreaField from '@/components/form-textarea-field';
+import SimpleDescriptionList from '@/components/simple-description-list';
 
 export type FormState = { 
   values: { 
@@ -43,7 +45,7 @@ export const initialState: FormState = {
 };
 
 export default function AdminCreateProgramForm(
-  { action }: { action: (state: FormState, formData: FormData) => Promise<FormState>; }
+  { group, action }: { group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }
 ) {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, initialState);
 
@@ -55,6 +57,23 @@ export default function AdminCreateProgramForm(
 
   return (
     <ButtonForm text="Create program" isPending={isPending} action={formAction}>
+      {
+        group !== null && (
+          <>
+            <div className="mb-4 border p-2 col-span-full">
+              <SimpleDescriptionList
+                caption="Group"
+                items={[
+                  { term: 'ID', details: group.id, displayRow: true },
+                  { term: 'Name', details: group.name, displayRow: true },
+                ]} 
+              />
+            </div>
+
+            <input type="hidden" name="groupId" defaultValue={group.id} />
+          </>
+        )
+      }
 
       <FormInputField 
         id="name" 

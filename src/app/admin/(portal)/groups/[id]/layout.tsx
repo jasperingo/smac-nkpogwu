@@ -36,6 +36,10 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
             href: '/sub-groups',
           },
           { 
+            text: 'Programs',
+            href: '/programs',
+          },
+          { 
             text: 'Roles',
             href: '/roles',
           },

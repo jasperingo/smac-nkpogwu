@@ -6,6 +6,7 @@ import {
   programThemeValidation, 
   programTopicValidation 
 } from '@/validations/programs-validation';
+import { findGroupById } from '@/services/group-service';
 import { createProgram } from '@/services/program-service';
 import AdminCreateProgramForm, { type FormState } from './form';
 
@@ -19,7 +20,7 @@ const validationSchema = z.object({
 export async function programCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
-  // const parentId = Number(formData.get('parentId')); // TODO: In v2 check that ID exists
+  const groupId = Number(formData.get('groupId')); // TODO: In v2 check that ID exists
   const name = formData.get('name') as string;
   const theme = formData.get('theme') as string;
   const topic = formData.get('topic') as string;
@@ -59,6 +60,7 @@ export async function programCreate(state: FormState, formData: FormData): Promi
       theme: theme.length === 0 ? null : theme,
       topic: topic.length === 0 ? null : topic,
       description: description.length === 0 ? null : description,
+      groupId: isNaN(groupId) || groupId < 1 ? null : groupId,
     });
   } catch (error) {
     console.error('Error creating program: ', error);
@@ -80,15 +82,15 @@ export async function programCreate(state: FormState, formData: FormData): Promi
   redirect(`/admin/programs/${programId}`);
 }
 
-export default async function AdminCreateProgramPage({ searchParams }: { searchParams: Promise<{ parentId?: string; }> }) {
-  // const parentId = Number((await searchParams).parentId);
+export default async function AdminCreateProgramPage({ searchParams }: { searchParams: Promise<{ groupId?: string; }> }) {
+  const groupId = Number((await searchParams).groupId);
 
-  // const group = isNaN(parentId) ? null : (await findGroupById(parentId));
+  const group = isNaN(groupId) ? null : (await findGroupById(groupId));
 
   return (
     <section className="bg-foreground p-4">
 
-      <AdminCreateProgramForm  action={programCreate} />
+      <AdminCreateProgramForm group={group} action={programCreate} />
 
     </section>
   );

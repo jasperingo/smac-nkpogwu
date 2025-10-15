@@ -16,7 +16,7 @@ export async function groupExistByName(name: string) {
   return groups.length > 0;
 }
 
-export async function findGroupById(id: number) {
+export async function findGroupById(id: number): Promise<GroupEntity | null> {
   const groups = await database.select().from(groupsTable).where(eq(groupsTable.id, id));
 
   return groups.length === 0 ? null : groups[0];
