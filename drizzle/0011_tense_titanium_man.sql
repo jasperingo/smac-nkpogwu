@@ -1,0 +1,1 @@
+ALTER TABLE `program_schedules` MODIFY COLUMN `program_id` bigint unsigned NOT NULL;

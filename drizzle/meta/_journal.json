@@ -71,6 +71,20 @@
       "when": 1760391178824,
       "tag": "0009_naive_hellcat",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1760536830080,
+      "tag": "0010_colorful_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1760536887664,
+      "tag": "0011_tense_titanium_man",
+      "breakpoints": true
     }
   ]
 }
