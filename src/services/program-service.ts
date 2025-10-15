@@ -40,6 +40,25 @@ export async function findPrograms(search: string | null, pagination: Pagination
   };
 }
 
+export async function findProgramsByUserId(userId: number, pagination: PaginationDto): Promise<PaginatedListDto<ProgramEntity>> {
+  const where = eq(programsTable.userId, userId);
+
+  const count = await database.$count(programsTable, where);
+
+  const programs = await database.select()
+    .from(programsTable)
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return {
+    data: programs,
+    totalItems: count,
+    currentPage: pagination.page,
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
 export async function findProgramsByGroupId(groupId: number, pagination: PaginationDto): Promise<PaginatedListDto<ProgramEntity>> {
   const where = eq(programsTable.groupId, groupId);
 

@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { GroupEntity } from '@/models/entity';
+import { GroupEntity, UserEntity } from '@/models/entity';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormTextAreaField from '@/components/form-textarea-field';
@@ -45,7 +45,15 @@ export const initialState: FormState = {
 };
 
 export default function AdminCreateProgramForm(
-  { group, action }: { group: GroupEntity | null; action: (state: FormState, formData: FormData) => Promise<FormState>; }
+  { 
+    user,
+    group, 
+    action
+  }: { 
+    user: UserEntity | null; 
+    group: GroupEntity | null; 
+    action: (state: FormState, formData: FormData) => Promise<FormState>; 
+  }
 ) {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, initialState);
 
@@ -57,6 +65,28 @@ export default function AdminCreateProgramForm(
 
   return (
     <ButtonForm text="Create program" isPending={isPending} action={formAction}>
+      {
+        user !== null && (
+          <>
+            <div className="mb-4 border p-2 col-span-full">
+              <SimpleDescriptionList
+                caption="User"
+                items={[
+                  { term: 'ID', details: user.id, displayRow: true },
+                  { term: 'First name', details: user.firstName, displayRow: true },
+                  { term: 'Last name', details: user.lastName, displayRow: true },
+                  { term: 'Email', details: user.emailAddress ?? '(Not set)', displayRow: true },
+                  { term: 'Phone', details: user.phoneNumber ?? '(Not set)', displayRow: true },
+                  { term: 'Membership', details: user.membershipNumber ?? '(Not set)', displayRow: true },
+                ]} 
+              />
+            </div>
+
+            <input type="hidden" name="userId" defaultValue={user.id} />
+          </>
+        )
+      }
+
       {
         group !== null && (
           <>

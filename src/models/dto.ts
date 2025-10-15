@@ -40,6 +40,7 @@ export type CreateProgramDto = Pick<ProgramEntity,
   | 'theme'
   | 'topic'
   | 'description'
+  | 'userId'
   | 'groupId'
 >;
 
