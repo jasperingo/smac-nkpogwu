@@ -1,11 +1,11 @@
 'use server'
 
-import { and, between, eq, like, or, sql } from 'drizzle-orm';
+import { and, asc, between, eq, or } from 'drizzle-orm';
 import { database } from '@/database/connection';
-import { GroupEntity, ProgramEntity, ProgramScheduleEntity, UserEntity } from '@/models/entity';
-import { groupsTable, programSchedulesTable, programsTable, usersTable } from '@/database/schema';
+import { ProgramScheduleEntity } from '@/models/entity';
+import { programSchedulesTable } from '@/database/schema';
+import { CreateProgramScheduleDto, PaginatedListDto, PaginationDto } from '@/models/dto';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
-import { CreateProgramDto, CreateProgramScheduleDto, PaginatedListDto, PaginationDto, UpdateProgramDto } from '@/models/dto';
 
 export async function programScheduleExistByStartDatetime(programId: number, startDatetime: Date) {
   const programSchedules = await database.select({ id: programSchedulesTable.id })
@@ -53,6 +53,27 @@ export async function findProgramScheduleById(id: number): Promise<ProgramSchedu
   const programSchedules = await database.select().from(programSchedulesTable).where(eq(programSchedulesTable.id, id));
 
   return programSchedules.length === 0 ? null : programSchedules[0];
+}
+
+export async function findProgramSchedulesByProgramId(
+  programId: number, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<ProgramScheduleEntity>> {
+  const count = await database.$count(programSchedulesTable, eq(programSchedulesTable.programId, programId));
+
+  const schedules = await database.select()
+    .from(programSchedulesTable)
+    .where(eq(programSchedulesTable.programId, programId))
+    .limit(pagination.pageLimit)
+    .orderBy(asc(programSchedulesTable.startDatetime))
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: schedules, 
+    totalItems: count, 
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
 }
 
 export async function createProgramSchedule(dto: CreateProgramScheduleDto) {
