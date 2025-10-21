@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import MenuList from '@/components/menu-list';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import { resolvePaginationParams } from '@/utils/pagination';
@@ -12,6 +13,9 @@ export default async function AdminProgramSchedulesPage(
 
   return (
     <section className="bg-foreground p-4">
+      
+      <MenuList items={[ { href: 'schedules/create', text: 'Add schedule' } ]} />
+
       Schedules for program: { id }
     </section>
   );
