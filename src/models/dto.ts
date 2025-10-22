@@ -1,4 +1,4 @@
-import { GroupEntity, ProgramEntity, ProgramScheduleEntity, RoleEntity, UserEntity } from './entity';
+import { GroupEntity, ProgramActivityEntity, ProgramEntity, ProgramScheduleEntity, RoleEntity, UserEntity } from './entity';
 
 export type PaginatedListDto<T> = {
   data: T[];
@@ -55,3 +55,9 @@ export type CreateProgramScheduleDto = Pick<ProgramScheduleEntity,
 >;
 
 export type UpdateProgramScheduleDto = Omit<Partial<CreateProgramScheduleDto & Pick<ProgramScheduleEntity, 'link'>>, 'programId'>;
+
+export type CreateProgramActivityDto = Pick<ProgramActivityEntity, 
+  | 'name'
+  | 'description'
+  | 'programScheduleId'
+>;

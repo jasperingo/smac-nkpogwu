@@ -76,6 +76,13 @@ export async function findProgramSchedulesByProgramId(
   };
 }
 
+export async function findAllProgramSchedulesByProgramId(programId: number): Promise<ProgramScheduleEntity[]> {
+  return database.select()
+    .from(programSchedulesTable)
+    .where(eq(programSchedulesTable.programId, programId))
+    .orderBy(asc(programSchedulesTable.startDatetime));
+}
+
 export async function createProgramSchedule(dto: CreateProgramScheduleDto) {
   const result = await database.insert(programSchedulesTable).values({ ...dto }).$returningId();
 
