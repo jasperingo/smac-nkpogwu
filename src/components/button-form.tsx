@@ -7,11 +7,13 @@ export default function ButtonForm(
     text, 
     isPending, 
     children,
+    positive = true,
     responsiveness = 'grid',
     action 
   }: { 
     text: string; 
     isPending: boolean; 
+    positive?: boolean; 
     children: React.ReactNode;
     responsiveness?: 'none' | 'grid';
     action: (formData: FormData) => Promise<void> | void | undefined; 
@@ -25,7 +27,7 @@ export default function ButtonForm(
           { children }
         </div>
 
-        <FormSubmitButton text={text} loading={isPending} />
+        <FormSubmitButton text={text} loading={isPending} positive={positive} />
 
       </fieldset>
     </form>

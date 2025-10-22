@@ -93,3 +93,11 @@ export async function updateProgramSchedule(programScheduleId: number, dto: Upda
 
   return findProgramScheduleById(programScheduleId);
 }
+
+export async function deleteProgramSchedule(programScheduleId: number) {
+  const result = await database.delete(programSchedulesTable).where(eq(programSchedulesTable.id, programScheduleId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero program schedules table rows deleted');
+  }
+}
