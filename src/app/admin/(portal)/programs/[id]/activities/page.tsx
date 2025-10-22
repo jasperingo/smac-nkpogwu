@@ -5,6 +5,7 @@ import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { findAllProgramSchedulesByProgramId } from '@/services/program-schedule-service';
+import { findProgramActivitiesByProgramScheduleId } from '@/services/program-activity-service';
 
 export default async function AdminProgramActivitiesPage(
   { params, searchParams }: Readonly<{ params: Promise<{ id: string }>; searchParams: Promise<{ sid?: string; page?: string; }>; }>
@@ -26,6 +27,8 @@ export default async function AdminProgramActivitiesPage(
       </section>
     );
   }
+
+  const activities = await findProgramActivitiesByProgramScheduleId(scheduleId, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">
@@ -60,7 +63,26 @@ export default async function AdminProgramActivitiesPage(
 
       <MenuList items={[ { href: `activities/create?sid=${scheduleId}`, text: 'Add activity' } ]} />
       
-      
+      <GenericTable
+        headings={['ID', 'Order', 'Name', 'Description', 'Actions']}
+        items={activities.data}
+        renderItem={(activity, index) => (
+          <tr key={activity.id}>
+            <td className="p-2 border">{ activity.id }</td>
+            <td className="p-2 border">{ (index * activities.currentPage) + 1 }</td>
+            <td className="p-2 border">{ activity.name }</td>
+            <td className="p-2 border">{ activity.description ?? '(Not set)' }</td>
+            <td className="p-2 border">
+              <div className="flex gap-2 flex-wrap">
+                <ActionLink href={`/admin/programs/${id}/activities/${activity.id}/update`}>Update</ActionLink>
+                <ActionLink href={`/admin/programs/${id}/activities/${activity.id}/delete`}>Delete</ActionLink>
+              </div>
+            </td>
+          </tr>
+        )}
+      />
+
+      <PaginationList path={`/admin/programs/${id}/activities`} pagination={activities} params={new Map([['sid', scheduleId.toString()]])} />
     </section>
   );
 }

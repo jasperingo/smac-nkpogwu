@@ -8,7 +8,7 @@ export default function GenericTable<T>(
     items: T[]; 
     headings: Readonly<string[]>; 
     emptyText?: string; 
-    renderItem: (item: T) => React.ReactNode; 
+    renderItem: (item: T, index: number) => React.ReactNode; 
   }>
 ) {
   return (
