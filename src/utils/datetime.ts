@@ -17,3 +17,7 @@ export function getDateInputString(date: Date) {
 
   return `${year}-${month}-${day}`;
 }
+
+export function getDatetimeInputString(datetime: Date) {
+  return datetime.toISOString().slice(0, 16);;
+}

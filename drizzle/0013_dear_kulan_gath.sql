@@ -1,0 +1,1 @@
+ALTER TABLE `program_schedules` ADD `link` varchar(255);

@@ -20,7 +20,7 @@ export default async function AdminProgramSchedulesPage(
       <MenuList items={[ { href: 'schedules/create', text: 'Add schedule' } ]} />
 
       <GenericTable
-        headings={['ID', 'Start', 'End', 'Topic', 'Actions']}
+        headings={['ID', 'Start', 'End', 'Topic', 'Link', 'Actions']}
         items={schedules.data}
         renderItem={(schedule) => (
           <tr key={schedule.id}>
@@ -28,6 +28,7 @@ export default async function AdminProgramSchedulesPage(
             <td className="p-2 border">{ schedule.startDatetime.toLocaleString() }</td>
             <td className="p-2 border">{ schedule.endDatetime.toLocaleString() }</td>
             <td className="p-2 border">{ schedule.topic ?? '(Not set)' }</td>
+            <td className="p-2 border">{ schedule.link ? <a href={schedule.link} target="_blank" className="text-blue-600">{ schedule.link }</a> : '(Not set)' }</td>
             <td className="p-2 border">
               <div className="flex gap-2 flex-wrap">
                 <ActionLink href={`/admin/programs/${id}/schedules/${schedule.id}/update`}>Update</ActionLink>

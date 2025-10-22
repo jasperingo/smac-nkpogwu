@@ -6,7 +6,7 @@ import {
   programTopicValidation 
 } from '@/validations/programs-validation';
 import AdminUpdateProgramForm, { FormState } from './form';
-import { findProgramAndUserAndGroupById, findProgramById, updateProgam } from '@/services/program-service';
+import { findProgramAndUserAndGroupById, updateProgam } from '@/services/program-service';
 
 const validationSchema = z.object({
   name: programNameValidation.optional(),

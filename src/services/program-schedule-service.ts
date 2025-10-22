@@ -1,11 +1,11 @@
 'use server'
 
-import { and, asc, between, eq, or } from 'drizzle-orm';
+import { and, asc, between, eq, or, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
 import { ProgramScheduleEntity } from '@/models/entity';
 import { programSchedulesTable } from '@/database/schema';
-import { CreateProgramScheduleDto, PaginatedListDto, PaginationDto } from '@/models/dto';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
+import { CreateProgramScheduleDto, PaginatedListDto, PaginationDto, UpdateProgramScheduleDto } from '@/models/dto';
 
 export async function programScheduleExistByStartDatetime(programId: number, startDatetime: Date) {
   const programSchedules = await database.select({ id: programSchedulesTable.id })
@@ -80,4 +80,16 @@ export async function createProgramSchedule(dto: CreateProgramScheduleDto) {
   const result = await database.insert(programSchedulesTable).values({ ...dto }).$returningId();
 
   return result[0].id;
+}
+
+export async function updateProgramSchedule(programScheduleId: number, dto: UpdateProgramScheduleDto) {
+  const result = await database.update(programSchedulesTable)
+    .set({ ...dto, updatedDatetime: sql`NOW()` })
+    .where(eq(programSchedulesTable.id, programScheduleId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero program schedules table rows updated');
+  }
+
+  return findProgramScheduleById(programScheduleId);
 }

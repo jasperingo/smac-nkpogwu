@@ -146,6 +146,7 @@ export const programSchedulesTable = mysqlTable('program_schedules', {
   endDatetime: datetime('end_datetime').notNull(),
   topic: varchar({ length: 255 }),
   description: text(),
+  link: varchar({ length: 255 }),
 }, (table) => [
   unique().on(table.programId, table.startDatetime),
   unique().on(table.programId, table.endDatetime),

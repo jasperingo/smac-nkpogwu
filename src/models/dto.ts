@@ -53,3 +53,5 @@ export type CreateProgramScheduleDto = Pick<ProgramScheduleEntity,
   | 'description'
   | 'programId'
 >;
+
+export type UpdateProgramScheduleDto = Omit<Partial<CreateProgramScheduleDto & Pick<ProgramScheduleEntity, 'link'>>, 'programId'>;
