@@ -13,12 +13,24 @@ export default async function AdminProgramActivitiesPage(
   const id = Number((await params).id);
 
   const { sid, page } = await searchParams;
-  
-  const schedules = await findAllProgramSchedulesByProgramId(id);
 
-  const scheduleId = !sid || isNaN(Number(sid)) ? (schedules[0]?.id ?? null) : Number(sid);
+  const schedules = await findAllProgramSchedulesByProgramId(id);
+  
+  const searchScheduleId = Number(sid);
+
+  const scheduleId = !isNaN(searchScheduleId) ? (schedules.find((s) => s.id === searchScheduleId)?.id ?? null) : (schedules[0]?.id ?? null);
 
   if (scheduleId === null) {
+    if (sid) {
+       return (
+        <section className="bg-foreground p-4">
+
+          <div className="font-bold">Invalid schedule ID provided: { sid }</div>
+        
+        </section>
+      );
+    }
+
     return (
       <section className="bg-foreground p-4">
 
