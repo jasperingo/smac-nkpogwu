@@ -61,3 +61,5 @@ export type CreateProgramActivityDto = Pick<ProgramActivityEntity,
   | 'description'
   | 'programScheduleId'
 >;
+
+export type UpdateProgramActivityDto = Omit<Partial<CreateProgramActivityDto>, 'programScheduleId'>;

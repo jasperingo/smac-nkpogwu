@@ -1,11 +1,11 @@
 'use server'
 
-import { and, asc, between, eq, or, sql } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
-import { ProgramActivityEntity, ProgramScheduleEntity } from '@/models/entity';
-import { programActivitiesTable, programSchedulesTable } from '@/database/schema';
+import { ProgramActivityEntity } from '@/models/entity';
+import { programActivitiesTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
-import { CreateProgramActivityDto, CreateProgramScheduleDto, PaginatedListDto, PaginationDto, UpdateProgramScheduleDto } from '@/models/dto';
+import { CreateProgramActivityDto, PaginatedListDto, PaginationDto, UpdateProgramActivityDto } from '@/models/dto';
 
 export async function programActivityExistByName(programScheduleId: number, name: string) {
   const activities = await database.select({ id: programActivitiesTable.id })
@@ -18,6 +18,12 @@ export async function programActivityExistByName(programScheduleId: number, name
     );
 
   return activities.length > 0;
+}
+
+export async function findProgramActivityById(id: number): Promise<ProgramActivityEntity | null> {
+  const activities = await database.select().from(programActivitiesTable).where(eq(programActivitiesTable.id, id));
+
+  return activities.length === 0 ? null : activities[0];
 }
 
 export async function findProgramActivitiesByProgramScheduleId(
@@ -45,4 +51,16 @@ export async function createProgramActivity(dto: CreateProgramActivityDto) {
   const result = await database.insert(programActivitiesTable).values({ ...dto }).$returningId();
 
   return result[0].id;
+}
+
+export async function updateProgramActivity(id: number, dto: UpdateProgramActivityDto) {
+  const result = await database.update(programActivitiesTable)
+    .set({ ...dto, updatedDatetime: sql`NOW()` })
+    .where(eq(programActivitiesTable.id, id));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero program activities table rows updated');
+  }
+
+  return findProgramActivityById(id);
 }

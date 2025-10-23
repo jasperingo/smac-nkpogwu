@@ -33,10 +33,10 @@ export const initialErrorState: FormState['errors'] = {
   message: null, 
   fields: { 
     startDatetime: null, 
-      endDatetime: null, 
-      topic: null,
-      description: null, 
-      link: null, 
+    endDatetime: null, 
+    topic: null,
+    description: null, 
+    link: null, 
   },
 };
 
