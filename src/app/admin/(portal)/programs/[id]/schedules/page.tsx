@@ -31,6 +31,7 @@ export default async function AdminProgramSchedulesPage(
             <td className="p-2 border">{ schedule.link ? <a href={schedule.link} target="_blank" className="text-blue-600">{ schedule.link }</a> : '(Not set)' }</td>
             <td className="p-2 border">
               <div className="flex gap-2 flex-wrap">
+                <ActionLink href={`/admin/programs/${id}/activities?sid=${schedule.id}`}>Activities</ActionLink>
                 <ActionLink href={`/admin/programs/${id}/schedules/${schedule.id}/update`}>Update</ActionLink>
                 <ActionLink href={`/admin/programs/${id}/schedules/${schedule.id}/delete`}>Delete</ActionLink>
               </div>
