@@ -64,3 +64,11 @@ export async function updateProgramActivity(id: number, dto: UpdateProgramActivi
 
   return findProgramActivityById(id);
 }
+
+export async function deleteProgramActivity(id: number) {
+  const result = await database.delete(programActivitiesTable).where(eq(programActivitiesTable.id, id));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero program activities table rows deleted');
+  }
+}

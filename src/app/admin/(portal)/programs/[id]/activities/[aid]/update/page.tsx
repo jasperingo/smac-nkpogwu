@@ -1,6 +1,6 @@
 import z from 'zod';
 import { notFound } from 'next/navigation';
-import AdminUpdateProgramScheduleForm, { FormState } from './form';
+import AdminUpdateProgramActivityForm, { FormState } from './form';
 import { findProgramActivityById, programActivityExistByName, updateProgramActivity } from '@/services/program-activity-service';
 
 const validationSchema = z.object({
@@ -103,7 +103,7 @@ export default async function AdminUpdateProgramActivityPage({ params }: Readonl
   return (
     <section className="bg-foreground p-4">
       
-      <AdminUpdateProgramScheduleForm programActivity={activity} action={programActivityUpdate} />
+      <AdminUpdateProgramActivityForm programActivity={activity} action={programActivityUpdate} />
 
     </section>
   );
