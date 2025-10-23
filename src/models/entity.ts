@@ -4,6 +4,7 @@ import {
   groupsTable, 
   groupsTablePrivacyEnum, 
   programActivitiesTable, 
+  programCoordinatorsTable, 
   programSchedulesTable, 
   programsTable, 
   roleAssigneesTable, 
@@ -31,3 +32,5 @@ export type ProgramEntity = InferSelectModel<typeof programsTable>;
 export type ProgramScheduleEntity = InferSelectModel<typeof programSchedulesTable>;
 
 export type ProgramActivityEntity = InferSelectModel<typeof programActivitiesTable>;
+
+export type ProgramCoordinatorEntity = InferSelectModel<typeof programCoordinatorsTable>;

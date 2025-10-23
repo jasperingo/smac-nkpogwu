@@ -172,3 +172,25 @@ export const programActivitiesTable = mysqlTable('program_activities', {
   }).onDelete('cascade').onUpdate('cascade'),
 ]);
 
+
+export const programCoordinatorsTable = mysqlTable('program_coordinators', {
+  id: serial().primaryKey(),
+  createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
+  updatedDatetime: datetime('updated_datetime'),
+  programScheduleId: bigint('program_schedule_id', { mode: 'number', unsigned: true }).notNull(),
+  userId: bigint('user_id', { mode: 'number', unsigned: true }),
+  role: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }),
+}, (table) => [
+  unique().on(table.programScheduleId, table.name),
+  unique().on(table.programScheduleId, table.userId),
+  foreignKey({
+    columns: [table.userId], 
+    foreignColumns: [usersTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+  foreignKey({
+    columns: [table.programScheduleId], 
+    foreignColumns: [programSchedulesTable.id] 
+  }).onDelete('cascade').onUpdate('cascade'),
+]);
+
