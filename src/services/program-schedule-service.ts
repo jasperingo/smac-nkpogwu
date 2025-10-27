@@ -55,6 +55,29 @@ export async function findProgramScheduleById(id: number): Promise<ProgramSchedu
   return programSchedules.length === 0 ? null : programSchedules[0];
 }
 
+export async function findProgramScheduleByIdAndProgramId(id: number, programId: number): Promise<ProgramScheduleEntity | null> {
+  const programSchedules = await database.select()
+    .from(programSchedulesTable)
+    .where(
+      and(
+        eq(programSchedulesTable.id, id),
+        eq(programSchedulesTable.programId, programId),
+      )
+    );
+
+  return programSchedules.length === 0 ? null : programSchedules[0];
+}
+
+export async function findFirstProgramScheduleByProgramId(programId: number): Promise<ProgramScheduleEntity | null> {
+  const programSchedules = await database.select()
+    .from(programSchedulesTable)
+    .where(eq(programSchedulesTable.programId, programId))
+    .limit(1)
+    .orderBy(asc(programSchedulesTable.startDatetime));
+
+  return programSchedules.length === 0 ? null : programSchedules[0];
+}
+
 export async function findProgramSchedulesByProgramId(
   programId: number, 
   pagination: PaginationDto

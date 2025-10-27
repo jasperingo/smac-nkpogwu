@@ -181,6 +181,7 @@ export const programCoordinatorsTable = mysqlTable('program_coordinators', {
   userId: bigint('user_id', { mode: 'number', unsigned: true }),
   role: varchar({ length: 255 }).notNull(),
   name: varchar({ length: 255 }),
+  spotlighted: boolean().notNull().default(false),
 }, (table) => [
   unique().on(table.programScheduleId, table.name),
   unique().on(table.programScheduleId, table.userId),

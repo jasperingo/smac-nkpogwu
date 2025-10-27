@@ -1,0 +1,1 @@
+ALTER TABLE `program_coordinators` ADD `spotlighted` boolean DEFAULT false NOT NULL;
