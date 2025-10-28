@@ -4,7 +4,7 @@ import { and, count, eq, getTableColumns, isNull, like, not, or, sql } from 'dri
 import { hashExecute } from '@/utils/hash';
 import { UserEntity } from '@/models/entity';
 import { database } from '@/database/connection';
-import { groupMembersTable, roleAssigneesTable, usersTable } from '@/database/schema';
+import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateUserDto, FindUsersDto, PaginatedListDto, PaginationDto, UpdateUserDto } from '@/models/dto';
 
@@ -85,6 +85,37 @@ export async function findUsersNotInGroup(dto: { groupId: number; search?: strin
   const users = await database.select({ ...getTableColumns(usersTable) })
     .from(usersTable)
     .leftJoin(groupMembersTable, eq(groupMembersTable.userId, usersTable.id))
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: users, 
+    currentPage: pagination.page, 
+    totalItems: usersCount[0].value, 
+    totalPages: calculatePaginationPages(usersCount[0].value, pagination.pageLimit) 
+  };
+}
+
+export async function findUsersNotCoordinatorInProgramSchedule(dto: { programScheduleId: number; search?: string; }, pagination: PaginationDto)
+  : Promise<PaginatedListDto<UserEntity>> {
+  
+  const where = and(
+    or(
+      isNull(programCoordinatorsTable.programScheduleId),
+      not(eq(programCoordinatorsTable.programScheduleId, dto.programScheduleId))
+    ),
+    getUsersSearchWhere(dto.search),
+  );
+  
+  const usersCount = await database.select({ value: count(usersTable.id) })
+    .from(usersTable)
+    .leftJoin(programCoordinatorsTable, eq(programCoordinatorsTable.userId, usersTable.id))
+    .where(where);
+
+  const users = await database.select({ ...getTableColumns(usersTable) })
+    .from(usersTable)
+    .leftJoin(programCoordinatorsTable, eq(programCoordinatorsTable.userId, usersTable.id))
     .where(where)
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
