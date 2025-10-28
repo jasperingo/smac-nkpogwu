@@ -2,8 +2,8 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { ProgramScheduleEntity, UserEntity } from '@/models/entity';
 import { PaginatedListDto } from '@/models/dto';
+import { ProgramScheduleEntity, UserEntity } from '@/models/entity';
 import ButtonForm from '@/components/button-form';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';

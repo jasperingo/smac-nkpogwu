@@ -1,10 +1,9 @@
 import MenuList from '@/components/menu-list';
-import ActionLink from '@/components/action-link';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import SimpleDescriptionList from '@/components/simple-description-list';
 import { resolvePaginationParams } from '@/utils/pagination';
-import { findProgramActivitiesByProgramScheduleId } from '@/services/program-activity-service';
+import { findProgramCoordinatorsAndUsersByProgramScheduleId } from '@/services/program-coordinator-service';
 import { findFirstProgramScheduleByProgramId, findProgramScheduleByIdAndProgramId } from '@/services/program-schedule-service';
 
 export default async function AdminProgramCordinatorsPage(
@@ -38,7 +37,7 @@ export default async function AdminProgramCordinatorsPage(
     );
   }
 
-  // const activities = await findProgramActivitiesByProgramScheduleId(scheduleId, resolvePaginationParams(page));
+  const coordinators = await findProgramCoordinatorsAndUsersByProgramScheduleId(schedule.id, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">
@@ -62,26 +61,29 @@ export default async function AdminProgramCordinatorsPage(
         ]} 
       />
       
-      {/* <GenericTable
-        headings={['ID', 'Order', 'Name', 'Description', 'Actions']}
-        items={activities.data}
-        renderItem={(activity, index) => (
-          <tr key={activity.id}>
-            <td className="p-2 border">{ activity.id }</td>
-            <td className="p-2 border">{ (index * activities.currentPage) + 1 }</td>
-            <td className="p-2 border">{ activity.name }</td>
-            <td className="p-2 border">{ activity.description ?? '(Not set)' }</td>
+      <GenericTable
+        headings={['ID', 'Role', 'Is Guest', 'Name', 'Spotlighted', 'Actions']}
+        items={coordinators.data}
+        renderItem={(coordinator) => (
+          <tr key={coordinator.programCoordinators.id}>
+            <td className="p-2 border">{ coordinator.programCoordinators.id }</td>
+            <td className="p-2 border">{ coordinator.programCoordinators.role }</td>
+            <td className="p-2 border">{ coordinator.users === null ? 'Yes' : 'No' }</td>
+            <td className="p-2 border">
+              { coordinator.programCoordinators.name ?? (coordinator.users ? `${coordinator.users.firstName} ${coordinator.users.lastName}` : '') }
+            </td>
+            <td className="p-2 border">{ coordinator.programCoordinators.spotlighted ? 'Yes' : 'No' }</td>
             <td className="p-2 border">
               <div className="flex gap-2 flex-wrap">
-                <ActionLink href={`/admin/programs/${id}/activities/${activity.id}/update`}>Update</ActionLink>
-                <ActionLink href={`/admin/programs/${id}/activities/${activity.id}/delete`}>Delete</ActionLink>
+                {/* <ActionLink href={`/admin/programs/${id}/coordinators/${coordinator.id}/update`}>Update</ActionLink>
+                <ActionLink href={`/admin/programs/${id}/coordinators/${coordinator.id}/delete`}>Delete</ActionLink> */}
               </div>
             </td>
           </tr>
         )}
       />
 
-      <PaginationList path={`/admin/programs/${id}/activities`} pagination={activities} params={new Map([['sid', scheduleId.toString()]])} /> */}
+      <PaginationList path={`/admin/programs/${id}/coordinators`} pagination={coordinators} params={new Map([['sid', schedule.id.toString()]])} />
     </section>
   );
 }
