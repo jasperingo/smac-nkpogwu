@@ -1,12 +1,25 @@
 'use server'
 
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
 import { ProgramCoordinatorEntity, UserEntity } from '@/models/entity';
 import { programCoordinatorsTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateProgramCoordinatorDto, PaginatedListDto, PaginationDto } from '@/models/dto';
+
+export async function programCoordinatorExistByName(programScheduleId: number, name: string) {
+  const coordinators = await database.select({ id: programCoordinatorsTable.id })
+    .from(programCoordinatorsTable)
+    .where(
+      and(
+        eq(programCoordinatorsTable.name, name),
+        eq(programCoordinatorsTable.programScheduleId, programScheduleId),
+      )
+    );
+
+  return coordinators.length > 0;
+}
 
 export async function findProgramCoordinatorsAndUsersByProgramScheduleId(
   programScheduleId: number, 
