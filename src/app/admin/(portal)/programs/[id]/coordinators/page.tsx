@@ -1,4 +1,5 @@
 import MenuList from '@/components/menu-list';
+import ActionLink from '@/components/action-link';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import SimpleDescriptionList from '@/components/simple-description-list';
@@ -74,10 +75,7 @@ export default async function AdminProgramCordinatorsPage(
             </td>
             <td className="p-2 border">{ coordinator.programCoordinators.spotlighted ? 'Yes' : 'No' }</td>
             <td className="p-2 border">
-              <div className="flex gap-2 flex-wrap">
-                {/* <ActionLink href={`/admin/programs/${id}/coordinators/${coordinator.id}/update`}>Update</ActionLink>
-                <ActionLink href={`/admin/programs/${id}/coordinators/${coordinator.id}/delete`}>Delete</ActionLink> */}
-              </div>
+              <ActionLink href={`/admin/programs/${id}/coordinators/${coordinator.programCoordinators.id}`}>Delete</ActionLink>
             </td>
           </tr>
         )}

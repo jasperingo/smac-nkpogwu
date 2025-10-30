@@ -48,7 +48,7 @@ export default function AdminDeleteProgramActivityForm(
         <SimpleDescriptionList
           items={[
             { term: 'ID', details: programActivity.id, displayRow: true },
-            { term: 'Start date', details: programActivity.name, displayRow: true },
+            { term: 'Name', details: programActivity.name, displayRow: true },
             { term: 'Description', details: programActivity.description ?? '(Not set)', displayRow: true },
           ]} 
         />
