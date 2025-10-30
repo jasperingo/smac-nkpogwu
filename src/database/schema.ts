@@ -32,6 +32,7 @@ export const usersTable = mysqlTable('users', {
   dateOfBirth: date('date_of_birth'),
   membershipStartDatetime: datetime('membership_start_datetime'),
   membershipEndDatetime: datetime('membership_end_datetime'),
+  imageUrl: varchar('image_url', { length: 255 }),
 });
 
 

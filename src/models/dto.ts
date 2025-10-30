@@ -21,7 +21,7 @@ export type CreateUserDto = Pick<UserEntity,
   | 'membershipNumber'
 >;
 
-export type UpdateUserDto = Partial<CreateUserDto>;
+export type UpdateUserDto = Partial<CreateUserDto & Pick<UserEntity, 'imageUrl'>>;
 
 export type FindUsersDto = { search?: string; } & PaginationDto;
 

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import TabList from '@/components/tab-list';
+import { UserDefaultImage } from '@/models/entity';
 import { findUserById } from '@/services/user-service';
+import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function AdminUserLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
@@ -18,7 +19,7 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
 
   return (
     <>
-      <ItemPageTopDetails id={user.id} title={`${user.firstName} ${user.lastName}`} imageUrl='/user.png' />
+      <ItemPageTopDetails id={user.id} title={`${user.firstName} ${user.lastName}`} imageUrl={user.imageUrl ?? UserDefaultImage} />
 
       <TabList 
         path={`/admin/users/${user.id}`}
@@ -26,6 +27,10 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
           { 
             text: 'Details',
             href: '',
+          },
+          { 
+            text: 'Upload image',
+            href: '/upload-image',
           },
           { 
             text: 'Groups',

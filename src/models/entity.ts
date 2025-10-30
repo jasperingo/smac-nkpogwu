@@ -13,6 +13,8 @@ import {
   usersTableGenderEnum 
 } from '@/database/schema';
 
+export const UserDefaultImage = '/images/user.png';
+
 export type UserEntity = InferSelectModel<typeof usersTable>;
 
 export const UserEntityGender = usersTableGenderEnum;
