@@ -4,6 +4,7 @@ import {
   userEmailAddressValidation, 
   userFirstNameValidation, 
   userGenderValidation, 
+  userIsAdministratorValidation, 
   userLastNameValidation, 
   userMembershipValidation, 
   userOtherNameValidation, 
@@ -13,12 +14,14 @@ import {
 import { getDateInputString } from '@/utils/datetime';
 import AdminUpdateUserForm, { type FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
+import { booleanSelectionToBoolean } from '@/components/boolean-form-select-field';
 
 const validationSchema = z.object({
   firstName: userFirstNameValidation.optional(),
   lastName: userLastNameValidation.optional(),
   otherName: userOtherNameValidation.optional(),
   gender: userGenderValidation.optional(),
+  isAdministrator: userIsAdministratorValidation.optional(),
   emailAddress: userEmailAddressValidation.optional(),
   phoneNumber: userPhoneNumberValidation.optional(),
   password: userPasswordValidation.optional(),
@@ -34,6 +37,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const lastName = formData.get('lastName') as string;
   const otherName = formData.get('otherName') as string;
   const gender = formData.get('gender') as string;
+  const isAdministrator = formData.get('isAdministrator') as string;
   const emailAddress = formData.get('emailAddress') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
   const password = formData.get('password') as string;
@@ -45,6 +49,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     lastName,
     otherName,
     gender,
+    isAdministrator,
     emailAddress,
     phoneNumber,
     password,
@@ -57,6 +62,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     lastName: lastName !== state.values.lastName || state.errors.fields.lastName !== null ? lastName : undefined,
     otherName: otherName !== state.values.otherName || state.errors.fields.otherName !== null ? otherName : undefined,
     gender: gender !== state.values.gender || state.errors.fields.gender !== null ? gender : undefined,
+    isAdministrator: isAdministrator !== state.values.isAdministrator || state.errors.fields.isAdministrator !== null ? booleanSelectionToBoolean(isAdministrator) : undefined,
     emailAddress: emailAddress !== state.values.emailAddress || state.errors.fields.emailAddress !== null ? emailAddress : undefined,
     phoneNumber: phoneNumber !== state.values.phoneNumber || state.errors.fields.phoneNumber !== null ? phoneNumber : undefined,
     password: password !== '' || state.errors.fields.password !== null ? password : undefined,
@@ -77,6 +83,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
           otherName: errors.fieldErrors.otherName?.[0] ?? null,
           gender: errors.fieldErrors.gender?.[0] ?? null,
+          isAdministrator: errors.fieldErrors.isAdministrator?.[0] ?? null,
           emailAddress: errors.fieldErrors.emailAddress?.[0] ?? null,
           phoneNumber: errors.fieldErrors.phoneNumber?.[0] ?? null,
           password: errors.fieldErrors.password?.[0] ?? null,
@@ -93,6 +100,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       lastName: lastName !== state.values.lastName ? lastName : undefined,
       otherName: otherName !== state.values.otherName ? (otherName.length === 0 ? null : otherName) : undefined,
       gender: gender !== state.values.gender ? (gender as any) : undefined,
+      isAdministrator: isAdministrator !== state.values.isAdministrator ? booleanSelectionToBoolean(isAdministrator) : undefined,
       emailAddress: emailAddress !== state.values.emailAddress ? (emailAddress.length === 0 ? null : emailAddress.toLowerCase()) : undefined,
       phoneNumber: phoneNumber !== state.values.phoneNumber ? (phoneNumber.length === 0 ? null : phoneNumber) : undefined,
       password: password !== '' ? (password.length === 0 ? null : password) : undefined,
@@ -113,6 +121,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           lastName: null, 
           otherName: null, 
           gender: null, 
+          isAdministrator: null, 
           emailAddress: null, 
           phoneNumber: null, 
           password: null,
@@ -125,6 +134,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
         lastName: user.lastName, 
         otherName: user.otherName ?? '', 
         gender: user.gender, 
+        isAdministrator: user.isAdministrator.toString(), 
         emailAddress: user.emailAddress ?? '', 
         phoneNumber: user.phoneNumber ?? '', 
         password: '',
@@ -144,6 +154,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           lastName: null, 
           otherName: null, 
           gender: null, 
+          isAdministrator: null, 
           emailAddress: null, 
           phoneNumber: null, 
           password: null,

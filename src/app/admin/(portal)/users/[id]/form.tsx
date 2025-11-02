@@ -2,10 +2,11 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { userConstraints } from '@/models/constraints';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
+import BooleanFormSelectField from '@/components/boolean-form-select-field';
+import { userConstraints } from '@/models/constraints';
 import { UserEntity, UserEntityGender } from '@/models/entity';
 import { getDateInputString, getYesterdayDateString } from '@/utils/datetime';
 
@@ -16,6 +17,7 @@ export type FormState = {
     lastName: string;
     otherName: string;
     gender: string;
+    isAdministrator: string;
     emailAddress: string; 
     phoneNumber: string; 
     password: string;
@@ -29,6 +31,7 @@ export type FormState = {
       lastName: string | null; 
       otherName: string | null; 
       gender: string | null; 
+      isAdministrator: string | null; 
       emailAddress: string | null; 
       phoneNumber: string | null; 
       password: string | null; 
@@ -45,6 +48,7 @@ export const initialErrorState: FormState['errors'] = {
     lastName: null, 
     otherName: null, 
     gender: null, 
+    isAdministrator: null, 
     emailAddress: null, 
     phoneNumber: null, 
     password: null,
@@ -64,6 +68,7 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
       lastName: user.lastName, 
       otherName: user.otherName ?? '', 
       gender: user.gender, 
+      isAdministrator: user.isAdministrator.toString(), 
       emailAddress: user.emailAddress ?? '', 
       phoneNumber: user.phoneNumber ?? '', 
       password: '',
@@ -116,6 +121,14 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
         options={UserEntityGender.map((g) => ({ value: g }))}
         value={state.values.gender} 
         error={state.errors.fields.gender} 
+      />
+
+      <BooleanFormSelectField 
+        id="administrator" 
+        name="isAdministrator" 
+        label="Is Administrator" 
+        value={state.values.isAdministrator} 
+        error={state.errors.fields.isAdministrator} 
       />
 
       <FormInputField 

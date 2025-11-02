@@ -4,9 +4,9 @@ import { and, count, eq, getTableColumns, isNull, like, not, or, sql } from 'dri
 import { hashExecute } from '@/utils/hash';
 import { UserEntity } from '@/models/entity';
 import { database } from '@/database/connection';
-import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateUserDto, FindUsersDto, PaginatedListDto, PaginationDto, UpdateUserDto } from '@/models/dto';
+import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable } from '@/database/schema';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
   const users = await database.select({ id: usersTable.id })
