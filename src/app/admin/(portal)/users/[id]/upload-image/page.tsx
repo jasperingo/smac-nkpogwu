@@ -1,6 +1,5 @@
-import path from 'path';
-import fs from 'fs/promises';
 import z from 'zod';
+import { storeImageToDisk } from '@/utils/storage';
 import AdminUploadUserImageForm, { FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
 
@@ -26,13 +25,7 @@ export async function userImageUpload(state: FormState, formData: FormData): Pro
   }
   
   try {
-    const buffer = Buffer.from(await image.arrayBuffer());
-  
-    const filename = `user-${userId}${image.name.substring(image.name.lastIndexOf('.'))}`;
-    
-    const fileUrl = '/images/' + filename;
-
-    await fs.writeFile(path.join(process.cwd(), '/public/' + fileUrl), buffer);
+    const fileUrl = await storeImageToDisk(image, 'user', userId);
 
     const user = await updateUser(userId, { imageUrl: fileUrl });
   
