@@ -13,6 +13,7 @@ export type CreateUserDto = Pick<UserEntity,
   | 'firstName' 
   | 'lastName' 
   | 'gender' 
+  | 'isAdministrator' 
   | 'otherName' 
   | 'emailAddress' 
   | 'phoneNumber' 

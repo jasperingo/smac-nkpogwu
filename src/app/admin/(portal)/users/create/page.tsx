@@ -5,6 +5,7 @@ import {
   userEmailAddressValidation, 
   userFirstNameValidation, 
   userGenderValidation, 
+  userIsAdministratorValidation, 
   userLastNameValidation, 
   userMembershipValidation, 
   userOtherNameValidation, 
@@ -13,12 +14,14 @@ import {
 } from '@/validations/user-validation';
 import { createUser } from '@/services/user-service';
 import AdminCreateUserForm, { type FormState } from './form';
+import { booleanSelectionToBoolean } from '@/components/boolean-form-select-field';
 
 const validationSchema = z.object({
   firstName: userFirstNameValidation,
   lastName: userLastNameValidation,
   otherName: userOtherNameValidation,
   gender: userGenderValidation,
+  isAdministrator: userIsAdministratorValidation,
   emailAddress: userEmailAddressValidation,
   phoneNumber: userPhoneNumberValidation,
   password: userPasswordValidation,
@@ -33,6 +36,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const lastName = formData.get('lastName') as string;
   const otherName = formData.get('otherName') as string;
   const gender = formData.get('gender') as string;
+  const isAdministrator = formData.get('isAdministrator') as string;
   const emailAddress = formData.get('emailAddress') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
   const password = formData.get('password') as string;
@@ -44,6 +48,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     lastName,
     otherName,
     gender,
+    isAdministrator,
     emailAddress,
     phoneNumber,
     password,
@@ -60,6 +65,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     phoneNumber,
     password,
     membershipNumber,
+    isAdministrator: booleanSelectionToBoolean(isAdministrator),
     dateOfBirth: dateOfBirth.length === 0 ? '' : new Date(dateOfBirth),
   });
   
@@ -75,6 +81,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
           otherName: errors.fieldErrors.otherName?.[0] ?? null,
           gender: errors.fieldErrors.gender?.[0] ?? null,
+          isAdministrator: errors.fieldErrors.isAdministrator?.[0] ?? null,
           emailAddress: errors.fieldErrors.emailAddress?.[0] ?? null,
           phoneNumber: errors.fieldErrors.phoneNumber?.[0] ?? null,
           password: errors.fieldErrors.password?.[0] ?? null,
@@ -92,6 +99,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       firstName, 
       lastName,
       gender: gender as any,
+      isAdministrator: booleanSelectionToBoolean(isAdministrator),
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
       phoneNumber: phoneNumber.length === 0 ? null : phoneNumber,
@@ -110,6 +118,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           lastName: null, 
           otherName: null, 
           gender: null, 
+          isAdministrator: null, 
           emailAddress: null, 
           phoneNumber: null, 
           password: null,

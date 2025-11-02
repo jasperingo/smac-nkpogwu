@@ -11,6 +11,8 @@ export const userOtherNameValidation = z.union([z.literal(''), z.string()]);
 
 export const userGenderValidation = z.enum(UserEntityGender);
 
+export const userIsAdministratorValidation = z.boolean();
+
 export const userEmailAddressValidation = z.union([
   z.literal(''), 
   z.email('Invalid email address')
