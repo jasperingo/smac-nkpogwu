@@ -20,6 +20,7 @@ export type CreateUserDto = Pick<UserEntity,
   | 'password' 
   | 'dateOfBirth' 
   | 'membershipNumber'
+  | 'membershipStartDatetime'
 >;
 
 export type UpdateUserDto = Partial<CreateUserDto & Pick<UserEntity, 'imageUrl'>>;

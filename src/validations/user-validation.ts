@@ -39,4 +39,9 @@ export const userDateOfBirthValidation = z.union([
   z.date('Invalid date of birth').refine((date) => date.getTime() <= Date.now(), 'Date of birth cannot be in the future')
 ]);
 
-export const userMembershipValidation = z.union([z.literal(''), z.string()]);
+export const userMembershipNumberValidation = z.union([z.literal(''), z.string()]);
+
+export const userMembershipStartDateValidation = z.union([
+  z.literal(''), 
+  z.date('Invalid membership start date').refine((date) => date.getTime() <= Date.now(), 'Membership start date cannot be in the future')
+]);

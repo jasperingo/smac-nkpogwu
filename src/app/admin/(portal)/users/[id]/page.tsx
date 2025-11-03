@@ -6,7 +6,7 @@ import {
   userGenderValidation, 
   userIsAdministratorValidation, 
   userLastNameValidation, 
-  userMembershipValidation, 
+  userMembershipNumberValidation, 
   userOtherNameValidation, 
   userPasswordValidation, 
   userPhoneNumberValidation 
@@ -26,7 +26,7 @@ const validationSchema = z.object({
   phoneNumber: userPhoneNumberValidation.optional(),
   password: userPasswordValidation.optional(),
   dateOfBirth: userDateOfBirthValidation.optional(),
-  membershipNumber: userMembershipValidation.optional(),
+  membershipNumber: userMembershipNumberValidation.optional(),
 });
 
 export async function userUpdate(state: FormState, formData: FormData): Promise<FormState> {

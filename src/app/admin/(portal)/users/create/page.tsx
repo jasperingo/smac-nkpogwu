@@ -7,14 +7,14 @@ import {
   userGenderValidation, 
   userIsAdministratorValidation, 
   userLastNameValidation, 
-  userMembershipValidation, 
+  userMembershipNumberValidation, 
+  userMembershipStartDateValidation, 
   userOtherNameValidation, 
   userPasswordValidation, 
   userPhoneNumberValidation 
 } from '@/validations/user-validation';
 import { createUser } from '@/services/user-service';
 import AdminCreateUserForm, { type FormState } from './form';
-import { booleanSelectionToBoolean } from '@/components/boolean-form-select-field';
 
 const validationSchema = z.object({
   firstName: userFirstNameValidation,
@@ -26,7 +26,12 @@ const validationSchema = z.object({
   phoneNumber: userPhoneNumberValidation,
   password: userPasswordValidation,
   dateOfBirth: userDateOfBirthValidation,
-  membershipNumber: userMembershipValidation,
+  membershipNumber: userMembershipNumberValidation,
+  membershipStartDatetime: userMembershipStartDateValidation,
+})
+.refine((dto) => dto.membershipNumber.length > 0 || dto.membershipStartDatetime === '', { 
+  path: ['membershipStartDatetime'],
+  error: 'Membership start date should only be provided when membership number is provided', 
 });
 
 export async function userCreate(state: FormState, formData: FormData): Promise<FormState> {
@@ -42,6 +47,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const password = formData.get('password') as string;
   const dateOfBirth = formData.get('dateOfBirth') as string;
   const membershipNumber = formData.get('membershipNumber') as string;
+  const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
 
   const formStateValues: FormState['values'] = { 
     firstName, 
@@ -54,7 +60,12 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     password,
     dateOfBirth,
     membershipNumber,
+    membershipStartDatetime,
   };
+  
+  const isAdministratorBoolean = isAdministrator === 'true';
+  const dateOfBirthDate = new Date(dateOfBirth);
+  const membershipStartDatetimeDate = new Date(membershipStartDatetime);
 
   const validatedResult = await validationSchema.safeParseAsync({
     firstName, 
@@ -65,8 +76,9 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     phoneNumber,
     password,
     membershipNumber,
-    isAdministrator: booleanSelectionToBoolean(isAdministrator),
-    dateOfBirth: dateOfBirth.length === 0 ? '' : new Date(dateOfBirth),
+    isAdministrator: isAdministratorBoolean,
+    dateOfBirth: dateOfBirth.length === 0 ? '' : dateOfBirthDate,
+    membershipStartDatetime: membershipStartDatetime.length === 0 ? '' : membershipStartDatetimeDate,
   });
   
   if (!validatedResult.success) {
@@ -87,6 +99,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           password: errors.fieldErrors.password?.[0] ?? null,
           dateOfBirth: errors.fieldErrors.dateOfBirth?.[0] ?? null,
           membershipNumber: errors.fieldErrors.membershipNumber?.[0] ?? null,
+          membershipStartDatetime: errors.fieldErrors.membershipStartDatetime?.[0] ?? null,
         }, 
       },
     };
@@ -99,13 +112,14 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       firstName, 
       lastName,
       gender: gender as any,
-      isAdministrator: booleanSelectionToBoolean(isAdministrator),
+      isAdministrator: isAdministratorBoolean,
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
       phoneNumber: phoneNumber.length === 0 ? null : phoneNumber,
       password: password.length === 0 ? null : password,
-      dateOfBirth: dateOfBirth.length === 0 ? null : new Date(dateOfBirth),
+      dateOfBirth: dateOfBirth.length === 0 ? null : dateOfBirthDate,
       membershipNumber: membershipNumber.length === 0 ? null : membershipNumber,
+      membershipStartDatetime: membershipStartDatetime.length === 0 ? null : membershipStartDatetimeDate,
     });
   } catch (error) {
     console.error('Error creating user: ', error);
@@ -124,6 +138,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           password: null,
           dateOfBirth: null,
           membershipNumber: null,
+          membershipStartDatetime: null,
         },
         message: error instanceof Error ? error.message : error as string, 
       },
