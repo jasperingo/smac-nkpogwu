@@ -13,7 +13,7 @@ export default function TabList({ items, path = '' }: Readonly<{ path?: string; 
           <li key={i.href}>
             <Link
               href={path + i.href}
-              className={`block py-1 px-2 font-bold bg-foreground hover:bg-gray-100 
+              className={`block py-1 px-2 font-bold text-nowrap bg-foreground hover:bg-gray-100 
                 ${urlPath.startsWith(path + i.href) && path + i.href !== path || urlPath === path + i.href ? 'border-b-4 border-primary' : ''}`}
             >{ i.text }</Link>
           </li>
