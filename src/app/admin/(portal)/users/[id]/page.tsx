@@ -7,6 +7,7 @@ import {
   userIsAdministratorValidation, 
   userLastNameValidation, 
   userMembershipNumberValidation, 
+  userMembershipStartDateValidation, 
   userOtherNameValidation, 
   userPasswordValidation, 
   userPhoneNumberValidation 
@@ -14,7 +15,6 @@ import {
 import { getDateInputString } from '@/utils/datetime';
 import AdminUpdateUserForm, { type FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
-import { booleanSelectionToBoolean } from '@/components/boolean-form-select-field';
 
 const validationSchema = z.object({
   firstName: userFirstNameValidation.optional(),
@@ -27,6 +27,11 @@ const validationSchema = z.object({
   password: userPasswordValidation.optional(),
   dateOfBirth: userDateOfBirthValidation.optional(),
   membershipNumber: userMembershipNumberValidation.optional(),
+  membershipStartDatetime: userMembershipStartDateValidation.optional(),
+})
+.refine((dto) => dto.membershipNumber === undefined || dto.membershipNumber.length > 0 || dto.membershipStartDatetime === '', { 
+  path: ['membershipStartDatetime'],
+  error: 'Membership start date should only be provided when membership number is provided', 
 });
 
 export async function userUpdate(state: FormState, formData: FormData): Promise<FormState> {
@@ -43,6 +48,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const password = formData.get('password') as string;
   const dateOfBirth = formData.get('dateOfBirth') as string;
   const membershipNumber = formData.get('membershipNumber') as string;
+  const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
 
   const formStateValues: FormState['values'] = { 
     firstName, 
@@ -55,19 +61,28 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     password,
     dateOfBirth,
     membershipNumber,
+    membershipStartDatetime,
   };
+
+  const isAdministratorBoolean = isAdministrator === 'true';
+  const dateOfBirthDate = new Date(dateOfBirth);
+  const membershipStartDatetimeDate = new Date(membershipStartDatetime);
+
+  const validateMembershipNumber = membershipNumber !== state.values.membershipNumber || state.errors.fields.membershipNumber !== null;
+  const validateMembershipStartDatetime = membershipStartDatetime !== state.values.membershipStartDatetime || state.errors.fields.membershipStartDatetime !== null;
 
   const validatedResult = await validationSchema.safeParseAsync({
     firstName: firstName !== state.values.firstName || state.errors.fields.firstName !== null ? firstName : undefined, 
     lastName: lastName !== state.values.lastName || state.errors.fields.lastName !== null ? lastName : undefined,
     otherName: otherName !== state.values.otherName || state.errors.fields.otherName !== null ? otherName : undefined,
     gender: gender !== state.values.gender || state.errors.fields.gender !== null ? gender : undefined,
-    isAdministrator: isAdministrator !== state.values.isAdministrator || state.errors.fields.isAdministrator !== null ? booleanSelectionToBoolean(isAdministrator) : undefined,
+    isAdministrator: isAdministrator !== state.values.isAdministrator || state.errors.fields.isAdministrator !== null ? isAdministratorBoolean : undefined,
     emailAddress: emailAddress !== state.values.emailAddress || state.errors.fields.emailAddress !== null ? emailAddress : undefined,
     phoneNumber: phoneNumber !== state.values.phoneNumber || state.errors.fields.phoneNumber !== null ? phoneNumber : undefined,
     password: password !== '' || state.errors.fields.password !== null ? password : undefined,
-    membershipNumber: membershipNumber !== state.values.membershipNumber || state.errors.fields.membershipNumber !== null ? membershipNumber : undefined,
-    dateOfBirth: dateOfBirth !== state.values.dateOfBirth || state.errors.fields.dateOfBirth !== null ? (dateOfBirth.length === 0 ? '' : new Date(dateOfBirth)) : undefined,
+    membershipNumber: validateMembershipNumber || validateMembershipStartDatetime ? membershipNumber : undefined,
+    dateOfBirth: dateOfBirth !== state.values.dateOfBirth || state.errors.fields.dateOfBirth !== null ? (dateOfBirth.length === 0 ? '' : dateOfBirthDate) : undefined,
+    membershipStartDatetime: validateMembershipStartDatetime || validateMembershipNumber ? (membershipStartDatetime.length === 0 ? '' : membershipStartDatetimeDate) : undefined,
   });
 
   if (!validatedResult.success) {
@@ -89,6 +104,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           password: errors.fieldErrors.password?.[0] ?? null,
           dateOfBirth: errors.fieldErrors.dateOfBirth?.[0] ?? null,
           membershipNumber: errors.fieldErrors.membershipNumber?.[0] ?? null,
+          membershipStartDatetime: errors.fieldErrors.membershipStartDatetime?.[0] ?? null,
         }, 
       },
     };
@@ -100,12 +116,13 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       lastName: lastName !== state.values.lastName ? lastName : undefined,
       otherName: otherName !== state.values.otherName ? (otherName.length === 0 ? null : otherName) : undefined,
       gender: gender !== state.values.gender ? (gender as any) : undefined,
-      isAdministrator: isAdministrator !== state.values.isAdministrator ? booleanSelectionToBoolean(isAdministrator) : undefined,
+      isAdministrator: isAdministrator !== state.values.isAdministrator ? isAdministratorBoolean : undefined,
       emailAddress: emailAddress !== state.values.emailAddress ? (emailAddress.length === 0 ? null : emailAddress.toLowerCase()) : undefined,
       phoneNumber: phoneNumber !== state.values.phoneNumber ? (phoneNumber.length === 0 ? null : phoneNumber) : undefined,
       password: password !== '' ? (password.length === 0 ? null : password) : undefined,
       membershipNumber: membershipNumber !== state.values.membershipNumber ? (membershipNumber.length === 0 ? null : membershipNumber) : undefined,
-      dateOfBirth: dateOfBirth !== state.values.dateOfBirth ? (dateOfBirth.length === 0 ? null : new Date(dateOfBirth)) : undefined,
+      dateOfBirth: dateOfBirth !== state.values.dateOfBirth ? (dateOfBirth.length === 0 ? null : dateOfBirthDate) : undefined,
+      membershipStartDatetime: membershipStartDatetime !== state.values.membershipStartDatetime ? (membershipStartDatetime.length === 0 ? null : membershipStartDatetimeDate) : undefined,
     });
  
     if (user === null) {
@@ -127,6 +144,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           password: null,
           dateOfBirth: null,
           membershipNumber: null,
+          membershipStartDatetime: null,
         },
       },
       values: {
@@ -140,6 +158,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
         password: '',
         dateOfBirth: user.dateOfBirth ? getDateInputString(user.dateOfBirth) : '',
         membershipNumber: user.membershipNumber ?? '',
+        membershipStartDatetime: user.membershipStartDatetime ? getDateInputString(user.membershipStartDatetime) : '',
       },
     };
   } catch (error) {
@@ -160,6 +179,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           password: null,
           dateOfBirth: null,
           membershipNumber: null,
+          membershipStartDatetime: null,
         },
         message: error instanceof Error ? error.message : error as string, 
       },

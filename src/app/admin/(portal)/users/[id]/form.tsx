@@ -23,6 +23,7 @@ export type FormState = {
     password: string;
     dateOfBirth: string;
     membershipNumber: string;
+    membershipStartDatetime: string;
   };
   errors: { 
     message: string | null; 
@@ -37,6 +38,7 @@ export type FormState = {
       password: string | null; 
       dateOfBirth: string | null;
       membershipNumber: string | null;
+      membershipStartDatetime: string | null;
     }; 
   };
 };
@@ -54,6 +56,7 @@ export const initialErrorState: FormState['errors'] = {
     password: null,
     dateOfBirth: null,
     membershipNumber: null,
+    membershipStartDatetime: null,
   } 
 };
 
@@ -74,6 +77,7 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
       password: '',
       dateOfBirth: user.dateOfBirth ? getDateInputString(user.dateOfBirth) : '',
       membershipNumber: user.membershipNumber ?? '',
+      membershipStartDatetime: user.membershipStartDatetime ? getDateInputString(user.membershipStartDatetime) : '',
     },
   });
 
@@ -184,6 +188,16 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
         required={false} 
         value={state.values.membershipNumber} 
         error={state.errors.fields.membershipNumber} 
+      />
+
+      <FormInputField 
+        id="Membership-start-date" 
+        name="membershipStartDatetime" 
+        label="Membership start date" 
+        type="date" 
+        required={false} 
+        value={state.values.membershipStartDatetime} 
+        error={state.errors.fields.membershipStartDatetime} 
       />
     </ButtonForm>
   );

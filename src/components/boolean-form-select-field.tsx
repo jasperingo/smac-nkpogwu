@@ -1,9 +1,5 @@
 import FormSelectField from './form-select-field';
 
-export function booleanSelectionToBoolean(selection: string) {
-  return selection === 'true';
-}
-
 export default function BooleanFormSelectField(
   { 
     id, 
