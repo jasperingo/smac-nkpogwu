@@ -176,3 +176,11 @@ export async function updateUser(userId: number, dto: UpdateUserDto) {
 
   return findUserById(userId);
 }
+
+export async function deleteUser(userId: number) {
+  const result = await database.delete(usersTable).where(eq(usersTable.id, userId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero users table rows deleted');
+  }
+}
