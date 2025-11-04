@@ -43,17 +43,16 @@ export default async function AdminProgramCordinatorsPage(
   return (
     <section className="bg-foreground p-4">
 
-      <div className="mb-4 border p-2">
-        <SimpleDescriptionList
-          caption="Program schedule"
-          items={[
-            { term: 'ID', details: schedule.id, displayRow: true },
-            { term: 'Start date', details: schedule.startDatetime.toLocaleString(), displayRow: true },
-            { term: 'End date', details: schedule.endDatetime.toLocaleString(), displayRow: true },
-            { term: 'Topic', details: schedule.topic ?? '(Not set)', displayRow: true },
-          ]} 
-        />
-      </div>
+      <SimpleDescriptionList
+        insideForm
+        caption="Program schedule"
+        items={[
+          { term: 'ID', details: schedule.id, displayRow: true },
+          { term: 'Start date', details: schedule.startDatetime.toLocaleString(), displayRow: true },
+          { term: 'End date', details: schedule.endDatetime.toLocaleString(), displayRow: true },
+          { term: 'Topic', details: schedule.topic ?? '(Not set)', displayRow: true },
+        ]} 
+      />
 
       <MenuList
         items={[ 
