@@ -1,11 +1,9 @@
 import z from 'zod';
 import { storeImageToDisk } from '@/utils/storage';
-import AdminUploadUserImageForm, { FormState } from './form';
+import { UserDefaultImage } from '@/models/entity';
 import { findUserById, updateUser } from '@/services/user-service';
-
-const validationSchema = z.file()
-  .max(10_000_000, 'The size of the provided file is too large') // 10mb
-  .refine((value) => value.type.startsWith('image/'), 'The provided file is not an image') 
+import { imageFileValidation } from '@/validations/images-validation';
+import ImageUploadForm, { FormState } from '@/components/image-upload-form';
 
 export async function userImageUpload(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
@@ -13,7 +11,7 @@ export async function userImageUpload(state: FormState, formData: FormData): Pro
   const userId = Number(formData.get('userId'));
   const image = formData.get('image') as File;
 
-  const validatedResult = validationSchema.safeParse(image);
+  const validatedResult = imageFileValidation.safeParse(image);
   
   if (!validatedResult.success) {
     const errors = z.flattenError(validatedResult.error);
@@ -52,8 +50,8 @@ export default async function AdminUserUploadImagePage({ params }: { params: Pro
   return (
     <section className="bg-foreground p-4">
 
-     <AdminUploadUserImageForm user={user} action={userImageUpload} />
-
+     <ImageUploadForm ownerId={user.id} ownerInput="userId" currentImage={user.imageUrl ?? UserDefaultImage} action={userImageUpload} />
+     
     </section>
   );
 }
