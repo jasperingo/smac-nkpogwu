@@ -42,7 +42,7 @@ export async function groupImageUpload(state: FormState, formData: FormData): Pr
   }
 }
 
-export default async function AdminUserUploadImagePage({ params }: { params: Promise<{ id: string }>;  }) {
+export default async function AdminGroupUploadImagePage({ params }: { params: Promise<{ id: string }>;  }) {
   const id = Number((await params).id);
 
   const group = (await findGroupById(id))!;

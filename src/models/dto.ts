@@ -46,7 +46,7 @@ export type CreateProgramDto = Pick<ProgramEntity,
   | 'groupId'
 >;
 
-export type UpdateProgramDto = Partial<CreateProgramDto>;
+export type UpdateProgramDto = Partial<CreateProgramDto  & Pick<ProgramEntity, 'imageUrl'>>;
 
 export type CreateProgramScheduleDto = Pick<ProgramScheduleEntity, 
   | 'startDatetime' 
