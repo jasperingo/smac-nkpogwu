@@ -6,6 +6,8 @@ import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import FormTextAreaField from '@/components/form-textarea-field';
+import SimpleDescriptionList from '@/components/simple-description-list';
+import BooleanFormSelectField from '@/components/boolean-form-select-field';
 import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
 
 export type FormState = { 
@@ -60,12 +62,16 @@ export default function AdminCreateGroupForm(
       {
         group !== null && (
           <>
-            <div className="mb-4 border p-2 col-span-full">
-              <div className="font-bold">Parent Group</div>
-              <div>ID: { group.id }</div>
-              <div>Name: { group.name }</div>
-              <div>Privacy: { group.privacy }</div>
-            </div>
+            <SimpleDescriptionList
+              insideForm
+              caption="Parent Group"
+              items={[
+                { term: 'ID', details: group.id, displayRow: true },
+                { term: 'Name', details: group.name, displayRow: true },
+                { term: 'Privacy', details: group.privacy, displayRow: true },
+                { term: 'Spotlighted', details: group.spotlighted ? 'Yes' : 'No', displayRow: true },
+              ]} 
+            />
 
             <input type="hidden" name="parentId" defaultValue={group.id} />
           </>
@@ -89,11 +95,10 @@ export default function AdminCreateGroupForm(
         error={state.errors.fields.privacy} 
       />
 
-      <FormSelectField 
+      <BooleanFormSelectField 
         id="spotlighted" 
         name="spotlighted" 
-        label="Spotlight" 
-        options={[ { value: 'true', text: 'Yes' }, { value: 'false', text: 'No' } ]}
+        label="Spotlight"
         value={state.values.spotlighted} 
         error={state.errors.fields.spotlighted} 
       />

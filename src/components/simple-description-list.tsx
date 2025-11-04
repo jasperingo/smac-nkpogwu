@@ -1,8 +1,16 @@
 export default function SimpleDescriptionList(
-  { items, caption }: Readonly<{ items: { term: string; details: string | number | boolean | React.ReactNode; displayRow?: boolean; }[]; caption?: string; }>
+  { 
+    items, 
+    caption,
+    insideForm = false,
+  }: Readonly<{ 
+    caption?: string; 
+    insideForm?: boolean; 
+    items: { term: string; details: string | number | boolean | React.ReactNode; displayRow?: boolean; }[]; 
+  }>
 ) {
   return (
-    <dl>
+    <dl className={insideForm ? 'mb-4 border p-2 col-span-full' : ''}>
       { caption && <div className="font-bold">{ caption }</div> }
 
       {

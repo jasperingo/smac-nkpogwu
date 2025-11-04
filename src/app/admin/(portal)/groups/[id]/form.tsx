@@ -6,6 +6,8 @@ import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import FormTextAreaField from '@/components/form-textarea-field';
+import SimpleDescriptionList from '@/components/simple-description-list';
+import BooleanFormSelectField from '@/components/boolean-form-select-field';
 import { GroupEntity, GroupEntityPrivacy } from '@/models/entity';
 
 export type FormState = { 
@@ -47,7 +49,7 @@ export default function AdminUpdateGroupForm(
       name: group.name, 
       privacy: group.privacy, 
       description: group.description ?? '',
-      spotlighted: group.spotlighted ? 'true' : 'false', 
+      spotlighted: group.spotlighted.toString(), 
     },
   });
 
@@ -65,12 +67,16 @@ export default function AdminUpdateGroupForm(
 
       {
         parent !== null && (
-          <div className="mb-4 border p-2 col-span-full">
-            <div className="font-bold">Parent Group</div>
-            <div>ID: { parent.id }</div>
-            <div>Name: { parent.name }</div>
-            <div>Privacy: { parent.privacy }</div>
-          </div>
+          <SimpleDescriptionList
+            insideForm
+            caption="Parent Group"
+            items={[
+              { term: 'ID', details: parent.id, displayRow: true },
+              { term: 'Name', details: parent.name, displayRow: true },
+              { term: 'Privacy', details: parent.privacy, displayRow: true },
+              { term: 'Spotlighted', details: parent.spotlighted ? 'Yes' : 'No', displayRow: true },
+            ]} 
+          />
         )
       }
 
@@ -91,11 +97,10 @@ export default function AdminUpdateGroupForm(
         error={state.errors.fields.privacy} 
       />
 
-      <FormSelectField 
+      <BooleanFormSelectField 
         id="spotlighted" 
         name="spotlighted" 
-        label="Spotlight" 
-        options={[ { value: 'true', text: 'Yes' }, { value: 'false', text: 'No' } ]}
+        label="Spotlight"
         value={state.values.spotlighted} 
         error={state.errors.fields.spotlighted} 
       />

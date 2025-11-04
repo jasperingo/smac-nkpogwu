@@ -25,11 +25,13 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
   const description = formData.get('description') as string;
 
   const formStateValues: FormState['values'] = { name, privacy, spotlighted, description };
+  
+  const spotlightedBoolean = spotlighted === 'true';
 
   const validatedResult = await validationSchema.safeParseAsync({
     name: name !== state.values.name || state.errors.fields.name !== null ? name : undefined, 
     privacy: privacy !== state.values.privacy || state.errors.fields.privacy !== null ? privacy : undefined,
-    spotlighted: spotlighted !== state.values.spotlighted || state.errors.fields.spotlighted !== null ? spotlighted === 'true' : undefined,
+    spotlighted: spotlighted !== state.values.spotlighted || state.errors.fields.spotlighted !== null ? spotlightedBoolean : undefined,
     description: description !== state.values.description || state.errors.fields.description !== null ? description : undefined,
   });
 
@@ -56,7 +58,7 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
     const group = await updateGroup(groupId, {
       name: name !== state.values.name ? name : undefined, 
       privacy: privacy !== state.values.privacy ? (privacy as any) : undefined,
-      spotlighted: spotlighted !== state.values.spotlighted ? spotlighted === 'true' : undefined,
+      spotlighted: spotlighted !== state.values.spotlighted ? spotlightedBoolean : undefined,
       description: description !== state.values.description ? (description.length === 0 ? null : description) : undefined,
     });
  
@@ -79,7 +81,7 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
         name: group.name,
         privacy: group.privacy, 
         description: group.description ?? '', 
-        spotlighted: group.spotlighted ? 'true' : 'false', 
+        spotlighted: group.spotlighted.toString(), 
       },
     };
   } catch (error) {

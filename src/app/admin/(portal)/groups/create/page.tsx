@@ -6,8 +6,8 @@ import {
   groupPrivacyValidation, 
   groupSpotlightedValidation 
 } from '@/validations/groups-validation';
-import { createGroup, findGroupById } from '@/services/group-service';
 import AdminCreateGroupForm, { type FormState } from './form';
+import { createGroup, findGroupById } from '@/services/group-service';
 
 const validationSchema = z.object({
   name: groupNameValidation,
@@ -27,11 +27,13 @@ export async function groupCreate(state: FormState, formData: FormData): Promise
 
   const formStateValues: FormState['values'] = { name, privacy, spotlighted, description };
 
+  const spotlightedBoolean = spotlighted === 'true';
+
   const validatedResult = await validationSchema.safeParseAsync({
     name, 
     privacy,
     description,
-    spotlighted: spotlighted === 'true',
+    spotlighted: spotlightedBoolean,
   });
 
   if (!validatedResult.success) {
@@ -57,7 +59,7 @@ export async function groupCreate(state: FormState, formData: FormData): Promise
     groupId = await createGroup({
       name, 
       privacy: privacy as any,
-      spotlighted: spotlighted === 'true',
+      spotlighted: spotlightedBoolean,
       parentId: isNaN(parentId) || parentId < 1 ? null : parentId,
       description: description.length === 0 ? null : description,
     });
