@@ -44,6 +44,10 @@ export default async function AdminProgramLayout({ params, children }: Readonly<
             text: 'Coordinators',
             href: '/coordinators',
           },
+          { 
+            text: 'Delete',
+            href: '/delete',
+          },
         ]} 
       />
 

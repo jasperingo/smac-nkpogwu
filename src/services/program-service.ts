@@ -135,3 +135,11 @@ export async function updateProgam(programId: number, dto: UpdateProgramDto) {
 
   return findProgramById(programId);
 }
+
+export async function deleteProgram(programId: number) {
+  const result = await database.delete(programsTable).where(eq(programsTable.id, programId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero program table rows deleted');
+  }
+}
