@@ -33,7 +33,7 @@ export default async function AdminProgramSchedulesPage(
               <div className="flex gap-2 flex-wrap">
                 <ActionLink href={`/admin/programs/${id}/activities?sid=${schedule.id}`}>Activities</ActionLink>
                 <ActionLink href={`/admin/programs/${id}/coordinators?sid=${schedule.id}`}>Coordinators</ActionLink>
-                <ActionLink href={`/admin/programs/${id}/schedules/${schedule.id}/update`}>Update</ActionLink>
+                <ActionLink href={`/admin/programs/${id}/schedules/${schedule.id}`}>Update</ActionLink>
                 <ActionLink href={`/admin/programs/${id}/schedules/${schedule.id}/delete`}>Delete</ActionLink>
               </div>
             </td>
