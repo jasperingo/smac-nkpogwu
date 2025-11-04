@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { deleteUser } from '@/services/user-service';
-import AdminDeleteUserForm, { FormState } from './form';
+import DeleteForm, { FormState } from '@/components/delete-form';
 
 export async function userDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
@@ -18,7 +18,7 @@ export async function userDelete(state: FormState, formData: FormData): Promise<
     };
   }
 
-  redirect(`/admin/users`);
+  redirect('/admin/users');
 }
 
 export default async function AdminDeleteUserPage({ params }: Readonly<{ params: Promise<{ id: string; }>; }>) {
@@ -27,7 +27,7 @@ export default async function AdminDeleteUserPage({ params }: Readonly<{ params:
   return (
     <section className="bg-foreground p-4">
       
-      <AdminDeleteUserForm userId={id} action={userDelete} />
+      <DeleteForm itemId={id} itemName="user" itemInput="userId" action={userDelete} />
 
     </section>
   );
