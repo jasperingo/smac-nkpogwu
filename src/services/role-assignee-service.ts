@@ -8,6 +8,17 @@ import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pag
 import { GroupEntity, GroupMemberEntity, RoleAssigneeEntity, RoleEntity, UserEntity } from '@/models/entity';
 import { groupMembersTable, groupsTable, roleAssigneesTable, rolesTable, usersTable } from '@/database/schema';
 
+export async function findRoleAssigneeAndUserById(id: number): Promise<{ roleAssignees: RoleAssigneeEntity;  users: UserEntity | null; } | null> {
+   const leftTable = alias(roleAssigneesTable, "roleAssignees"); // used alias so result property is roleAssignees and not role_assignees
+  
+  const assignees = await database.select()
+    .from(leftTable)
+    .leftJoin(usersTable, eq(leftTable.userId, usersTable.id))
+    .where(eq(leftTable.id, id));
+
+  return assignees.length === 0 ? null : assignees[0];
+}
+
 export async function findRoleAssigneesAndUsersByRoleId(
   roleId: number, 
   pagination: PaginationDto
@@ -103,4 +114,12 @@ export async function createRoleAssignee(roleId: number, value: { type: 'user'; 
   }).$returningId();
 
   return result[0].id;
+}
+
+export async function deleteRoleAssignee(roleAssigneeId: number) {
+  const result = await database.delete(roleAssigneesTable).where(eq(roleAssigneesTable.id, roleAssigneeId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero role assignee table rows deleted');
+  }
 }

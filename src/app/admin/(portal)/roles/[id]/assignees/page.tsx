@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import MenuList from '@/components/menu-list';
+import ActionLink from '@/components/action-link';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import { resolvePaginationParams } from '@/utils/pagination';
@@ -30,10 +30,11 @@ export default async function AdminRoleAssigneesPage(
             <td className="p-2 border">{ assignee.users?.phoneNumber ?? '(not set)' }</td>
             <td className="p-2 border">{ assignee.users?.membershipNumber ?? '(not set)' }</td>
             <td className="p-2 border">
-              <Link 
-                href={`/admin/users/${assignee.users?.id}`}
-                className="text-sm py-1 px-2 bg-primary text-on-primary hover:bg-primary-variant"
-              >Profile</Link>
+              <div className="flex gap-2 flex-wrap">
+                <ActionLink href={`/admin/users/${assignee.users?.id}`}>Profile</ActionLink>
+
+                <ActionLink href={`/admin/roles/${id}/assignees/${assignee.roleAssignees.id}`}>Delete</ActionLink>
+              </div>
             </td>
           </tr>
         )}

@@ -22,12 +22,8 @@ export async function groupMemberDelete(state: FormState, formData: FormData): P
   redirect(`/admin/groups/${groupId}/members`);
 }
 
-export default async function AdminDeleteGroupMemberPage({ params }: Readonly<{ params: Promise<{ id: string; gmid: string; }>; }>) {
-  const pathParams = await params;
-
-  const groupId = Number(pathParams.id);
-
-  const id = Number(pathParams.gmid);
+export default async function AdminDeleteGroupMemberPage({ params }: Readonly<{ params: Promise<{ gmid: string; }>; }>) {
+  const id = Number((await params).gmid);
 
   if (isNaN(id)) {
     notFound();
