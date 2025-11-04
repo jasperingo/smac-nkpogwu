@@ -33,6 +33,10 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
             href: '/upload-image',
           },
           { 
+            text: 'Roles',
+            href: '/roles',
+          },
+          { 
             text: 'Groups',
             href: '/groups',
           },
@@ -41,8 +45,8 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
             href: '/programs',
           },
           { 
-            text: 'Roles',
-            href: '/roles',
+            text: 'Program coordinations',
+            href: '/program-coordinations',
           },
         ]} 
       />
