@@ -24,11 +24,13 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
   const description = formData.get('description') as string;
 
   const formStateValues: FormState['values'] = { name, contactable, description };
+  
+  const contactableBoolean = contactable === 'true';
 
   const validatedResult = await validationSchema.safeParseAsync({
     groupId,
     name: name !== state.values.name || state.errors.fields.name !== null ? name : undefined, 
-    spotlighted: contactable !== state.values.contactable || state.errors.fields.contactable !== null ? contactable === 'true' : undefined,
+    spotlighted: contactable !== state.values.contactable || state.errors.fields.contactable !== null ? contactableBoolean : undefined,
     description: description !== state.values.description || state.errors.fields.description !== null ? description : undefined,
   });
 
@@ -52,7 +54,7 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
   try {
     const role = await updateRole(roleId, {
       name: name !== state.values.name ? name : undefined, 
-      contactable: contactable !== state.values.contactable ? contactable === 'true' : undefined,
+      contactable: contactable !== state.values.contactable ? contactableBoolean : undefined,
       description: description !== state.values.description ? (description.length === 0 ? null : description) : undefined,
     });
  
@@ -73,7 +75,7 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
       values: {
         name: role.name,
         description: role.description ?? '', 
-        contactable: role.contactable ? 'true' : 'false', 
+        contactable: role.contactable.toString(), 
       },
     };
   } catch (error) {

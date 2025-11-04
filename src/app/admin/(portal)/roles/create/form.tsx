@@ -2,11 +2,12 @@
 
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { GroupEntity } from '@/models/entity';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import FormTextAreaField from '@/components/form-textarea-field';
-import { GroupEntity } from '@/models/entity';
+import SimpleDescriptionList from '@/components/simple-description-list';
 
 export type FormState = { 
   values: { 
@@ -56,11 +57,16 @@ export default function AdminCreateRoleForm(
       {
         group !== null && (
           <>
-            <div className="mb-4 border p-2 col-span-full">
-              <div className="font-bold">Group</div>
-              <div>ID: { group.id }</div>
-              <div>Name: { group.name }</div>
-            </div>
+            <SimpleDescriptionList
+              insideForm
+              caption="Group"
+              items={[
+                { term: 'ID', details: group.id, displayRow: true },
+                { term: 'Name', details: group.name, displayRow: true },
+                { term: 'Privacy', details: group.privacy, displayRow: true },
+                { term: 'Spotlighted', details: group.spotlighted ? 'Yes' : 'No', displayRow: true },
+              ]} 
+            />
 
             <input type="hidden" name="groupId" defaultValue={group.id} />
           </>
