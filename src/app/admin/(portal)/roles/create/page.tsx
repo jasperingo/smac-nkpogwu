@@ -25,12 +25,14 @@ export async function roleCreate(state: FormState, formData: FormData): Promise<
   const description = formData.get('description') as string;
 
   const formStateValues: FormState['values'] = { name, contactable, description };
+  
+  const contactableBoolean = contactable === 'true';
 
   const validatedResult = await validationSchema.safeParseAsync({
     name, 
     groupId,
     description,
-    contactable: contactable === 'true',
+    contactable: contactableBoolean,
   });
 
   if (!validatedResult.success) {
@@ -54,8 +56,8 @@ export async function roleCreate(state: FormState, formData: FormData): Promise<
   try {
     roleId = await createRole({
       name, 
-      groupId,
-      contactable: contactable === 'true',
+      contactable: contactableBoolean,
+      groupId: isNaN(groupId) || groupId < 1 ? null : groupId,
       description: description.length === 0 ? null : description,
     });
   } catch (error) {

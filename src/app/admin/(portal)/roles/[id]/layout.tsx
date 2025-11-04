@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import TabList from '@/components/tab-list';
 import { findRoleAndGroupById } from '@/services/role-service';
+import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function AdminRoleLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
@@ -30,6 +30,10 @@ export default async function AdminRoleLayout({ params, children }: Readonly<{ p
           { 
             text: 'Assignees',
             href: '/assignees',
+          },
+          { 
+            text: 'Delete',
+            href: '/delete',
           },
         ]} 
       />

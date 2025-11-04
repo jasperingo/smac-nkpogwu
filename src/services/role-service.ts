@@ -106,3 +106,13 @@ export async function updateRole(roleId: number, dto: UpdateRoleDto) {
 
   return findRoleById(roleId);
 }
+
+
+export async function deleteRole(roleId : number) {
+  const result = await database.delete(rolesTable).where(eq(rolesTable.id, roleId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero roles table rows deleted');
+  }
+}
+
