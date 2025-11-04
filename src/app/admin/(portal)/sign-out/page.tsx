@@ -13,7 +13,7 @@ export async function adminSignOut(state: any, formData: FormData) {
 export default async function AdminSignOutPage() {
 
   return (
-    <section className="bg-foreground p-4 md:w-96 md:mx-auto">
+    <section className="bg-foreground p-4">
 
       <AdminSignOutForm action={adminSignOut} />
       
