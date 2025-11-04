@@ -5,11 +5,11 @@ import { toast } from 'react-toastify';
 import { PaginatedListDto } from '@/models/dto';
 import { ProgramScheduleEntity, UserEntity } from '@/models/entity';
 import ButtonForm from '@/components/button-form';
-import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import SimpleDescriptionList from '@/components/simple-description-list';
+import FormRadioButtonsGroup from '@/components/form-radio-buttons-group';
 
 export type FormState = {
   values: { 
@@ -97,28 +97,21 @@ export default function AdminCreateProgramCoordinatorForm(
         error={state.errors.fields.spotlighted} 
       />
 
-      <GenericTable
-        headings={[ 'Select', 'ID', 'Name', 'Email', 'Phone', 'Membership' ]}
-        items={users.data}
-        renderItem={(user) => (
-          <tr key={user.id}>
-            <td className="p-2 border">
-              <input 
-                type="radio" 
-                name="userId" 
-                value={user.id} 
-                defaultChecked={user.id === state.values.userId} 
-                className="w-6 h-6" 
-                required 
-              />
-            </td>
-            <td className="p-2 border">{ user.id }</td>
-            <td className="p-2 border">{ user.firstName } { user.lastName }</td>
-            <td className="p-2 border">{ user.emailAddress ?? '(not set)' }</td>
-            <td className="p-2 border">{ user.phoneNumber ?? '(not set)' }</td>
-            <td className="p-2 border">{ user.membershipNumber ?? '(not set)' }</td>
-          </tr>
-        )}
+      <FormRadioButtonsGroup
+        name="userId"
+        value={state.values.userId}
+        buttons={users.data.map((user) => ({ 
+          value: user.id, 
+          label: (
+            <>
+              <div>ID: { user.id }</div>
+              <div>Name: { user.firstName } { user.lastName }</div>
+              <div>Email: { user.emailAddress ?? '(not set)' }</div>
+              <div>Phone: { user.phoneNumber ?? '(not set)' }</div>
+              <div>Membership: { user.membershipNumber ?? '(not set)' }</div>
+            </>
+          ) 
+        }))}
       />
 
       <PaginationList 

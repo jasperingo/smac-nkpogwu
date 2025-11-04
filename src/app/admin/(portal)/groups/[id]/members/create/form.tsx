@@ -5,8 +5,8 @@ import { toast } from 'react-toastify';
 import { UserEntity } from '@/models/entity';
 import { PaginatedListDto } from '@/models/dto';
 import ButtonForm from '@/components/button-form';
-import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
+import FormRadioButtonsGroup from '@/components/form-radio-buttons-group';
 
 export type FormState = { 
   value: number;
@@ -43,28 +43,21 @@ export default function AdminCreateGroupMemberForm(
     <ButtonForm text="Add group member" isPending={isPending} responsiveness="none" action={formAction}>
       <input type="hidden" name="groupId" defaultValue={groupId} />
 
-      <GenericTable
-        headings={[ 'Select', 'ID', 'Name', 'Email', 'Phone', 'Membership' ]}
-        items={users.data}
-        renderItem={(user) => (
-          <tr key={user.id}>
-            <td className="p-2 border">
-              <input 
-                type="radio" 
-                name="userId" 
-                value={user.id} 
-                defaultChecked={user.id === state.value} 
-                className="w-6 h-6" 
-                required 
-              />
-            </td>
-            <td className="p-2 border">{ user.id }</td>
-            <td className="p-2 border">{ user.firstName } { user.lastName }</td>
-            <td className="p-2 border">{ user.emailAddress ?? '(not set)' }</td>
-            <td className="p-2 border">{ user.phoneNumber ?? '(not set)' }</td>
-            <td className="p-2 border">{ user.membershipNumber ?? '(not set)' }</td>
-          </tr>
-        )}
+      <FormRadioButtonsGroup
+        name="userId"
+        value={state.value}
+        buttons={users.data.map((user) => ({ 
+          value: user.id, 
+          label: (
+            <>
+              <div>ID: { user.id }</div>
+              <div>Name: { user.firstName } { user.lastName }</div>
+              <div>Email: { user.emailAddress ?? '(not set)' }</div>
+              <div>Phone: { user.phoneNumber ?? '(not set)' }</div>
+              <div>Membership: { user.membershipNumber ?? '(not set)' }</div>
+            </>
+          ) 
+        }))}
       />
 
       <PaginationList path={`/admin/groups/${groupId}/members/create`} pagination={users} params={new Map([['search', search]])} />
