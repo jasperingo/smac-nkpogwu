@@ -18,8 +18,6 @@ const validationSchema = z.object({
 export async function adminSignIn(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
-  await new Promise((resolve) => setTimeout(resolve, 2000)); // TODO: remove
-
   const identifier = formData.get('identifier') as string;
   const password = formData.get('password') as string;
  

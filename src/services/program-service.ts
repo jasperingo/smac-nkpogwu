@@ -7,6 +7,10 @@ import { groupsTable, programsTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateProgramDto, PaginatedListDto, PaginationDto, UpdateProgramDto } from '@/models/dto';
 
+export async function countAllPrograms() {
+  return database.$count(programsTable);
+}
+
 export async function findProgramById(id: number): Promise<ProgramEntity | null> {
   const programs = await database.select().from(programsTable).where(eq(programsTable.id, id));
 

@@ -23,6 +23,10 @@ export async function roleExistByNameAndGroupId(name: string, groupId: number) {
   return roles.length > 0;
 }
 
+export async function countAllRoles() {
+  return database.$count(rolesTable);
+}
+
 export async function findRoleById(id: number): Promise<RoleEntity | null> {
   const roles = await database.select().from(rolesTable).where(eq(rolesTable.id, id));
 

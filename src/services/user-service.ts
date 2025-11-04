@@ -24,6 +24,10 @@ export async function userExistByEmailAddress(emailAddress: string) {
   return users.length > 0;
 }
 
+export async function countAllUsers() {
+  return database.$count(usersTable);
+}
+
 export async function findUserById(id: number): Promise<UserEntity | null> {
   const users = await database.select().from(usersTable).where(eq(usersTable.id, id));
 
