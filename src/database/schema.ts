@@ -47,6 +47,7 @@ export const groupsTable = mysqlTable('groups', {
   description: text(),
   privacy: mysqlEnum(groupsTablePrivacyEnum).notNull().default(groupsTablePrivacyEnum[0]),
   spotlighted: boolean().notNull().default(false),
+  imageUrl: varchar('image_url', { length: 255 }),
 }, (table) => [
   foreignKey({
     columns: [table.parentId], 
@@ -126,6 +127,7 @@ export const programsTable = mysqlTable('programs', {
   theme: varchar({ length: 255 }),
   topic: varchar({ length: 255 }),
   description: text(),
+  imageUrl: varchar('image_url', { length: 255 }),
 }, (table) => [
   foreignKey({
     columns: [table.groupId], 

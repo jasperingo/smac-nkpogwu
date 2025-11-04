@@ -19,6 +19,8 @@ export type UserEntity = InferSelectModel<typeof usersTable>;
 
 export const UserEntityGender = usersTableGenderEnum;
 
+export const GroupDefaultImage = '/images/group.png';
+
 export type GroupEntity = InferSelectModel<typeof groupsTable>;
 
 export const GroupEntityPrivacy = groupsTablePrivacyEnum;

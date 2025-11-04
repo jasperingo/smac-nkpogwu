@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import TabList from '@/components/tab-list';
+import { GroupDefaultImage } from '@/models/entity';
 import { findGroupById } from '@/services/group-service';
+import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function AdminGroupLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
@@ -18,7 +19,7 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
 
   return (
     <>
-      <ItemPageTopDetails id={group.id} title={group.name} imageUrl='/group.png' />
+      <ItemPageTopDetails id={group.id} title={group.name} imageUrl={group.imageUrl ?? GroupDefaultImage} />
       
       <TabList 
         path={`/admin/groups/${group.id}`}
@@ -26,6 +27,10 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
           { 
             text: 'Details',
             href: '',
+          },
+          { 
+            text: 'Upload image',
+            href: '/upload-image',
           },
           { 
             text: 'Members',

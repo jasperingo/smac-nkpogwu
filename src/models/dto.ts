@@ -29,7 +29,7 @@ export type FindUsersDto = { search?: string; } & PaginationDto;
 
 export type CreateGroupDto = Pick<GroupEntity, 'name' | 'privacy' | 'spotlighted' | 'description' | 'parentId'>;
 
-export type UpdateGroupDto = Omit<Partial<CreateGroupDto>, 'parentId'>;
+export type UpdateGroupDto = Omit<Partial<CreateGroupDto & Pick<GroupEntity, 'imageUrl'>>, 'parentId'>;
 
 export type FindGroupsDto = { search?: string; } & PaginationDto;
 
