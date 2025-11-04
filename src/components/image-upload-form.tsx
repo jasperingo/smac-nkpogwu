@@ -71,7 +71,7 @@ export default function ImageUploadForm(
         height="64" 
         alt={`${ownerId} image`} 
         src={imageUrl} 
-        className="block mx-auto mb-2 border border-gray-400 rounded-full md:w-24 md:h-24" 
+        className="block w-24 h-24 mx-auto mb-2 border border-gray-400 rounded-full" 
       />
 
       <input 

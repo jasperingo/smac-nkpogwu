@@ -7,13 +7,14 @@ import {
   LogOut, 
   Menu, 
   Shapes, 
+  UserRoundCheck, 
   Users, 
   X 
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Session } from '@/utils/session';
+import { UserEntity } from '@/models/entity';
 
 const navItems = [
   {
@@ -48,7 +49,7 @@ const navItems = [
   },
 ];
 
-export default function AdminLayoutHeader({ session }: Readonly<{ session: Session | null; }>) {
+export default function AdminLayoutHeader({ user }: Readonly<{ user: UserEntity | null; }>) {
   const path = usePathname();
 
   const [showNav, setShowNav] = useState(false);
@@ -59,18 +60,34 @@ export default function AdminLayoutHeader({ session }: Readonly<{ session: Sessi
     <>
       <header className="fixed top-0 left-0 w-full bg-foreground border-b"> 
         <div className="container mx-auto p-4 flex gap-4 items-center">
-          { session && <button className="text-primary hover:bg-primary-variant lg:hidden" onClick={toggleNav}>
-            <Menu size={32} />
-            <span className="sr-only">Optn side navigation</span>
-          </button> }
+          { 
+            user && (
+              <button className="text-primary hover:bg-primary-variant lg:hidden" onClick={toggleNav}>
+                <Menu size={32} />
+                <span className="sr-only">Optn side navigation</span>
+              </button> 
+            )
+          }
 
           <div className="w-8 h-8 bg-orange-500"></div>
-          <h1 className="font-bold text-primary text-xl sm:hidden">SMAC</h1>
-          <h1 className="font-bold text-primary text-xl hidden sm:block md:text-3xl">ST Matthew's Anglican Church</h1>
+          <h1 className="flex-grow font-bold text-primary text-xl sm:hidden">SMAC</h1>
+          <h1 className="flex-grow font-bold text-primary text-xl hidden sm:block md:text-3xl">ST Matthew's Anglican Church</h1>
+
+          { 
+            user && (
+              <Link 
+                href={`/admin/users/${user.id}`}
+                className="flex gap-2 items-center p-1 text-primary hover:bg-gray-400"
+              >
+                <UserRoundCheck size={32} />
+                <span className="font-bold sr-only md:not-sr-only">{ user.title } { user.firstName } { user.lastName }</span>
+              </Link> 
+            )
+          }
         </div>
       </header>
 
-      { session && <>
+      { user && <>
         <div className={`fixed w-full left-0 top-0 h-full bg-color-on-surface/[.6] lg:hidden ${!showNav && 'hidden'}`}></div>
 
         <nav

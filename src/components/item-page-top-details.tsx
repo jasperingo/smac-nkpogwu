@@ -10,7 +10,7 @@ export default function ItemPageTopDetails({ title, id, imageUrl, imageAlt }: Re
             alt={imageAlt ?? `${title} image`} 
             width="64" 
             height="64" 
-            className="block mx-auto mb-2 border border-gray-400 rounded-full md:m-0 md:w-24 md:h-24" 
+            className="block w-24 h-24 mx-auto mb-2 border border-gray-400 rounded-full md:m-0" 
           />
         )
       }

@@ -29,7 +29,7 @@ export default async function AdminPortalLayout({ children }: Readonly<{ childre
     <div className="p-4">
       <Breadcrumbs excludeRoot />
       
-      {children}
+      { children }
     </div>
   );
 }
