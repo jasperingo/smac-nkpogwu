@@ -84,3 +84,12 @@ export async function updateGroup(groupId: number, dto: UpdateGroupDto) {
 
   return findGroupById(groupId);
 }
+
+export async function deleteGroup(groupId: number) {
+  const result = await database.delete(groupsTable).where(eq(groupsTable.id, groupId));
+
+  if (result[0].affectedRows < 1) {
+    throw new Error('Zero groups table rows deleted');
+  }
+}
+
