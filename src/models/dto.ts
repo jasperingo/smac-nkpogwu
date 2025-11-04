@@ -10,6 +10,7 @@ export type PaginatedListDto<T> = {
 export type PaginationDto = { page: number; pageLimit: number; };
 
 export type CreateUserDto = Pick<UserEntity, 
+  | 'title' 
   | 'firstName' 
   | 'lastName' 
   | 'gender' 
@@ -25,13 +26,13 @@ export type CreateUserDto = Pick<UserEntity,
 
 export type UpdateUserDto = Partial<CreateUserDto & Pick<UserEntity, 'imageUrl'>>;
 
-export type FindUsersDto = { search?: string; } & PaginationDto;
+export type FindUsersDto = { search?: string; };
 
 export type CreateGroupDto = Pick<GroupEntity, 'name' | 'privacy' | 'spotlighted' | 'description' | 'parentId'>;
 
 export type UpdateGroupDto = Omit<Partial<CreateGroupDto & Pick<GroupEntity, 'imageUrl'>>, 'parentId'>;
 
-export type FindGroupsDto = { search?: string; } & PaginationDto;
+export type FindGroupsDto = { search?: string; };
 
 export type CreateRoleDto = Pick<RoleEntity, 'name' | 'contactable' | 'description' | 'groupId'>;
 

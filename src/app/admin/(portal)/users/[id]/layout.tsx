@@ -19,7 +19,11 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
 
   return (
     <>
-      <ItemPageTopDetails id={user.id} title={`${user.firstName} ${user.lastName}`} imageUrl={user.imageUrl ?? UserDefaultImage} />
+      <ItemPageTopDetails 
+        id={user.id} 
+        imageUrl={user.imageUrl ?? UserDefaultImage} 
+        title={`${user.title ?? ''} ${user.firstName} ${user.lastName} ${user.otherName ?? ''}`} 
+      />
 
       <TabList 
         path={`/admin/users/${user.id}`}

@@ -12,6 +12,7 @@ import BooleanFormSelectField from '@/components/boolean-form-select-field';
 
 export type FormState = { 
   values: { 
+    title: string; 
     firstName: string; 
     lastName: string;
     otherName: string;
@@ -27,6 +28,7 @@ export type FormState = {
   errors: { 
     message: string | null; 
     fields: { 
+      title: string | null; 
       firstName: string | null; 
       lastName: string | null; 
       otherName: string | null; 
@@ -44,6 +46,7 @@ export type FormState = {
 
 export const initialState: FormState = { 
   values: { 
+    title: '', 
     firstName: '', 
     lastName: '', 
     otherName: '', 
@@ -59,6 +62,7 @@ export const initialState: FormState = {
   errors: { 
     message: null, 
     fields: { 
+      title: null, 
       firstName: null, 
       lastName: null, 
       otherName: null, 
@@ -87,6 +91,15 @@ export default function AdminCreateUserForm({ action }: { action: (state: FormSt
 
   return (
     <ButtonForm text="Create user" isPending={isPending} action={formAction}>
+
+      <FormInputField 
+        id="title" 
+        name="title" 
+        label="Title" 
+        required={false}
+        value={state.values.title} 
+        error={state.errors.fields.title} 
+      />
 
       <FormInputField 
         id="first-name" 

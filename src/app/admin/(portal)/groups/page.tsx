@@ -9,7 +9,7 @@ import { resolvePaginationParams } from '@/utils/pagination';
 export default async function AdminGroupsPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
   const { page, search } = await searchParams;
 
-  const groups = await findGroups({ ...resolvePaginationParams(page), search: search?.length === 0 ? undefined : search });
+  const groups = await findGroups({ search: search?.length === 0 ? undefined : search }, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">

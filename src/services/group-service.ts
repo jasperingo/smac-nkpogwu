@@ -33,7 +33,7 @@ export async function findGroupAndParentById(id: number) {
   return groups.length === 0 ? null : groups[0];
 }
 
-export async function findGroups(dto: FindGroupsDto): Promise<PaginatedListDto<GroupEntity>> {
+export async function findGroups(dto: FindGroupsDto, pagination: PaginationDto): Promise<PaginatedListDto<GroupEntity>> {
   const where =  dto.search === undefined 
     ? undefined 
     : (
@@ -49,10 +49,15 @@ export async function findGroups(dto: FindGroupsDto): Promise<PaginatedListDto<G
   const groups = await database.select()
     .from(groupsTable)
     .where(where)
-    .limit(dto.pageLimit)
-    .offset(calculatePaginationOffset(dto.page, dto.pageLimit));
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
-  return { data: groups, currentPage: dto.page, totalItems: count, totalPages: calculatePaginationPages(count, dto.pageLimit) };
+  return { 
+    data: groups, 
+    totalItems: count,
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
 }
 
 export async function findGroupsByParentId(parentId: number, pagination: PaginationDto): Promise<PaginatedListDto<GroupEntity>> {

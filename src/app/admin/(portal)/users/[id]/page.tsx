@@ -10,13 +10,15 @@ import {
   userMembershipStartDateValidation, 
   userOtherNameValidation, 
   userPasswordValidation, 
-  userPhoneNumberValidation 
+  userPhoneNumberValidation, 
+  userTitleValidation
 } from '@/validations/user-validation';
 import { getDateInputString } from '@/utils/datetime';
 import AdminUpdateUserForm, { type FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
 
 const validationSchema = z.object({
+  title: userTitleValidation.optional(),
   firstName: userFirstNameValidation.optional(),
   lastName: userLastNameValidation.optional(),
   otherName: userOtherNameValidation.optional(),
@@ -38,6 +40,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   'use server'
 
   const userId = Number(formData.get('userId'));
+  const title = formData.get('title') as string;
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
   const otherName = formData.get('otherName') as string;
@@ -51,6 +54,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
 
   const formStateValues: FormState['values'] = { 
+    title,
     firstName, 
     lastName,
     otherName,
@@ -72,6 +76,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const validateMembershipStartDatetime = membershipStartDatetime !== state.values.membershipStartDatetime || state.errors.fields.membershipStartDatetime !== null;
 
   const validatedResult = await validationSchema.safeParseAsync({
+    title: title !== state.values.title || state.errors.fields.title !== null ? title : undefined,
     firstName: firstName !== state.values.firstName || state.errors.fields.firstName !== null ? firstName : undefined, 
     lastName: lastName !== state.values.lastName || state.errors.fields.lastName !== null ? lastName : undefined,
     otherName: otherName !== state.values.otherName || state.errors.fields.otherName !== null ? otherName : undefined,
@@ -94,6 +99,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       errors: { 
         message: null, 
         fields: {
+          title: errors.fieldErrors.title?.[0] ?? null,
           firstName: errors.fieldErrors.firstName?.[0] ?? null,
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
           otherName: errors.fieldErrors.otherName?.[0] ?? null,
@@ -114,6 +120,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     const user = await updateUser(userId, {
       firstName: firstName !== state.values.firstName ? firstName : undefined, 
       lastName: lastName !== state.values.lastName ? lastName : undefined,
+      title: title !== state.values.title ? (title.length === 0 ? null : title) : undefined,
       otherName: otherName !== state.values.otherName ? (otherName.length === 0 ? null : otherName) : undefined,
       gender: gender !== state.values.gender ? (gender as any) : undefined,
       isAdministrator: isAdministrator !== state.values.isAdministrator ? isAdministratorBoolean : undefined,
@@ -134,6 +141,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       errors: { 
         message: null, 
         fields: { 
+          title: null, 
           firstName: null, 
           lastName: null, 
           otherName: null, 
@@ -148,6 +156,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
         },
       },
       values: {
+        title: user.title ?? '',
         firstName: user.firstName,
         lastName: user.lastName, 
         otherName: user.otherName ?? '', 
@@ -169,6 +178,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       values: formStateValues,
       errors: { 
         fields: {
+          title: null, 
           firstName: null, 
           lastName: null, 
           otherName: null, 

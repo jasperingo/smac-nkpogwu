@@ -7,6 +7,8 @@ export const userFirstNameValidation = z.string().nonempty('This field is requir
 
 export const userLastNameValidation = z.string().nonempty('This field is required');
 
+export const userTitleValidation = z.union([z.literal(''), z.string()]);
+
 export const userOtherNameValidation = z.union([z.literal(''), z.string()]);
 
 export const userGenderValidation = z.enum(UserEntityGender);

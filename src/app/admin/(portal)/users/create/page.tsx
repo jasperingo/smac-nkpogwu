@@ -11,12 +11,14 @@ import {
   userMembershipStartDateValidation, 
   userOtherNameValidation, 
   userPasswordValidation, 
-  userPhoneNumberValidation 
+  userPhoneNumberValidation, 
+  userTitleValidation
 } from '@/validations/user-validation';
 import { createUser } from '@/services/user-service';
 import AdminCreateUserForm, { type FormState } from './form';
 
 const validationSchema = z.object({
+  title: userTitleValidation,
   firstName: userFirstNameValidation,
   lastName: userLastNameValidation,
   otherName: userOtherNameValidation,
@@ -37,6 +39,7 @@ const validationSchema = z.object({
 export async function userCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
+  const title = formData.get('title') as string;
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
   const otherName = formData.get('otherName') as string;
@@ -50,6 +53,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
 
   const formStateValues: FormState['values'] = { 
+    title,
     firstName, 
     lastName,
     otherName,
@@ -68,6 +72,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const membershipStartDatetimeDate = new Date(membershipStartDatetime);
 
   const validatedResult = await validationSchema.safeParseAsync({
+    title,
     firstName, 
     lastName,
     otherName,
@@ -89,6 +94,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       errors: { 
         message: null, 
         fields: {
+          title: errors.fieldErrors.title?.[0] ?? null,
           firstName: errors.fieldErrors.firstName?.[0] ?? null,
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
           otherName: errors.fieldErrors.otherName?.[0] ?? null,
@@ -113,6 +119,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       lastName,
       gender: gender as any,
       isAdministrator: isAdministratorBoolean,
+      title: title.length === 0 ? null : title,
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
       phoneNumber: phoneNumber.length === 0 ? null : phoneNumber,
@@ -128,6 +135,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       values: formStateValues,
       errors: { 
         fields: { 
+          title: null, 
           firstName: null, 
           lastName: null, 
           otherName: null, 

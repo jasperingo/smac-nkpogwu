@@ -13,6 +13,7 @@ import { getDateInputString, getYesterdayDateString } from '@/utils/datetime';
 export type FormState = { 
   success: boolean;
   values: { 
+    title: string; 
     firstName: string; 
     lastName: string;
     otherName: string;
@@ -28,6 +29,7 @@ export type FormState = {
   errors: { 
     message: string | null; 
     fields: { 
+      title: string | null; 
       firstName: string | null; 
       lastName: string | null; 
       otherName: string | null; 
@@ -46,6 +48,7 @@ export type FormState = {
 export const initialErrorState: FormState['errors'] = { 
   message: null, 
   fields: { 
+    title: null, 
     firstName: null, 
     lastName: null, 
     otherName: null, 
@@ -67,6 +70,7 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
     success: false,
     errors: initialErrorState,
     values: { 
+      title: user.title ?? '', 
       firstName: user.firstName, 
       lastName: user.lastName, 
       otherName: user.otherName ?? '', 
@@ -92,6 +96,15 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
   return (
     <ButtonForm text="Update user" isPending={isPending} action={formAction}>
       <input type="hidden" name="userId" defaultValue={user.id} />
+
+      <FormInputField 
+        id="title" 
+        name="title" 
+        label="Title" 
+        required={false}
+        value={state.values.title} 
+        error={state.errors.fields.title} 
+      />
 
       <FormInputField 
         id="first-name" 

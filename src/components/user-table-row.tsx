@@ -7,7 +7,7 @@ export default function UserTableRow({ user }: { user: UserEntity }) {
   return (
      <tr>
        <td className="p-2 border">{ user.id }</td>
-        <td className="p-2 border">{ user.firstName } { user.lastName }</td>
+        <td className="p-2 border">{ user.title } { user.firstName } { user.lastName }</td>
         <td className="p-2 border">{ user.emailAddress ?? '(not set)' }</td>
         <td className="p-2 border">{ user.phoneNumber ?? '(not set)' }</td>
         <td className="p-2 border">{ user.membershipNumber ?? '(not set)' }</td>

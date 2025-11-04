@@ -54,7 +54,7 @@ function getUsersSearchWhere(search?: string) {
       );
 }
 
-export async function findUsers(dto: FindUsersDto): Promise<PaginatedListDto<UserEntity>> {
+export async function findUsers(dto: FindUsersDto, pagination: PaginationDto): Promise<PaginatedListDto<UserEntity>> {
   const where = getUsersSearchWhere(dto.search);
 
   const count = await database.$count(usersTable, where);
@@ -62,10 +62,15 @@ export async function findUsers(dto: FindUsersDto): Promise<PaginatedListDto<Use
   const users = await database.select()
     .from(usersTable)
     .where(where)
-    .limit(dto.pageLimit)
-    .offset(calculatePaginationOffset(dto.page, dto.pageLimit));
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
-  return { data: users, currentPage: dto.page, totalItems: count, totalPages: calculatePaginationPages(count, dto.pageLimit) };
+  return { 
+    data: users, 
+    totalItems: count, 
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
 }
 
 export async function findUsersNotInGroup(dto: { groupId: number; search?: string; }, pagination: PaginationDto): Promise<PaginatedListDto<UserEntity>> {
