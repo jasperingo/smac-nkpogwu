@@ -1,8 +1,8 @@
 import MenuList from '@/components/menu-list';
+import ActionLink from '@/components/action-link';
 import GenericTable from '@/components/generic-table';
 import PaginationList from '@/components/pagination-list';
 import { resolvePaginationParams } from '@/utils/pagination';
-import UserTableRow, { userTableHeadings } from '@/components/user-table-row';
 import { findGroupMembersAndUsersByGroupId } from '@/services/group-member-service';
 
 export default async function AdminGroupMembersPage(
@@ -20,9 +20,24 @@ export default async function AdminGroupMembersPage(
       <MenuList items={[ { href: 'members/create', text: 'Add member' } ]} />
 
       <GenericTable
-        headings={userTableHeadings}
+        headings={[ 'ID', 'Name', 'Email', 'Phone', 'Membership', 'Action' ]}
         items={members.data}
-        renderItem={(member) => <UserTableRow key={member.groupMembers.id} user={member.users!} />}
+        renderItem={(member) => (
+          <tr key={member.groupMembers.id}>
+            <td className="p-2 border">{ member.groupMembers.id }</td>
+            <td className="p-2 border">{ member.users?.firstName } { member.users?.lastName }</td>
+            <td className="p-2 border">{ member.users?.emailAddress ?? '(not set)' }</td>
+            <td className="p-2 border">{ member.users?.phoneNumber ?? '(not set)' }</td>
+            <td className="p-2 border">{ member.users?.membershipNumber ?? '(not set)' }</td>
+            <td className="p-2 border">
+              <div className="flex gap-2 flex-wrap">
+                <ActionLink href={`/admin/users/${member.users?.id}`}>Profile</ActionLink>
+
+                <ActionLink href={`/admin/groups/${id}/members/${member.groupMembers.id}`}>Delete</ActionLink>
+              </div>
+            </td>
+          </tr>
+        )}
       />
 
       <PaginationList path={`/admin/groups/${id}/members`} pagination={members} />
