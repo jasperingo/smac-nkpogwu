@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function TabList({ items, path = '' }: Readonly<{ path?: string; items: { href: string; text: string; }[]; }>) {
+export default function TabList({ items, path = '' }: Readonly<{ path?: string; items: { href: string; text: string; remove?: boolean; }[]; }>) {
   const urlPath = usePathname();
 
   return (
     <ul className="mb-4 flex gap-2 items-center overflow-auto">
       { 
-        items.map((i) => (
+        items.map((i) => i.remove === true ? null : (
           <li key={i.href}>
             <Link
               href={path + i.href}

@@ -1,10 +1,13 @@
 import { notFound } from 'next/navigation';
+import { getSession } from '@/utils/session';
 import { UserDefaultImage } from '@/models/entity';
 import { findUserById } from '@/services/user-service';
 import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function UserLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
+  const session = await getSession();
+
   const id = Number((await params).id);
 
   if (isNaN(id)) {
@@ -46,6 +49,16 @@ export default async function UserLayout({ params, children }: Readonly<{ params
           { 
             text: 'Program coordinations',
             href: '/program-coordinations',
+          },
+          { 
+            text: 'Change password',
+            href: '/update-password',
+            remove: session?.userId !== id,
+          },
+          { 
+            text: 'Sign out',
+            href: '/sign-out',
+            remove: session?.userId !== id,
           },
         ]} 
       />
