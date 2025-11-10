@@ -1,8 +1,8 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
-import AdminIndexForm, { FormState } from './form';
+import SignInForm, { FormState } from './form';
 import { getSession, setSession } from '@/utils/session';
-import { authenticateByEmailAddress, authenticateByIdentifier, authenticateByPhoneNumber } from '@/services/authentication-service';
+import { authenticateByIdentifier } from '@/services/authentication-service';
 import { authenticationIdentifierValidation, authenticationPasswordValidation } from '@/validations/authentication-validation';
 
 const validationSchema = z.object({
@@ -10,12 +10,12 @@ const validationSchema = z.object({
   password: authenticationPasswordValidation,
 });
 
-export async function adminSignIn(state: FormState, formData: FormData): Promise<FormState> {
+export async function userSignIn(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const identifier = formData.get('identifier') as string;
   const password = formData.get('password') as string;
- 
+  
   const formValues: FormState['values'] = { id: identifier, password };
 
   const validatedResult = validationSchema.safeParse({ identifier, password });
@@ -40,7 +40,7 @@ export async function adminSignIn(state: FormState, formData: FormData): Promise
   if (user !== null) {
     await setSession({ userId: user.id, userIsAdmin: user.isAdministrator });
 
-    redirect('/admin/dashboard');
+    redirect(`/users/${user.id}`);
   }
 
   return { 
@@ -52,16 +52,16 @@ export async function adminSignIn(state: FormState, formData: FormData): Promise
   };
 }
 
-export default async function AdminIndexPage() {
+export default async function SignInPage() {
   const session = await getSession();
-  
+   
   if (session !== null) {
-    redirect('/admin/dashboard');
+    redirect(`/users/${session.userId}`);
   }
 
   return (
-    <section className="bg-foreground my-20 mx-2 md:w-96 md:mx-auto">
-      <AdminIndexForm action={adminSignIn} />
+    <section className="bg-foreground my-48 mx-2 md:w-96 md:mx-auto">
+      <SignInForm action={userSignIn} />
     </section>
   );
 }

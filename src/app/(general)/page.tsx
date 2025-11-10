@@ -9,14 +9,7 @@ export default async function GeneralHomePage() {
     <>
       <h2>Index page</h2>
 
-      <ul>
-        <li>
-          <Link href="about">About</Link>
-        </li>
-        <li>
-          <Link href="contact">Contact</Link>
-        </li>
-      </ul>
+      
 
       {/* <ul>
         {
