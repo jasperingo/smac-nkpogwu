@@ -47,15 +47,21 @@ export default function GeneralLayoutHeader({ user }: Readonly<{ user: UserEntit
         <ul className="flex gap-2 items-center justify-between overflow-auto">
 
           {
-            navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href === '/sign-in' && user !== null ? `/users/${user.id}` : item.href}
-                  className={`block p-1 text-nowrap font-semibold 
-                     ${path.startsWith(item.href) ? 'bg-primary text-on-primary hover:bg-primary-variant' : 'bg-foreground text-primary hover:bg-gray-200'}`}
-                >{ item.href === '/sign-in' && user !== null ? 'Profile' : item.text }</Link>
-              </li>
-            ))
+            navItems.map((item) => {
+              const href = item.href === '/sign-in' && user !== null ? `/users/${user.id}` : item.href;
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={href}
+                    className={`block p-1 text-nowrap font-semibold 
+                      ${((path.startsWith(href) && href !== '/') || path === href) 
+                        ? 'bg-primary text-on-primary hover:bg-primary-variant' 
+                        : 'bg-foreground text-primary hover:bg-gray-200'}`}
+                  >{ item.href === '/sign-in' && user !== null ? 'Profile' : item.text }</Link>
+                </li>
+              );
+            })
           }
 
         </ul>
