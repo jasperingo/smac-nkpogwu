@@ -25,7 +25,7 @@ export default async function UserLayout({ params, children }: Readonly<{ params
   }
 
   return (
-    <div className="container mx-auto p-2">
+    <>
       <ItemPageTopDetails 
         imageUrl={user.imageUrl ?? UserDefaultImage} 
         title={`${user.title ?? ''} ${user.firstName} ${user.lastName} ${user.otherName ?? ''}`} 
@@ -58,6 +58,6 @@ export default async function UserLayout({ params, children }: Readonly<{ params
       />
 
       { children }
-    </div>
+    </>
   );
 }

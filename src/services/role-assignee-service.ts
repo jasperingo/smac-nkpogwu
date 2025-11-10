@@ -106,6 +106,41 @@ export async function findRoleAssigneesAndGroupsByUserId(
   };
 }
 
+export async function findRoleAssigneesAndGroupsAndUsersByContactableRole(pagination: PaginationDto): Promise<PaginatedListDto<{ 
+  roleAssignees: RoleAssigneeEntity; 
+  roles: RoleEntity | null; 
+  groupMembers: GroupMemberEntity | null; 
+  groups: GroupEntity | null;
+  users: UserEntity | null;
+}>> {
+  const leftTable = alias(roleAssigneesTable, "roleAssignees"); // used alias so result property is roleAssignees and not role_assignees
+  const groupMemberAliasTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
+
+   const where = eq(rolesTable.contactable, true);
+
+   const assigneesCount = await database.select({ value: count(leftTable.id) })
+    .from(leftTable)
+    .leftJoin(rolesTable, eq(rolesTable.id, leftTable.roleId))
+    .where(where);
+  
+  const assignees = await database.select()
+    .from(leftTable)
+    .leftJoin(rolesTable, eq(rolesTable.id, leftTable.roleId))
+    .leftJoin(groupMemberAliasTable, eq(leftTable.groupMemberId, groupMemberAliasTable.id))
+    .leftJoin(groupsTable, eq(groupMemberAliasTable.groupId, groupsTable.id))
+    .leftJoin(usersTable, or(eq(leftTable.userId, usersTable.id), eq(groupMemberAliasTable.userId, usersTable.id)))
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: assignees, 
+    currentPage: pagination.page, 
+    totalItems: assigneesCount[0].value, 
+    totalPages: calculatePaginationPages(assigneesCount[0].value, pagination.pageLimit),
+  };
+}
+
 export async function createRoleAssignee(roleId: number, value: { type: 'user'; userId: number; } | { type: 'groupMember'; groupMemberId: number; }) {
   const result = await database.insert(roleAssigneesTable).values({ 
     roleId, 

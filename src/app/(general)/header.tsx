@@ -54,7 +54,7 @@ export default function GeneralLayoutHeader({ user }: Readonly<{ user: UserEntit
                 <li key={item.href}>
                   <Link
                     href={href}
-                    className={`block p-1 text-nowrap font-semibold 
+                    className={`block p-1 text-nowrap font-semibold md:px-4 
                       ${((path.startsWith(href) && href !== '/') || path === href) 
                         ? 'bg-primary text-on-primary hover:bg-primary-variant' 
                         : 'bg-foreground text-primary hover:bg-gray-200'}`}
