@@ -1,6 +1,6 @@
 'use server'
 
-import { eq, like, or, sql } from 'drizzle-orm';
+import { and, desc, eq, like, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { groupsTable } from '@/database/schema';
 import { database } from '@/database/connection';
@@ -27,7 +27,7 @@ export async function findGroupById(id: number): Promise<GroupEntity | null> {
 }
 
 export async function findGroupAndParentById(id: number) {
-  const parentTable = alias(groupsTable, "parent");
+  const parentTable = alias(groupsTable, 'parent');
 
   const groups = await database.select()
     .from(groupsTable)
@@ -38,7 +38,7 @@ export async function findGroupAndParentById(id: number) {
 }
 
 export async function findGroups(dto: FindGroupsDto, pagination: PaginationDto): Promise<PaginatedListDto<GroupEntity>> {
-  const where =  dto.search === undefined 
+  let where = dto.search === undefined 
     ? undefined 
     : (
       or(
@@ -48,13 +48,64 @@ export async function findGroups(dto: FindGroupsDto, pagination: PaginationDto):
       )
     );
 
+  if (dto.privacy) {
+    where = where ? and(where, eq(groupsTable.privacy, dto.privacy)) : eq(groupsTable.privacy, dto.privacy);
+  }
+
   const count = await database.$count(groupsTable, where);
 
-  const groups = await database.select()
+  const groupsQuery = database.select()
     .from(groupsTable)
     .where(where)
-    .limit(pagination.pageLimit)
-    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+    .limit(pagination.pageLimit);
+
+  if (dto.orderBySpotlightedTop) {
+    groupsQuery.orderBy(desc(groupsTable.spotlighted));
+  }
+
+  const groups = await groupsQuery.offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: groups, 
+    totalItems: count,
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
+export async function findGroupsAndParents(
+  dto: FindGroupsDto, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<{ groups: GroupEntity; parent: GroupEntity | null; }>> {
+  let where = dto.search === undefined 
+    ? undefined 
+    : (
+      or(
+        eq(groupsTable.name, dto.search),
+        like(groupsTable.name, `%${dto.search}%`),
+        isNaN(Number(dto.search)) ? undefined : eq(groupsTable.id, Number(dto.search)),
+      )
+    );
+
+  if (dto.privacy) {
+    where = where ? and(where, eq(groupsTable.privacy, dto.privacy)) : eq(groupsTable.privacy, dto.privacy);
+  }
+
+  const count = await database.$count(groupsTable, where);
+
+  const parentTable = alias(groupsTable, 'parent');
+
+  const groupsQuery = database.select()
+    .from(groupsTable)
+    .leftJoin(parentTable, eq(groupsTable.parentId, parentTable.id))
+    .where(where)
+    .limit(pagination.pageLimit);
+
+  if (dto.orderBySpotlightedTop) {
+    groupsQuery.orderBy(desc(groupsTable.spotlighted));
+  }
+
+  const groups = await groupsQuery.offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
   return { 
     data: groups, 
@@ -75,7 +126,12 @@ export async function findGroupsByParentId(parentId: number, pagination: Paginat
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
-  return { data: groups, currentPage: pagination.page, totalItems: count, totalPages: calculatePaginationPages(count, pagination.pageLimit) };
+  return {
+    data: groups,
+    totalItems: count,
+    currentPage: pagination.page,
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
 }
 
 export async function createGroup(dto: CreateGroupDto) {
