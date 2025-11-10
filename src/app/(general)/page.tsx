@@ -1,21 +1,9 @@
-import Link from 'next/link';
-import { usersTable } from '@/database/schema';
-import { database } from '@/database/connection';
 
-export default async function GeneralHomePage() {
-  // const users = await database.select().from(usersTable);
+export default async function HomePage() {
 
   return (
-    <>
+    <section className="bg-foreground p-4">
       <h2>Index page</h2>
-
-      
-
-      {/* <ul>
-        {
-          users.map((user) => (<li key={user.id}>{ user.id }</li>))
-        }
-      </ul> */}
-    </>
+    </section>
   );
 }
