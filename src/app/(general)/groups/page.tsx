@@ -33,7 +33,7 @@ export default async function GroupsPage({ searchParams }: Readonly<{ searchPara
               <div>
                 <div className="font-bold">{ group.groups.name }</div>
                 
-                { group.parent && <div>{ group.parent.name }</div>}
+                { group.parent && <div>{ group.parent.name }</div> }
               </div>
             </Link>
           </li>

@@ -1,17 +1,10 @@
-import { notFound, redirect } from 'next/navigation';
-import { getSession } from '@/utils/session';
+import { notFound } from 'next/navigation';
 import { UserDefaultImage } from '@/models/entity';
 import { findUserById } from '@/services/user-service';
 import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function UserLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
-  const session = await getSession();
-     
-  if (session === null) {
-    redirect('/sign-in');
-  }
-
   const id = Number((await params).id);
 
   if (isNaN(id)) {
