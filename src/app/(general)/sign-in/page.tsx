@@ -60,7 +60,7 @@ export default async function SignInPage() {
   }
 
   return (
-    <section className="bg-foreground my-48 mx-2 md:w-96 md:mx-auto">
+    <section className="bg-foreground md:w-96 md:mx-auto">
       <SignInForm action={userSignIn} />
     </section>
   );
