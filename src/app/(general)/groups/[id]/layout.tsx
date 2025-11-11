@@ -1,10 +1,13 @@
 import { notFound } from 'next/navigation';
+import { getSession } from '@/utils/session';
 import { GroupDefaultImage } from '@/models/entity';
 import { findGroupById } from '@/services/group-service';
 import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function GroupLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
+  const session = await getSession();
+
   const id = Number((await params).id);
 
   if (isNaN(id)) {
@@ -31,6 +34,7 @@ export default async function GroupLayout({ params, children }: Readonly<{ param
           { 
             text: 'Members',
             href: '/members',
+            remove: session === null,
           },
           { 
             text: 'Sub groups',
