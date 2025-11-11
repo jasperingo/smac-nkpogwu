@@ -16,7 +16,13 @@ export default function GenericUnorderedList<T>(
       
       { items.map(renderItem) }
     
-      { items.length === 0 && <li className="px-4 py-8 text-center border">{ emptyText }</li> }
+      { 
+        items.length === 0 && (
+          <li 
+            className={`px-4 py-8 text-center border ${responsiveness === 'grid' ? 'md:col-span-2 xl:col-span-3 2xl:col-span-4' : ''}`}
+          >{ emptyText }</li> 
+        )
+      }
 
     </ul>
   );
