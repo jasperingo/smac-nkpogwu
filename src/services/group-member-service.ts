@@ -65,6 +65,32 @@ export async function findGroupMembersAndGroupsByUserId(
   };
 }
 
+export async function findGroupMembersAndGroupsAndParentsByUserId(
+  userId: number, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<{ groupMembers: GroupMemberEntity; groups: GroupEntity | null; parent: GroupEntity | null; }>> {
+  const count = await database.$count(groupMembersTable, eq(groupMembersTable.groupId, userId));
+  
+  const leftTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
+  
+  const groupParentTable = alias(groupsTable, 'parent');
+
+  const members = await database.select()
+    .from(leftTable)
+    .leftJoin(groupsTable, eq(leftTable.userId, groupsTable.id))
+    .leftJoin(groupParentTable, eq(groupsTable.parentId, groupParentTable.id))
+    .where(eq(leftTable.userId, userId))
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: members, 
+    totalItems: count, 
+    currentPage: pagination.page, 
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
 export async function findGroupMembersAndUsersNotInRole(
   dto: { roleId: number; search?: string; }, pagination: PaginationDto
 ): Promise<PaginatedListDto<{ users: UserEntity | null; groupMembers: GroupMemberEntity; }>> {
