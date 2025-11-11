@@ -9,7 +9,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   return (
     <section className="bg-foreground p-4">
       
-     <SimpleDescriptionList
+      <SimpleDescriptionList
         items={[
           { term: 'Title', details: user.title ?? '(Not set)', displayRow: true },
           { term: 'First name', details: user.firstName, displayRow: true },
@@ -23,6 +23,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
           { term: 'Membership date', details: user.membershipStartDatetime?.toLocaleString() ?? '(Not set)', displayRow: true },
         ]} 
       />
+      
     </section>
   );
 }
