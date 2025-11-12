@@ -58,13 +58,13 @@ export default async function ProgramsPage({ searchParams }: Readonly<{ searchPa
                   program.coordinators && (
                     <>
                       <div className="font-semibold">Coordinators:</div> 
-                      
+
                       <ul>
                         {
-                          program.coordinators.split('|').map((coordinator) => {
+                          program.coordinators.split('|').map((coordinator, index) => {
                             const parts = coordinator.split('=');
 
-                            return <li>{ parts[0] } - { parts[1] }</li>
+                            return <li key={index}>{ parts[0] } - { parts[1] }</li>
                           }) 
                         }
                       </ul>
