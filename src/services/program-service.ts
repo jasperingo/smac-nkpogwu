@@ -1,9 +1,9 @@
 'use server'
 
-import { eq, like, or, sql } from 'drizzle-orm';
+import { desc, eq, getTableColumns, like, or, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
 import { GroupEntity, ProgramEntity, UserEntity } from '@/models/entity';
-import { groupsTable, programsTable, usersTable } from '@/database/schema';
+import { groupsTable, programCoordinatorsTable, programSchedulesTable, programsTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateProgramDto, PaginatedListDto, PaginationDto, UpdateProgramDto } from '@/models/dto';
 
@@ -113,6 +113,59 @@ export async function findProgramsByGroupId(groupId: number, pagination: Paginat
   const programs = await database.select()
     .from(programsTable)
     .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return {
+    data: programs,
+    totalItems: count,
+    currentPage: pagination.page,
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
+export async function findProgramsWithScheduledDatetimesAndSpotlightedCoordinators(pagination: PaginationDto): 
+  Promise<PaginatedListDto<ProgramEntity & { coordinators: string; startDatetime: Date; endDatetime: Date; }>> {
+  const count = await database.$count(programsTable);
+
+  const startDateSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    startDatetime: sql`MIN(${programSchedulesTable.startDatetime})`.mapWith(programSchedulesTable.startDatetime).as('startDatetime')
+  })
+    .from(programSchedulesTable)
+    .groupBy(programSchedulesTable.programId)
+    .as('sdsq');
+  
+  const endDateSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    endDatetime: sql`MAX(${programSchedulesTable.endDatetime})`.mapWith(programSchedulesTable.endDatetime).as('endDatetime') 
+  })
+    .from(programSchedulesTable)
+    .groupBy(programSchedulesTable.programId)
+    .as('edsq');
+  
+  const coordinatorsSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    coordinators: sql<string>`GROUP_CONCAT(IF(${programCoordinatorsTable.userId} IS NULL, CONCAT(${programCoordinatorsTable.role}, '=', ${programCoordinatorsTable.name}),\
+      CONCAT(${programCoordinatorsTable.role}, '=', IF(${usersTable.title} IS NULL, '', CONCAT(${usersTable.title}, ' ')), ${usersTable.firstName}, ' ', ${usersTable.lastName})) SEPARATOR '|')`.as('coordinators') 
+  })
+    .from(programCoordinatorsTable)
+    .leftJoin(usersTable, eq(programCoordinatorsTable.userId, usersTable.id))
+    .leftJoin(programSchedulesTable, eq(programCoordinatorsTable.programScheduleId, programSchedulesTable.id))
+    .where(eq(programCoordinatorsTable.spotlighted, true))
+    .groupBy(programSchedulesTable.programId)
+    .as('csq');
+  
+  const programs = await database.select({
+    ...getTableColumns(programsTable),
+    coordinators: coordinatorsSQ.coordinators,
+    startDatetime: startDateSQ.startDatetime,
+    endDatetime: endDateSQ.endDatetime,
+  }).from(programsTable)
+    .leftJoin(coordinatorsSQ, eq(coordinatorsSQ.programId, programsTable.id))
+    .leftJoin(startDateSQ, eq(startDateSQ.programId, programsTable.id))
+    .leftJoin(endDateSQ, eq(endDateSQ.programId, programsTable.id))
+    .orderBy(desc(startDateSQ.startDatetime))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
