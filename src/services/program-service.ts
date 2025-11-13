@@ -177,6 +177,65 @@ export async function findProgramsWithScheduledDatetimesAndSpotlightedCoordinato
   };
 }
 
+export async function findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(pagination: PaginationDto): 
+  Promise<PaginatedListDto<{ programs: ProgramEntity & { coordinators: string; startDatetime: Date; endDatetime: Date; }; users: UserEntity | null; groups: GroupEntity | null; }>> {
+  const count = await database.$count(programsTable);
+
+  const startDateSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    startDatetime: sql`MIN(${programSchedulesTable.startDatetime})`.mapWith(programSchedulesTable.startDatetime).as('startDatetime')
+  })
+    .from(programSchedulesTable)
+    .groupBy(programSchedulesTable.programId)
+    .as('sdsq');
+  
+  const endDateSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    endDatetime: sql`MAX(${programSchedulesTable.endDatetime})`.mapWith(programSchedulesTable.endDatetime).as('endDatetime') 
+  })
+    .from(programSchedulesTable)
+    .groupBy(programSchedulesTable.programId)
+    .as('edsq');
+  
+  const coordinatorsSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    coordinators: sql<string>`GROUP_CONCAT(IF(${programCoordinatorsTable.userId} IS NULL, CONCAT(${programCoordinatorsTable.role}, '=', ${programCoordinatorsTable.name}),\
+      CONCAT(${programCoordinatorsTable.role}, '=', IF(${usersTable.title} IS NULL, '', CONCAT(${usersTable.title}, ' ')), ${usersTable.firstName}, ' ', ${usersTable.lastName})) SEPARATOR '|')`.as('coordinators') 
+  })
+    .from(programCoordinatorsTable)
+    .leftJoin(usersTable, eq(programCoordinatorsTable.userId, usersTable.id))
+    .leftJoin(programSchedulesTable, eq(programCoordinatorsTable.programScheduleId, programSchedulesTable.id))
+    .where(eq(programCoordinatorsTable.spotlighted, true))
+    .groupBy(programSchedulesTable.programId)
+    .as('csq');
+  
+  const programs = await database.select({
+    programs: {
+      ...getTableColumns(programsTable),
+      coordinators: coordinatorsSQ.coordinators,
+      startDatetime: startDateSQ.startDatetime,
+      endDatetime: endDateSQ.endDatetime,
+    },
+    users: getTableColumns(usersTable),
+    groups: getTableColumns(groupsTable),
+  }).from(programsTable)
+    .leftJoin(coordinatorsSQ, eq(coordinatorsSQ.programId, programsTable.id))
+    .leftJoin(startDateSQ, eq(startDateSQ.programId, programsTable.id))
+    .leftJoin(endDateSQ, eq(endDateSQ.programId, programsTable.id))
+    .leftJoin(usersTable, eq(usersTable.id, programsTable.userId))
+    .leftJoin(groupsTable, eq(groupsTable.id, programsTable.groupId))
+    .orderBy(desc(startDateSQ.startDatetime))
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return {
+    data: programs,
+    totalItems: count,
+    currentPage: pagination.page,
+    totalPages: calculatePaginationPages(count, pagination.pageLimit),
+  };
+}
+
 export async function createProgram(dto: CreateProgramDto) {
   const result = await database.insert(programsTable).values({ ...dto }).$returningId();
 
