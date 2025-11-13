@@ -36,7 +36,7 @@ export default function PaginationList({ path, pagination, params }: { path: str
               >Previous</Link>
             )
           : (
-              <span className="block px-2 py-1 border border-primary bg-gray-400">Previous</span>
+              <span className="block px-2 py-1 border border-primary text-gray-600 bg-gray-200">Previous</span>
             )
         }
       </li>
@@ -53,7 +53,7 @@ export default function PaginationList({ path, pagination, params }: { path: str
               >Next</Link>
             )
           : (
-              <span className="block px-2 py-1 border border-primary bg-gray-400">Next</span>
+              <span className="block px-2 py-1 border border-primary text-gray-600 bg-gray-200">Next</span>
             )
         }
       </li> 

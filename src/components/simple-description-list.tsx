@@ -21,10 +21,10 @@ export default function SimpleDescriptionList(
             key={item.term} 
             className={`
               ${item.displayRow === true ? 'flex gap-2 items-center' : ''} 
-              ${itemsSpacing === 'lg' ? 'mb-4' : (itemsSpacing === 'md' ? 'mb-2' : '')}
+              ${itemsSpacing === 'lg' ? 'mb-4' : (itemsSpacing === 'md' ? 'mb-2' : 'mb-1')}
             `}
           >
-            <dt className="font-bold">{ item.term }</dt>
+            <dt className={`font-bold ${item.displayRow === false ? 'mb-1' : ''}`}>{ item.term }</dt>
             <dd>{ item.details }</dd>
           </div>
         ))

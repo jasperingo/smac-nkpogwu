@@ -1,47 +1,31 @@
-import { notFound } from 'next/navigation';
-import { ProgramDefaultImage } from '@/models/entity';
-import { findProgramById } from '@/services/program-service';
-import TabList from '@/components/tab-list';
+import { notFound, redirect } from 'next/navigation';
+import { getSession } from '@/utils/session';
+import { GroupEntityPrivacy, ProgramDefaultImage } from '@/models/entity';
+import { findProgramAndUserAndGroupById } from '@/services/program-service';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
 export default async function ProgramLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
+  const session = await getSession();
+
   const id = Number((await params).id);
 
   if (isNaN(id)) {
     notFound();
   }
 
-  const program = await findProgramById(id);
+  const program = await findProgramAndUserAndGroupById(id);
 
   if (program === null) {
     notFound();
   }
 
+  if (session === null && (program.users !== null || (program.groups !== null && program.groups.privacy === GroupEntityPrivacy[1]))) {
+    redirect('/sign-in')
+  }
+
   return (
     <>
-      <ItemPageTopDetails title={program.name} imageUrl={program.imageUrl ?? ProgramDefaultImage} />
-
-      <TabList 
-        path={`/programs/${program.id}`}
-        items={[
-          { 
-            text: 'Details',
-            href: '',
-          },
-          { 
-            text: 'Schedules',
-            href: '/schedules',
-          },
-          { 
-            text: 'Activities',
-            href: '/activities',
-          },
-          { 
-            text: 'Coordinators',
-            href: '/coordinators',
-          },
-        ]} 
-      />
+      <ItemPageTopDetails title={program.programs.name} imageUrl={program.programs.imageUrl ?? ProgramDefaultImage} />
 
       { children }
     </>
