@@ -33,6 +33,10 @@ export type RoleAssigneeEntity = InferSelectModel<typeof roleAssigneesTable>;
 
 export const ProgramDefaultImage = '/images/program.png';
 
+export const ProgramScheduleStates = ['all', 'upcoming', 'ongoing', 'ended', 'unscheduled'] as const;
+
+export type ProgramScheduleState = typeof ProgramScheduleStates[number];
+
 export type ProgramEntity = InferSelectModel<typeof programsTable>;
 
 export type ProgramScheduleEntity = InferSelectModel<typeof programSchedulesTable>;
