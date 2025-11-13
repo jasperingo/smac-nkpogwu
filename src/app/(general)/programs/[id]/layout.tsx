@@ -1,0 +1,49 @@
+import { notFound } from 'next/navigation';
+import { ProgramDefaultImage } from '@/models/entity';
+import { findProgramById } from '@/services/program-service';
+import TabList from '@/components/tab-list';
+import ItemPageTopDetails from '@/components/item-page-top-details';
+
+export default async function ProgramLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
+  const id = Number((await params).id);
+
+  if (isNaN(id)) {
+    notFound();
+  }
+
+  const program = await findProgramById(id);
+
+  if (program === null) {
+    notFound();
+  }
+
+  return (
+    <>
+      <ItemPageTopDetails title={program.name} imageUrl={program.imageUrl ?? ProgramDefaultImage} />
+
+      <TabList 
+        path={`/programs/${program.id}`}
+        items={[
+          { 
+            text: 'Details',
+            href: '',
+          },
+          { 
+            text: 'Schedules',
+            href: '/schedules',
+          },
+          { 
+            text: 'Activities',
+            href: '/activities',
+          },
+          { 
+            text: 'Coordinators',
+            href: '/coordinators',
+          },
+        ]} 
+      />
+
+      { children }
+    </>
+  );
+}

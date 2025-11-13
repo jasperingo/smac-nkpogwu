@@ -20,7 +20,7 @@ export default async function ProgramsPage({ searchParams }: Readonly<{ searchPa
         items={programs.data}
         renderItem={(program) => (
           <li key={program.programs.id} className="mb-4 md:mb-0">
-            <Link href={`/program/${program.programs.id}`} className="block border">
+            <Link href={`/programs/${program.programs.id}`} className="block border">
               <Image
                 width="100" 
                 height="64"
