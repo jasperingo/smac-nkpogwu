@@ -1,6 +1,6 @@
 'use server'
 
-import { and, asc, between, eq, or, sql } from 'drizzle-orm';
+import { and, asc, between, eq, getTableColumns, or, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
 import { ProgramScheduleEntity } from '@/models/entity';
 import { programSchedulesTable } from '@/database/schema';
@@ -76,6 +76,24 @@ export async function findFirstProgramScheduleByProgramId(programId: number): Pr
     .orderBy(asc(programSchedulesTable.startDatetime));
 
   return programSchedules.length === 0 ? null : programSchedules[0];
+}
+
+export async function findFirstAndLastProgramScheduleByProgramId(programId: number): Promise<[ProgramScheduleEntity | null, ProgramScheduleEntity | null]> {
+  const programSchedules = await database.select({
+    ...getTableColumns(programSchedulesTable),
+    firstDatetime: sql`MIN(${programSchedulesTable.startDatetime})`.mapWith(programSchedulesTable.startDatetime).as('firstDatetime'),
+    lastDatetime: sql`MAX(${programSchedulesTable.endDatetime})`.mapWith(programSchedulesTable.endDatetime).as('lastDatetime'),
+  })
+    .from(programSchedulesTable)
+    .where(eq(programSchedulesTable.programId, programId))
+    .groupBy(programSchedulesTable.id)
+    .orderBy(asc(programSchedulesTable.startDatetime));
+
+  return programSchedules.length >= 2 
+    ? [programSchedules[0], programSchedules[1]]
+    : programSchedules.length === 1 
+      ? [programSchedules[0], programSchedules[0]]
+      : [null, null];
 }
 
 export async function findProgramSchedulesByProgramId(

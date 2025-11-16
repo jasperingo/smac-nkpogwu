@@ -1,6 +1,8 @@
 import Image from 'next/image';
 
-export default function ItemPageTopDetails({ title, id, imageUrl, imageAlt }: Readonly<{ title: string; id?: number; imageUrl?: string; imageAlt?: string; }>) {
+export default function ItemPageTopDetails(
+  { title, id, imageUrl, imageAlt, children }: Readonly<{ title: string; id?: number; imageUrl?: string; imageAlt?: string; children?: React.ReactNode; }>
+) {
   return (
     <div className="bg-foreground p-4 mb-4 md:flex md:gap-4 md:items-center md:justify-center">
       {
@@ -18,7 +20,9 @@ export default function ItemPageTopDetails({ title, id, imageUrl, imageAlt }: Re
       <div className="text-center">
         <div className="font-bold text-lg md:text-xl">{ title }</div>
 
-        { id !== undefined && <div className="w-fit mt-2 mx-auto py-1 px-4 text-on-primary bg-primary-variant">ID: { id }</div> }
+        { id !== undefined && <div className="w-fit my-2 mx-auto py-1 px-4 text-on-primary bg-primary-variant">ID: { id }</div> }
+
+        { children }
       </div>
     </div>
   );

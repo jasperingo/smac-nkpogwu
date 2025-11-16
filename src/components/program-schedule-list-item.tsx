@@ -83,6 +83,10 @@ export default function ProgramScheduleListItem(
                   </li>
                 ))
               }
+
+              {
+                activities.length === 0 && (<li>No activities</li>)
+              }
             </ul>
           </ProgramScheduleListItemDrop>
 
@@ -103,6 +107,10 @@ export default function ProgramScheduleListItem(
                     }
                   </li>
                 ))
+              }
+
+              {
+                coordinators.length === 0 && (<li>No coordinators</li>)
               }
             </ul>
           </ProgramScheduleListItemDrop>
