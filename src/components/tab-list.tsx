@@ -9,15 +9,25 @@ export default function TabList({ items, path = '' }: Readonly<{ path?: string; 
   return (
     <ul className="mb-4 flex gap-2 items-center overflow-auto">
       { 
-        items.map((i) => i.remove === true ? null : (
-          <li key={i.href}>
-            <Link
-              href={path + i.href}
-              className={`block py-1 px-2 font-bold text-nowrap bg-foreground hover:bg-gray-100 
-                ${((urlPath.startsWith(path + i.href) && path + i.href !== path) || urlPath === path + i.href) ? 'border-b-4 border-primary' : ''}`}
-            >{ i.text }</Link>
-          </li>
-        ))
+        items.map((i) => {
+          if (i.remove === true) {
+            return null;
+          }
+
+          const hrefNoQuery = i.href.substring(0, i.href.indexOf('?'));
+
+          const pathAndHref = path + hrefNoQuery;
+
+          return (
+            <li key={i.href}>
+              <Link
+                href={path + i.href}
+                className={`block py-1 px-2 font-bold text-nowrap bg-foreground hover:bg-gray-100 
+                  ${((urlPath.startsWith(pathAndHref) && pathAndHref !== path) || urlPath === pathAndHref) ? 'border-b-4 border-primary' : ''}`}
+              >{ i.text }</Link>
+            </li>
+          );
+        })
       }
     </ul>
   );
