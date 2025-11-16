@@ -12,7 +12,7 @@ export default async function SearchPage({ searchParams }: Readonly<{ searchPara
 
   const programs = await findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
     { 
-      search: search,
+      search,
       publicOnly: session === null,
     }, 
     resolvePaginationParams(page)
