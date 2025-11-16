@@ -6,22 +6,22 @@ import GroupListItem from '@/components/group-list-item';
 import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 
-export default async function GroupsPage({ searchParams }: Readonly<{ searchParams: Promise<{ page?: string; }>; }>) {
+export default async function SearchGroupsPage({ searchParams }: Readonly<{ searchParams: Promise<{ search?: string; page?: string; }>; }>) {
   const session = await getSession();
 
-  const { page } = await searchParams;
+  const { page, search } = await searchParams;
 
-  const groups = await findGroupsAndParents({ privacy: session === null ? GroupEntityPrivacy[0] : undefined, orderBySpotlightedTop: true }, resolvePaginationParams(page));
+  const groups = await findGroupsAndParents({ search, privacy: session === null ? GroupEntityPrivacy[0] : undefined }, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">
 
-      <GenericUnorderedList 
+      <GenericUnorderedList
         items={groups.data}
         renderItem={(group) => <GroupListItem key={group.groups.id} group={group} />}
       />
-     
-      <PaginationList path="/groups" pagination={groups} />
+    
+      <PaginationList path="/search/groups" pagination={groups} params={new Map([['search', search]])} />
     </section>
   );
 }
