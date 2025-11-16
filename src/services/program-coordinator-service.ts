@@ -1,6 +1,6 @@
 'use server'
 
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
 import { ProgramCoordinatorEntity, ProgramEntity, ProgramScheduleEntity, UserEntity } from '@/models/entity';
@@ -53,6 +53,20 @@ export async function findProgramCoordinatorsAndUsersByProgramScheduleId(
     currentPage: pagination.page, 
     totalPages: calculatePaginationPages(count, pagination.pageLimit),
   };
+}
+
+export async function findProgramCoordinatorsAndUsersByProgramScheduleIds(
+  programScheduleIds: number[],
+): Promise<{ programCoordinators: ProgramCoordinatorEntity; users: UserEntity | null; }[]> {
+  const leftTable = alias(programCoordinatorsTable, "programCoordinators"); // used alias so result property is programCoordinators and not program_coordinators
+
+  const coordinators = await database.select()
+    .from(leftTable)
+    .leftJoin(usersTable, eq(leftTable.userId, usersTable.id))
+    .where(inArray(leftTable.programScheduleId, programScheduleIds))
+    .orderBy(desc(leftTable.spotlighted));
+
+  return coordinators;
 }
 
 export async function findProgramCoordinatorsAndProgramSchedulesAndProgramsByUserId(

@@ -2,9 +2,12 @@ import Link from 'next/link';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { findProgramAndUserAndGroupById } from '@/services/program-service';
 import { findProgramSchedulesByProgramId } from '@/services/program-schedule-service';
+import { findAllProgramActivitiesByProgramScheduleIds } from '@/services/program-activity-service';
+import { findProgramCoordinatorsAndUsersByProgramScheduleIds } from '@/services/program-coordinator-service';
 import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 import SimpleDescriptionList from '@/components/simple-description-list';
+import ProgramScheduleListItem from '@/components/program-schedule-list-item';
 
 export default async function ProgramPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ page?: string; }>; }) {
   const id = Number((await params).id);
@@ -14,6 +17,12 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
   const program = (await findProgramAndUserAndGroupById(id))!;
 
   const schedules = await findProgramSchedulesByProgramId(id, resolvePaginationParams(page));
+
+  const scheduleIds = schedules.data.map((s) => s.id);
+
+  const activities = await findAllProgramActivitiesByProgramScheduleIds(scheduleIds);
+
+  const coordinators = await findProgramCoordinatorsAndUsersByProgramScheduleIds(scheduleIds);
 
   return (
     <section className="bg-foreground p-4">
@@ -50,39 +59,18 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
         ]} 
       />
 
+      <div className="font-bold mb-1">Schedules and Activities</div>
+
       <GenericUnorderedList 
         items={schedules.data}
         emptyText="No schedules available"
         renderItem={(schedule) => (
-          <li key={schedule.id} className="mb-4 md:mb-0">
-            <div className="border p-2">
-              <SimpleDescriptionList
-                items={[
-                  { term: 'Start date', details: schedule.startDatetime.toLocaleString(), displayRow: true },
-                  { term: 'End date', details: schedule.endDatetime.toLocaleString(), displayRow: true },
-                  { term: 'Topic', details: schedule.topic ?? '(Not set)', displayRow: true },
-                  { 
-                    term: 'Description',
-                    displayRow: false,
-                    details: schedule.description ? (<p className="whitespace-pre-wrap">{ schedule.description }</p>) : '(Not set)', 
-                  },
-                ]} 
-              />
-
-              {
-                schedule.link && (schedule.link.includes('youtube') || schedule.link.includes('youtu.be')) && (
-                  <iframe 
-                    width="420" 
-                    height="315" 
-                    className="mt-4 w-full" 
-                    src={schedule.link.includes('v=') 
-                      ? `https://www.youtube.com/embed/${schedule.link.substring(schedule.link.lastIndexOf('=') + 1)}` 
-                      : `https://www.youtube.com/embed/${schedule.link.substring(schedule.link.lastIndexOf('/') + 1)}`}
-                  ></iframe>
-                )
-              }
-            </div>
-          </li>
+          <ProgramScheduleListItem
+            key={schedule.id} 
+            schedule={schedule} 
+            activities={activities.filter((a) => a.programScheduleId === schedule.id)} 
+            coordinators={coordinators.filter((c) => c.programCoordinators.programScheduleId === schedule.id)} 
+          />
         )}
       />
 

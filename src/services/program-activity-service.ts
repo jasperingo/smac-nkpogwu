@@ -1,6 +1,6 @@
 'use server'
 
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
 import { ProgramActivityEntity } from '@/models/entity';
 import { programActivitiesTable } from '@/database/schema';
@@ -30,11 +30,13 @@ export async function findProgramActivitiesByProgramScheduleId(
   programScheduleId: number, 
   pagination: PaginationDto
 ): Promise<PaginatedListDto<ProgramActivityEntity>> {
-  const count = await database.$count(programActivitiesTable, eq(programActivitiesTable.programScheduleId, programScheduleId));
+  const where = eq(programActivitiesTable.programScheduleId, programScheduleId);
+
+  const count = await database.$count(programActivitiesTable, where);
 
   const activities = await database.select()
     .from(programActivitiesTable)
-    .where(eq(programActivitiesTable.programScheduleId, programScheduleId))
+    .where(where)
     .limit(pagination.pageLimit)
     .orderBy(asc(programActivitiesTable.createdDatetime))
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
@@ -45,6 +47,15 @@ export async function findProgramActivitiesByProgramScheduleId(
     currentPage: pagination.page, 
     totalPages: calculatePaginationPages(count, pagination.pageLimit),
   };
+}
+
+export async function findAllProgramActivitiesByProgramScheduleIds(programScheduleIds: number[]): Promise<ProgramActivityEntity[]> {
+  const activities = await database.select()
+    .from(programActivitiesTable)
+    .where(inArray(programActivitiesTable.programScheduleId, programScheduleIds))
+    .orderBy(asc(programActivitiesTable.createdDatetime));
+
+  return activities;
 }
 
 export async function createProgramActivity(dto: CreateProgramActivityDto) {
