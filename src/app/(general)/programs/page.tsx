@@ -1,11 +1,18 @@
+import { Metadata } from 'next';
 import { Funnel } from 'lucide-react';
 import { getSession } from '@/utils/session';
-import { resolvePaginationParams } from '@/utils/pagination';
 import { ProgramScheduleStates } from '@/models/entity';
+import { resolvePaginationParams } from '@/utils/pagination';
+import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 import { findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators } from '@/services/program-service';
 import PaginationList from '@/components/pagination-list';
 import ProgramListItem from '@/components/program-list-item';
 import GenericUnorderedList from '@/components/generic-unordered-list';
+
+export const metadata: Metadata = {
+  title: 'Programs' + PAGE_METADATA_TITLE_SUFFIX,
+  description: 'List of church programs',
+};
 
 export default async function ProgramsPage({ searchParams }: Readonly<{ searchParams: Promise<{ page?: string; scheduleState?: string; }>; }>) {
   const session = await getSession();

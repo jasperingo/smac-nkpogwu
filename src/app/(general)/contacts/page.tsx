@@ -1,8 +1,15 @@
+import { Metadata } from 'next';
 import PaginationList from '@/components/pagination-list';
 import ContactListItem from '@/components/contact-list-item';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 import { resolvePaginationParams } from '@/utils/pagination';
+import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 import { findRoleAssigneesAndGroupsAndUsersByContactableRole } from '@/services/role-assignee-service';
+
+export const metadata: Metadata = {
+  title: 'Contacts' + PAGE_METADATA_TITLE_SUFFIX,
+  description: 'List of people that can be contact based on their roles in the church',
+};
 
 export default async function ContactsPage({ searchParams }: Readonly<{ searchParams: Promise<{ page?: string; }>; }>) {
   const { page } = await searchParams;

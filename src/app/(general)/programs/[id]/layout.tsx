@@ -1,9 +1,33 @@
+import { cache } from 'react';
+import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/utils/session';
+import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 import { GroupEntityPrivacy, ProgramDefaultImage } from '@/models/entity';
 import { findProgramAndUserAndGroupById } from '@/services/program-service';
 import { findFirstAndLastProgramScheduleByProgramId } from '@/services/program-schedule-service';
+
+const cachedFindProgramAndUserAndGroupById = cache(findProgramAndUserAndGroupById);
+
+export async function generateMetadata( { params }: Readonly<{ params: Promise<{ id: string }>; }>): Promise<Metadata> {
+  const id = Number((await params).id);
+
+  if (isNaN(id)) {
+    return {};
+  }
+
+  const program = await cachedFindProgramAndUserAndGroupById(id);
+
+  if (program === null) {
+    return {};
+  }
+
+  return {
+    title: program.programs.name + PAGE_METADATA_TITLE_SUFFIX,
+    description: 'Program details for ' + program.programs.name,
+  }
+}
 
 export default async function ProgramLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
   const session = await getSession();
@@ -14,7 +38,7 @@ export default async function ProgramLayout({ params, children }: Readonly<{ par
     notFound();
   }
 
-  const program = await findProgramAndUserAndGroupById(id);
+  const program = await cachedFindProgramAndUserAndGroupById(id);
 
   if (program === null) {
     notFound();

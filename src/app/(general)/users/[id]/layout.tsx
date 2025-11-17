@@ -1,9 +1,35 @@
+import { cache } from 'react';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getSession } from '@/utils/session';
 import { UserDefaultImage } from '@/models/entity';
 import { findUserById } from '@/services/user-service';
+import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
+
+const cachedFindUserById = cache(findUserById);
+
+export async function generateMetadata( { params }: Readonly<{ params: Promise<{ id: string }>; }>): Promise<Metadata> {
+  const id = Number((await params).id);
+
+  if (isNaN(id)) {
+    return {};
+  }
+
+  const user = await cachedFindUserById(id);
+
+  if (user === null) {
+    return {};
+  }
+
+  const userFullName = `${user.title ?? ''} ${user.firstName} ${user.lastName} ${user.otherName ?? ''}`;
+
+  return {
+    title: userFullName + PAGE_METADATA_TITLE_SUFFIX,
+    description: 'User profile details for ' + userFullName,
+  }
+}
 
 export default async function UserLayout({ params, children }: Readonly<{ params: Promise<{ id: string }>; children: React.ReactNode; }>) {
   const session = await getSession();
@@ -14,7 +40,7 @@ export default async function UserLayout({ params, children }: Readonly<{ params
     notFound();
   }
 
-  const user = await findUserById(id);
+  const user = await cachedFindUserById(id);
 
   if (user === null) {
     notFound();

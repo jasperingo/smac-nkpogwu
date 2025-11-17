@@ -1,6 +1,6 @@
 'use server'
 
-import { and, count, eq, like, or, sql, SQL } from 'drizzle-orm';
+import { and, asc, count, eq, like, or, sql, SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
 import { PaginatedListDto, PaginationDto } from '@/models/dto';
@@ -139,6 +139,7 @@ export async function findRoleAssigneesAndGroupsAndUsersByContactableRole(filter
     .leftJoin(groupsTable, eq(groupMemberAliasTable.groupId, groupsTable.id))
     .leftJoin(usersTable, or(eq(leftTable.userId, usersTable.id), eq(groupMemberAliasTable.userId, usersTable.id)))
     .where(where)
+    .orderBy(asc(rolesTable.priority))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
