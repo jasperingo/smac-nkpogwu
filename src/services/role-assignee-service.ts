@@ -1,6 +1,6 @@
 'use server'
 
-import { count, eq, or } from 'drizzle-orm';
+import { and, count, eq, like, or, sql, SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { database } from '@/database/connection';
 import { PaginatedListDto, PaginationDto } from '@/models/dto';
@@ -106,7 +106,7 @@ export async function findRoleAssigneesAndGroupsByUserId(
   };
 }
 
-export async function findRoleAssigneesAndGroupsAndUsersByContactableRole(pagination: PaginationDto): Promise<PaginatedListDto<{ 
+export async function findRoleAssigneesAndGroupsAndUsersByContactableRole(filter: { search?: string; }, pagination: PaginationDto): Promise<PaginatedListDto<{ 
   roleAssignees: RoleAssigneeEntity; 
   roles: RoleEntity | null; 
   groupMembers: GroupMemberEntity | null; 
@@ -116,11 +116,20 @@ export async function findRoleAssigneesAndGroupsAndUsersByContactableRole(pagina
   const leftTable = alias(roleAssigneesTable, "roleAssignees"); // used alias so result property is roleAssignees and not role_assignees
   const groupMemberAliasTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
 
-   const where = eq(rolesTable.contactable, true);
+  let where: SQL<unknown> | undefined = eq(rolesTable.contactable, true);
 
-   const assigneesCount = await database.select({ value: count(leftTable.id) })
+  if (filter.search) {
+    where = and(where, or(
+      like(rolesTable.name, `%${filter.search}%`),
+      like(sql`CONCAT(${usersTable.firstName}, ' ', ${usersTable.lastName})`, `%${filter.search}%`),
+    ));
+  }
+
+  const assigneesCount = await database.select({ value: count(leftTable.id) })
     .from(leftTable)
     .leftJoin(rolesTable, eq(rolesTable.id, leftTable.roleId))
+    .leftJoin(groupMemberAliasTable, eq(leftTable.groupMemberId, groupMemberAliasTable.id))
+    .leftJoin(usersTable, or(eq(leftTable.userId, usersTable.id), eq(groupMemberAliasTable.userId, usersTable.id)))
     .where(where);
   
   const assignees = await database.select()
