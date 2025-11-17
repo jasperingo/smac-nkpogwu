@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { UserDefaultImage } from '@/models/entity';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { findRoleAssigneesAndUsersByGroupId } from '@/services/role-assignee-service';
+import RoundedImage from '@/components/rounded-image';
 import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 
@@ -23,12 +23,9 @@ export default async function GroupRoleAssigneesPage(
         renderItem={(assignee) => (
           <li key={assignee.roleAssignees.id} className="mb-4 md:mb-0">
             <Link href={`/users/${assignee.users?.id}`} className="border p-2 flex gap-2 items-center">
-              <Image
+              <RoundedImage
+                alt={`${assignee.users?.id} image`}
                 src={assignee.users?.imageUrl ?? UserDefaultImage} 
-                alt={`${assignee.users?.id} image`} 
-                width="64" 
-                height="64" 
-                className="block w-16 h-16 border border-gray-400 rounded-full" 
               />
 
               <div>
@@ -37,6 +34,8 @@ export default async function GroupRoleAssigneesPage(
                 </div>
                 
                 <div>{ assignee.roles?.name }</div>
+                
+                <div className="text-sm text-gray-600">{ assignee.roles?.contactable ? 'Is' : 'Is not' } person of contact</div>
               </div>
             </Link>
           </li>

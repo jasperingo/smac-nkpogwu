@@ -83,6 +83,7 @@ export async function findProgramCoordinatorsAndProgramSchedulesAndProgramsByUse
     .leftJoin(programScheduleTable, eq(leftTable.programScheduleId, programScheduleTable.id))
     .leftJoin(programsTable, eq(programScheduleTable.programId, programsTable.id))
     .where(eq(leftTable.userId, userId))
+    .orderBy(desc(programScheduleTable.startDatetime))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 

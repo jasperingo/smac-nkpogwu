@@ -1,8 +1,6 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import GroupListItem from '@/components/group-list-item';
 import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
-import { GroupDefaultImage } from '@/models/entity';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { findGroupMembersAndGroupsAndParentsByUserId } from '@/services/group-member-service';
 
@@ -20,25 +18,7 @@ export default async function UserGroupsPage(
 
       <GenericUnorderedList
         items={groups.data}
-        renderItem={(group) => (
-          <li key={group.groupMembers.id} className="mb-4 md:mb-0">
-            <Link href={`/groups/${group.groups?.id}`} className="border p-2 flex gap-2 items-center">
-              <Image
-                src={group.groups?.imageUrl ?? GroupDefaultImage} 
-                alt={`${group.groups?.id} image`} 
-                width="64" 
-                height="64" 
-                className="block w-16 h-16 border border-gray-400 rounded-full" 
-              />
-
-              <div>
-                <div className="font-bold">{ group.groups?.name }</div>
-                
-                { group.parent && <div>{ group.parent.name }</div> }
-              </div>
-            </Link>
-          </li>
-        )}
+        renderItem={(group) => group.groups === null ? null : <GroupListItem key={group.groupMembers.id} group={{ groups: group.groups }} />}
       />
 
       <PaginationList path={`/users/${id}/groups`} pagination={groups} />
