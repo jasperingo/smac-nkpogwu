@@ -9,8 +9,7 @@ import {
   userLastNameValidation, 
   userMembershipNumberValidation, 
   userMembershipStartDateValidation, 
-  userOtherNameValidation, 
-  userPasswordValidation, 
+  userOtherNameValidation,
   userPhoneNumberValidation, 
   userTitleValidation
 } from '@/validations/user-validation';
@@ -26,7 +25,6 @@ const validationSchema = z.object({
   isAdministrator: userIsAdministratorValidation,
   emailAddress: userEmailAddressValidation,
   phoneNumber: userPhoneNumberValidation,
-  password: userPasswordValidation,
   dateOfBirth: userDateOfBirthValidation,
   membershipNumber: userMembershipNumberValidation,
   membershipStartDatetime: userMembershipStartDateValidation,
@@ -47,7 +45,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const isAdministrator = formData.get('isAdministrator') as string;
   const emailAddress = formData.get('emailAddress') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
-  const password = formData.get('password') as string;
   const dateOfBirth = formData.get('dateOfBirth') as string;
   const membershipNumber = formData.get('membershipNumber') as string;
   const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
@@ -61,7 +58,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     isAdministrator,
     emailAddress,
     phoneNumber,
-    password,
     dateOfBirth,
     membershipNumber,
     membershipStartDatetime,
@@ -79,7 +75,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     gender,
     emailAddress,
     phoneNumber,
-    password,
     membershipNumber,
     isAdministrator: isAdministratorBoolean,
     dateOfBirth: dateOfBirth.length === 0 ? '' : dateOfBirthDate,
@@ -102,7 +97,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           isAdministrator: errors.fieldErrors.isAdministrator?.[0] ?? null,
           emailAddress: errors.fieldErrors.emailAddress?.[0] ?? null,
           phoneNumber: errors.fieldErrors.phoneNumber?.[0] ?? null,
-          password: errors.fieldErrors.password?.[0] ?? null,
           dateOfBirth: errors.fieldErrors.dateOfBirth?.[0] ?? null,
           membershipNumber: errors.fieldErrors.membershipNumber?.[0] ?? null,
           membershipStartDatetime: errors.fieldErrors.membershipStartDatetime?.[0] ?? null,
@@ -123,10 +117,10 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
       phoneNumber: phoneNumber.length === 0 ? null : phoneNumber,
-      password: password.length === 0 ? null : password,
       dateOfBirth: dateOfBirth.length === 0 ? null : dateOfBirthDate,
       membershipNumber: membershipNumber.length === 0 ? null : membershipNumber,
       membershipStartDatetime: membershipStartDatetime.length === 0 ? null : membershipStartDatetimeDate,
+      password: emailAddress.length === 0 && phoneNumber.length === 0 ? null : process.env.USER_DEFAULT_PASSWORD!,
     });
   } catch (error) {
     console.error('Error creating user: ', error);
@@ -143,7 +137,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           isAdministrator: null, 
           emailAddress: null, 
           phoneNumber: null, 
-          password: null,
           dateOfBirth: null,
           membershipNumber: null,
           membershipStartDatetime: null,

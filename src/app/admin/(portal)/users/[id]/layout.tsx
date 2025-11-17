@@ -37,6 +37,11 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
             href: '/upload-image',
           },
           { 
+            text: 'Reset password',
+            href: '/reset-password',
+            remove: user.emailAddress === null && user.phoneNumber === null,
+          },
+          {
             text: 'Roles',
             href: '/roles',
           },

@@ -21,7 +21,6 @@ export type FormState = {
     isAdministrator: string;
     emailAddress: string; 
     phoneNumber: string; 
-    password: string;
     dateOfBirth: string;
     membershipNumber: string;
     membershipStartDatetime: string;
@@ -37,7 +36,6 @@ export type FormState = {
       isAdministrator: string | null; 
       emailAddress: string | null; 
       phoneNumber: string | null; 
-      password: string | null; 
       dateOfBirth: string | null;
       membershipNumber: string | null;
       membershipStartDatetime: string | null;
@@ -56,7 +54,6 @@ export const initialErrorState: FormState['errors'] = {
     isAdministrator: null, 
     emailAddress: null, 
     phoneNumber: null, 
-    password: null,
     dateOfBirth: null,
     membershipNumber: null,
     membershipStartDatetime: null,
@@ -77,8 +74,7 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
       gender: user.gender, 
       isAdministrator: user.isAdministrator.toString(), 
       emailAddress: user.emailAddress ?? '', 
-      phoneNumber: user.phoneNumber ?? '', 
-      password: '',
+      phoneNumber: user.phoneNumber ?? '',
       dateOfBirth: user.dateOfBirth ? getDateInputString(user.dateOfBirth) : '',
       membershipNumber: user.membershipNumber ?? '',
       membershipStartDatetime: user.membershipStartDatetime ? getDateInputString(user.membershipStartDatetime) : '',
@@ -168,18 +164,6 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
         required={false} 
         value={state.values.phoneNumber} 
         error={state.errors.fields.phoneNumber} 
-      />
-
-      <FormInputField 
-        id="password" 
-        name="password" 
-        label="Password" 
-        type="password" 
-        minLength={userConstraints.passwordMin}
-        maxLength={userConstraints.passwordMax}
-        required={false} 
-        value={state.values.password} 
-        error={state.errors.fields.password} 
       />
 
       <FormInputField 

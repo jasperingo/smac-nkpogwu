@@ -19,8 +19,7 @@ export type FormState = {
     gender: string;
     isAdministrator: string;
     emailAddress: string; 
-    phoneNumber: string; 
-    password: string;
+    phoneNumber: string;
     dateOfBirth: string;
     membershipNumber: string;
     membershipStartDatetime: string;
@@ -35,8 +34,7 @@ export type FormState = {
       gender: string | null; 
       isAdministrator: string | null; 
       emailAddress: string | null; 
-      phoneNumber: string | null; 
-      password: string | null; 
+      phoneNumber: string | null;
       dateOfBirth: string | null;
       membershipNumber: string | null;
       membershipStartDatetime: string | null;
@@ -54,7 +52,6 @@ export const initialState: FormState = {
     isAdministrator: '', 
     emailAddress: '', 
     phoneNumber: '', 
-    password: '',
     dateOfBirth: '',
     membershipNumber: '',
     membershipStartDatetime: '',
@@ -70,7 +67,6 @@ export const initialState: FormState = {
       isAdministrator: null, 
       emailAddress: null, 
       phoneNumber: null, 
-      password: null,
       dateOfBirth: null,
       membershipNumber: null,
       membershipStartDatetime: null,
@@ -163,18 +159,6 @@ export default function AdminCreateUserForm({ action }: { action: (state: FormSt
         required={false} 
         value={state.values.phoneNumber} 
         error={state.errors.fields.phoneNumber} 
-      />
-
-      <FormInputField 
-        id="password" 
-        name="password" 
-        label="Password" 
-        type="password" 
-        minLength={userConstraints.passwordMin}
-        maxLength={userConstraints.passwordMax}
-        required={false} 
-        value={state.values.password} 
-        error={state.errors.fields.password} 
       />
 
       <FormInputField 

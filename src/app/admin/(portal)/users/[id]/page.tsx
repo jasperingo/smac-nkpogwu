@@ -9,7 +9,6 @@ import {
   userMembershipNumberValidation, 
   userMembershipStartDateValidation, 
   userOtherNameValidation, 
-  userPasswordValidation, 
   userPhoneNumberValidation, 
   userTitleValidation
 } from '@/validations/user-validation';
@@ -26,7 +25,6 @@ const validationSchema = z.object({
   isAdministrator: userIsAdministratorValidation.optional(),
   emailAddress: userEmailAddressValidation.optional(),
   phoneNumber: userPhoneNumberValidation.optional(),
-  password: userPasswordValidation.optional(),
   dateOfBirth: userDateOfBirthValidation.optional(),
   membershipNumber: userMembershipNumberValidation.optional(),
   membershipStartDatetime: userMembershipStartDateValidation.optional(),
@@ -48,7 +46,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const isAdministrator = formData.get('isAdministrator') as string;
   const emailAddress = formData.get('emailAddress') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
-  const password = formData.get('password') as string;
   const dateOfBirth = formData.get('dateOfBirth') as string;
   const membershipNumber = formData.get('membershipNumber') as string;
   const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
@@ -62,7 +59,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     isAdministrator,
     emailAddress,
     phoneNumber,
-    password,
     dateOfBirth,
     membershipNumber,
     membershipStartDatetime,
@@ -84,7 +80,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
     isAdministrator: isAdministrator !== state.values.isAdministrator || state.errors.fields.isAdministrator !== null ? isAdministratorBoolean : undefined,
     emailAddress: emailAddress !== state.values.emailAddress || state.errors.fields.emailAddress !== null ? emailAddress : undefined,
     phoneNumber: phoneNumber !== state.values.phoneNumber || state.errors.fields.phoneNumber !== null ? phoneNumber : undefined,
-    password: password !== '' || state.errors.fields.password !== null ? password : undefined,
     membershipNumber: validateMembershipNumber || validateMembershipStartDatetime ? membershipNumber : undefined,
     dateOfBirth: dateOfBirth !== state.values.dateOfBirth || state.errors.fields.dateOfBirth !== null ? (dateOfBirth.length === 0 ? '' : dateOfBirthDate) : undefined,
     membershipStartDatetime: validateMembershipStartDatetime || validateMembershipNumber ? (membershipStartDatetime.length === 0 ? '' : membershipStartDatetimeDate) : undefined,
@@ -107,7 +102,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           isAdministrator: errors.fieldErrors.isAdministrator?.[0] ?? null,
           emailAddress: errors.fieldErrors.emailAddress?.[0] ?? null,
           phoneNumber: errors.fieldErrors.phoneNumber?.[0] ?? null,
-          password: errors.fieldErrors.password?.[0] ?? null,
           dateOfBirth: errors.fieldErrors.dateOfBirth?.[0] ?? null,
           membershipNumber: errors.fieldErrors.membershipNumber?.[0] ?? null,
           membershipStartDatetime: errors.fieldErrors.membershipStartDatetime?.[0] ?? null,
@@ -126,7 +120,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       isAdministrator: isAdministrator !== state.values.isAdministrator ? isAdministratorBoolean : undefined,
       emailAddress: emailAddress !== state.values.emailAddress ? (emailAddress.length === 0 ? null : emailAddress.toLowerCase()) : undefined,
       phoneNumber: phoneNumber !== state.values.phoneNumber ? (phoneNumber.length === 0 ? null : phoneNumber) : undefined,
-      password: password !== '' ? (password.length === 0 ? null : password) : undefined,
       membershipNumber: membershipNumber !== state.values.membershipNumber ? (membershipNumber.length === 0 ? null : membershipNumber) : undefined,
       dateOfBirth: dateOfBirth !== state.values.dateOfBirth ? (dateOfBirth.length === 0 ? null : dateOfBirthDate) : undefined,
       membershipStartDatetime: membershipStartDatetime !== state.values.membershipStartDatetime ? (membershipStartDatetime.length === 0 ? null : membershipStartDatetimeDate) : undefined,
@@ -148,8 +141,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           gender: null, 
           isAdministrator: null, 
           emailAddress: null, 
-          phoneNumber: null, 
-          password: null,
+          phoneNumber: null,
           dateOfBirth: null,
           membershipNumber: null,
           membershipStartDatetime: null,
@@ -164,7 +156,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
         isAdministrator: user.isAdministrator.toString(), 
         emailAddress: user.emailAddress ?? '', 
         phoneNumber: user.phoneNumber ?? '', 
-        password: '',
         dateOfBirth: user.dateOfBirth ? getDateInputString(user.dateOfBirth) : '',
         membershipNumber: user.membershipNumber ?? '',
         membershipStartDatetime: user.membershipStartDatetime ? getDateInputString(user.membershipStartDatetime) : '',
@@ -186,7 +177,6 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
           isAdministrator: null, 
           emailAddress: null, 
           phoneNumber: null, 
-          password: null,
           dateOfBirth: null,
           membershipNumber: null,
           membershipStartDatetime: null,
