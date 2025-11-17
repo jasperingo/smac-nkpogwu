@@ -12,7 +12,7 @@ export default async function GeneralLayout({ children }: Readonly<{ children: R
     <>
       <GeneralLayoutHeader user={user} />
       
-      <main className="mt-[10.5rem] pb-24">
+      <main className="mt-32 lg:mt-[10.5rem] pb-24">
         
         <div className="container mx-auto p-2">
 

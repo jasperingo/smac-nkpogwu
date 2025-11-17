@@ -4,7 +4,7 @@ import { useActionState } from 'react';
 import ButtonForm from '@/components/button-form';
 import FormCheckboxField from '@/components/form-checkbox-field';
 
-export default function UserSignOutForm({ action }: { action: (state: any, formData: FormData) => Promise<any>; }) {
+export default function SignOutForm({ action }: { action: (state: any, formData: FormData) => Promise<any>; }) {
   const [state, formAction, isPending] = useActionState<any, FormData>(action, null);
 
   return (

@@ -55,11 +55,6 @@ export default async function UserLayout({ params, children }: Readonly<{ params
             href: '/update-password',
             remove: session?.userId !== id,
           },
-          { 
-            text: 'Sign out',
-            href: '/sign-out',
-            remove: session?.userId !== id,
-          },
         ]} 
       />
 

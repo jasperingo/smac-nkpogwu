@@ -13,7 +13,7 @@ export default function SearchForm(
   }
 
   return (
-    <form action={action} className="my-4">
+    <form action={action} className="my-4 flex-grow">
       { extraInputs }
       
       <input 

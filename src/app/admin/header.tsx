@@ -88,7 +88,7 @@ export default function AdminLayoutHeader({ user }: Readonly<{ user: UserEntity 
       </header>
 
       { user && <>
-        <div className={`fixed w-full left-0 top-0 h-full bg-color-on-surface/[.6] lg:hidden ${!showNav && 'hidden'}`}></div>
+        <div className={`fixed w-full left-0 top-0 h-full bg-black/[.4] lg:hidden ${!showNav && 'hidden'}`}></div>
 
         <nav
           className={`fixed transition-all duration-300 w-3/4 top-0 h-full overflow-auto bg-foreground border-r 
