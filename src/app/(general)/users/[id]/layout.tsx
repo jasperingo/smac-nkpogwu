@@ -1,6 +1,8 @@
 import { cache } from 'react';
+import Link from 'next/link';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { UserLock } from 'lucide-react';
 import { getSession } from '@/utils/session';
 import { UserDefaultImage } from '@/models/entity';
 import { findUserById } from '@/services/user-service';
@@ -51,7 +53,19 @@ export default async function UserLayout({ params, children }: Readonly<{ params
       <ItemPageTopDetails 
         imageUrl={user.imageUrl ?? UserDefaultImage} 
         title={`${user.title ?? ''} ${user.firstName} ${user.lastName} ${user.otherName ?? ''}`} 
-      />
+      >
+        {
+          session?.userId === id && user.isAdministrator && (
+            <Link 
+              href="/admin" 
+              className="flex gap-2 items-center w-fit mt-2 bg-primary text-on-primary px-4 py-2 hover:bg-primary-variant"
+            >
+              <UserLock />
+              <span>Admin portal</span>
+            </Link>
+          )
+        }
+      </ItemPageTopDetails>
 
       <TabList 
         path={`/users/${user.id}`}
