@@ -14,9 +14,13 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
 
   const { page } = await searchParams;
 
-  const program = (await findProgramAndUserAndGroupById(id))!;
+  const program = await findProgramAndUserAndGroupById(id);
 
-  const schedules = await findProgramSchedulesByProgramId(id, resolvePaginationParams(page));
+  if (program === null) {
+    return null;
+  }
+
+  const schedules = await findProgramSchedulesByProgramId(id, resolvePaginationParams(page, 100));
 
   const scheduleIds = schedules.data.map((s) => s.id);
 
