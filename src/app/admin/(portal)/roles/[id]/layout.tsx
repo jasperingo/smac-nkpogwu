@@ -18,7 +18,12 @@ export default async function AdminRoleLayout({ params, children }: Readonly<{ p
 
   return (
     <>
-      <ItemPageTopDetails id={role.roles.id} title={`${ role.roles.name }${ role.groups ? ` (${role.groups.name})` : '' }`} />
+      <ItemPageTopDetails 
+        id={role.roles.id} 
+        createdDatetime={role.roles.createdDatetime}
+        updatedDatetime={role.roles.updatedDatetime}
+        title={`${ role.roles.name }${ role.groups ? ` (${role.groups.name})` : '' }`} 
+      />
 
       <TabList 
         path={`/admin/roles/${id}`}

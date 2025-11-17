@@ -60,7 +60,9 @@ export async function findGroups(dto: FindGroupsDto, pagination: PaginationDto):
     .limit(pagination.pageLimit);
 
   if (dto.orderBySpotlightedTop) {
-    groupsQuery.orderBy(desc(groupsTable.spotlighted));
+    groupsQuery.orderBy(desc(groupsTable.spotlighted), desc(groupsTable.createdDatetime));
+  } else {
+    groupsQuery.orderBy(desc(groupsTable.createdDatetime));
   }
 
   const groups = await groupsQuery.offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));

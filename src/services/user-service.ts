@@ -1,6 +1,6 @@
 'use server'
 
-import { and, count, eq, getTableColumns, isNull, like, not, or, sql } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, isNull, like, not, or, sql } from 'drizzle-orm';
 import { hashExecute } from '@/utils/hash';
 import { UserEntity } from '@/models/entity';
 import { database } from '@/database/connection';
@@ -66,6 +66,7 @@ export async function findUsers(dto: FindUsersDto, pagination: PaginationDto): P
   const users = await database.select()
     .from(usersTable)
     .where(where)
+    .orderBy(desc(usersTable.createdDatetime))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 

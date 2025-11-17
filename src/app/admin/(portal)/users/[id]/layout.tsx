@@ -21,6 +21,8 @@ export default async function AdminUserLayout({ params, children }: Readonly<{ p
     <>
       <ItemPageTopDetails 
         id={user.id} 
+        createdDatetime={user.createdDatetime}
+        updatedDatetime={user.updatedDatetime}
         imageUrl={user.imageUrl ?? UserDefaultImage} 
         title={`${user.title ?? ''} ${user.firstName} ${user.lastName} ${user.otherName ?? ''}`} 
       />

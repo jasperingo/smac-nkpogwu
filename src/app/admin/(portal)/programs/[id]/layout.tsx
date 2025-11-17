@@ -19,7 +19,13 @@ export default async function AdminProgramLayout({ params, children }: Readonly<
 
   return (
     <>
-      <ItemPageTopDetails id={program.id} title={program.name} imageUrl={program.imageUrl ?? ProgramDefaultImage} />
+      <ItemPageTopDetails 
+        id={program.id} 
+        title={program.name} 
+        createdDatetime={program.createdDatetime}
+        updatedDatetime={program.updatedDatetime}
+        imageUrl={program.imageUrl ?? ProgramDefaultImage} 
+      />
 
       <TabList 
         path={`/admin/programs/${program.id}`}

@@ -19,7 +19,13 @@ export default async function AdminGroupLayout({ params, children }: Readonly<{ 
 
   return (
     <>
-      <ItemPageTopDetails id={group.id} title={group.name} imageUrl={group.imageUrl ?? GroupDefaultImage} />
+      <ItemPageTopDetails 
+        id={group.id} 
+        title={group.name} 
+        createdDatetime={group.createdDatetime}
+        updatedDatetime={group.updatedDatetime}
+        imageUrl={group.imageUrl ?? GroupDefaultImage} 
+      />
       
       <TabList 
         path={`/admin/groups/${group.id}`}

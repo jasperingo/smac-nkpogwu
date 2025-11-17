@@ -75,6 +75,7 @@ export async function findProgramsAndUsersAndGroups(
     .leftJoin(usersTable, eq(usersTable.id, programsTable.userId))
     .leftJoin(groupsTable, eq(groupsTable.id, programsTable.groupId))
     .where(where)
+    .orderBy(desc(programsTable.createdDatetime))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 
