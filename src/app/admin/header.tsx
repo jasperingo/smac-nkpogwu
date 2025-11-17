@@ -12,6 +12,7 @@ import {
   X 
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { UserEntity } from '@/models/entity';
@@ -58,7 +59,7 @@ export default function AdminLayoutHeader({ user }: Readonly<{ user: UserEntity 
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full bg-foreground border-b"> 
+      <header className="fixed z-50 top-0 left-0 w-full bg-foreground border-b"> 
         <div className="container mx-auto p-4 flex gap-4 items-center">
           { 
             user && (
@@ -69,7 +70,14 @@ export default function AdminLayoutHeader({ user }: Readonly<{ user: UserEntity 
             )
           }
 
-          <div className="w-8 h-8 bg-orange-500"></div>
+          <Image 
+            width="20" 
+            height="20" 
+            className="w-10 h-10"
+            alt="Logo iamge"
+            src="/images/logo.png"
+          />
+
           <h1 className="flex-grow font-bold text-primary text-xl sm:hidden">SMAC</h1>
           <h1 className="flex-grow font-bold text-primary text-xl hidden sm:block md:text-3xl">ST Matthew's Anglican Church</h1>
 

@@ -32,7 +32,7 @@ export type CreateGroupDto = Pick<GroupEntity, 'name' | 'privacy' | 'spotlighted
 
 export type UpdateGroupDto = Omit<Partial<CreateGroupDto & Pick<GroupEntity, 'imageUrl'>>, 'parentId'>;
 
-export type FindGroupsDto = { search?: string; privacy?: GroupEntity['privacy'];  orderBySpotlightedTop?: boolean; };
+export type FindGroupsDto = { search?: string; privacy?: GroupEntity['privacy'];  orderBySpotlightedTop?: boolean; spotlighted?: boolean;  };
 
 export type CreateRoleDto = Pick<RoleEntity, 'name' | 'contactable' | 'description' | 'groupId'>;
 

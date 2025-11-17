@@ -15,7 +15,7 @@ export function ProgramScheduleListItemDrop({ title, color, children }: { title:
         onClick={() => setOpen(!open)}
         className={`w-full p-2 font-bold text-left text-white border-2 flex gap-2 items-center 
           ${color === 'red' ? 'bg-red-600 border-red-600 hover:bg-red-400' 
-            : (color === 'blue' ? 'bg-blue-600 border-blue-600 hover:bg-blue-400' : 'bg-purple-600 border-purple-600 hover:bg-purple-purple')}`}
+            : (color === 'blue' ? 'bg-blue-600 border-blue-600 hover:bg-blue-400' : 'bg-purple-600 border-purple-600 hover:bg-purple-400')}`}
       >
         <span className="flex-grow">{ title }</span>
         { open ? <ChevronDown /> : <ChevronRight />}

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { CalendarFold, Home, LogIn, LogOut, Menu, Phone, Shapes, User, X } from 'lucide-react';
@@ -49,9 +50,16 @@ export default function GeneralLayoutHeader({ user }: Readonly<{ user: UserEntit
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-foreground border-b"> 
-      <Link href="/" className="container mx-auto px-4 pt-4 flex gap-4 items-center justify-center">
-        <div className="w-8 h-8 bg-orange-500"></div>
+    <header className="fixed z-50 top-0 left-0 w-full bg-foreground border-b"> 
+      <Link href="/" className="container mx-auto px-4 pt-4 flex gap-2 items-center justify-center">
+        <Image 
+          width="20" 
+          height="20" 
+          className="w-10 h-10"
+          alt="Logo iamge"
+          src="/images/logo.png"
+        />
+
         <h1 className="font-bold text-primary text-xl md:text-3xl">
           <span>ST Matthew's Anglican Church</span>
           <span className="hidden md:inline"> (Nkpogwu Deanery)</span>

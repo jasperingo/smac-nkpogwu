@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/utils/session';
 import Breadcrumbs from '@/components/breadcrumbs';
@@ -16,13 +15,7 @@ export default async function AdminPortalLayout({ children }: Readonly<{ childre
   }
   
   if (!session.userIsAdmin) {
-    return (
-      <div className="my-4 p-4 bg-foreground text-center">
-        <p className="mb-4 font-bold text-xl">User is not an administrator</p>
-
-        <Link href="/" className="py-2 px-4 text-on-primary bg-primary border border-primary hover:bg-primary-variant">Main website</Link>
-      </div>
-    );
+    redirect('/');
   }
 
   return (

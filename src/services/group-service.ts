@@ -88,7 +88,11 @@ export async function findGroupsAndParents(
     );
 
   if (dto.privacy) {
-    where = where ? and(where, eq(groupsTable.privacy, dto.privacy)) : eq(groupsTable.privacy, dto.privacy);
+    where = and(where, eq(groupsTable.privacy, dto.privacy));
+  }
+
+  if (dto.spotlighted !== undefined) {
+    where = and(where, eq(groupsTable.spotlighted, dto.spotlighted));
   }
 
   const count = await database.$count(groupsTable, where);
