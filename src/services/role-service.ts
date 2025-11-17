@@ -1,6 +1,6 @@
 'use server'
 
-import { and, eq, isNull, like, or, sql } from 'drizzle-orm';
+import { and, asc, eq, isNull, like, or, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
 import { groupsTable, rolesTable } from '@/database/schema';
 import { GroupEntity, RoleEntity } from '@/models/entity';
@@ -62,6 +62,7 @@ export async function findRolesAndGroup(
     .from(rolesTable)
     .leftJoin(groupsTable, eq(rolesTable.groupId, groupsTable.id))
     .where(where)
+    .orderBy(asc(rolesTable.priority))
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
 

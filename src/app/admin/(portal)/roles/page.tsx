@@ -19,12 +19,13 @@ export default async function AdminRolesPage({ searchParams }: { searchParams: P
       <SearchForm value={search} action="/admin/roles" placeholder="Search by ID or Name" />
 
       <GenericTable
-        headings={['ID', 'Name', 'Group', 'Is contact', 'Action']}
+        headings={['ID', 'Name', 'Priority', 'Group', 'Is contact', 'Action']}
         items={roles.data}
         renderItem={(role) => (
            <tr key={role.roles.id}>
             <td className="p-2 border">{ role.roles.id }</td>
             <td className="p-2 border">{ role.roles.name }</td>
+            <td className="p-2 border">{ role.roles.priority }</td>
             <td className="p-2 border">{ role.groups ? role.groups.name : '(not set)' }</td>
             <td className="p-2 border">{ role.roles.contactable ? 'Yes' : 'No' }</td>
             <td className="p-2 border">

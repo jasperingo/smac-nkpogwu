@@ -127,6 +127,20 @@
       "when": 1762259363468,
       "tag": "0017_nostalgic_wrecking_crew",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1763414240262,
+      "tag": "0018_blue_puma",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1763414274746,
+      "tag": "0019_foamy_yellow_claw",
+      "breakpoints": true
     }
   ]
 }

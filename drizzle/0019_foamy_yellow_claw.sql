@@ -1,0 +1,1 @@
+ALTER TABLE `roles` MODIFY COLUMN `priority` int NOT NULL DEFAULT 1;

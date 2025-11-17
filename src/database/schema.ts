@@ -5,6 +5,7 @@ import {
   date, 
   datetime, 
   foreignKey, 
+  int, 
   mysqlEnum, 
   mysqlTable, 
   serial, 
@@ -83,6 +84,7 @@ export const rolesTable = mysqlTable('roles', {
   name: varchar({ length: 255 }).notNull(),
   description: text(),
   contactable: boolean().notNull().default(false),
+  priority: int().notNull().default(1),
 }, (table) => [
   unique().on(table.name, table.groupId),
   foreignKey({

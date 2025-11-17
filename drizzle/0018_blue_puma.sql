@@ -1,0 +1,1 @@
+ALTER TABLE `roles` ADD `priority` int DEFAULT 1;

@@ -32,6 +32,7 @@ export default function FormInputField(
     required = true,
     minLength,
     maxLength,
+    step,
     min,
     max,
   }: { 
@@ -46,6 +47,7 @@ export default function FormInputField(
     autoComplete?: string; 
     minLength?: number; 
     maxLength?: number; 
+    step?: number; 
     min?: string | number; 
     max?: string | number; 
   }
@@ -63,6 +65,7 @@ export default function FormInputField(
         name={name} 
         min={min}
         max={max}
+        step={step}
         minLength={minLength}
         maxLength={maxLength}
         id={`${id}-input`} 

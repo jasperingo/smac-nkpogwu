@@ -34,7 +34,7 @@ export type UpdateGroupDto = Omit<Partial<CreateGroupDto & Pick<GroupEntity, 'im
 
 export type FindGroupsDto = { search?: string; privacy?: GroupEntity['privacy'];  orderBySpotlightedTop?: boolean; spotlighted?: boolean;  };
 
-export type CreateRoleDto = Pick<RoleEntity, 'name' | 'contactable' | 'description' | 'groupId'>;
+export type CreateRoleDto = Pick<RoleEntity, 'name' | 'priority' | 'contactable' | 'description' | 'groupId'>;
 
 export type UpdateRoleDto = Omit<Partial<CreateRoleDto>, 'groupId'>;
 
