@@ -16,7 +16,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
           { term: 'Last name', details: user.lastName, displayRow: true },
           { term: 'Other name', details: user.otherName ?? '(Not set)', displayRow: true },
           { term: 'Gender', details: user.gender, displayRow: true },
-          { term: 'Date of Birth', details: user.dateOfBirth?.toLocaleDateString()?.substring(3) ?? '(Not set)', displayRow: true },
+          { term: 'Date of Birth', details: user.dateOfBirth?.toLocaleDateString()?.substring(0, 5) ?? '(Not set)', displayRow: true },
           { term: 'Email', details: user.emailAddress ?? '(Not set)', displayRow: true },
           { term: 'Phone', details: user.phoneNumber ?? '(Not set)', displayRow: true },
           { term: 'Membership number', details: user.membershipNumber ?? '(Not set)', displayRow: true },
