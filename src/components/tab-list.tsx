@@ -14,7 +14,9 @@ export default function TabList({ items, path = '' }: Readonly<{ path?: string; 
             return null;
           }
 
-          const hrefNoQuery = i.href.substring(0, i.href.indexOf('?'));
+          const indexOfQuery = i.href.indexOf('?');
+
+          const hrefNoQuery = indexOfQuery === -1 ? i.href : i.href.substring(0, indexOfQuery);
 
           const pathAndHref = path + hrefNoQuery;
 
