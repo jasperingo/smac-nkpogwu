@@ -103,7 +103,11 @@ export async function programUpdate(state: FormState, formData: FormData): Promi
 export default async function AdminProgramPage({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);
 
-  const program = (await findProgramAndUserAndGroupById(id))!;
+  const program = await findProgramAndUserAndGroupById(id);
+
+  if (program === null) {
+    return null;
+  }
 
   return (
     <section className="bg-foreground p-4">

@@ -2,6 +2,6 @@
 
 import RetriableError from '@/components/retriable-error';
 
-export default function AdminError({ error, reset }: { error: Error & { digest?: string }; reset: () => void; }) {
+export default function ProgramError({ error, reset }: { error: Error & { digest?: string }; reset: () => void; }) { 
   return <RetriableError error={error} reset={reset} />
 }

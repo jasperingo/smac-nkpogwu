@@ -109,7 +109,13 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
 export default async function AdminRolePage({ params }: Readonly<{ params: Promise<{ id: string }>; }>) {
   const id = Number((await params).id);
   
-  const { roles, groups } = (await findRoleAndGroupById(id))!;
+  const role = await findRoleAndGroupById(id);
+
+  if (role === null) {
+    return null;
+  }
+
+  const { roles, groups } = role;
 
   return (
     <section className="bg-foreground p-4">
