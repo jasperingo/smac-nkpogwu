@@ -2,7 +2,7 @@ import Link from 'next/link';
 import RoundedImage from './rounded-image';
 import { GroupDefaultImage, GroupEntity } from '@/models/entity';
 
-export default function GroupListItem({ group }: { group: { groups: GroupEntity; parent: GroupEntity | null;} }) {
+export default function GroupListItem({ group }: { group: { groups: GroupEntity; parent?: GroupEntity | null; } }) {
   return (
     <li className="mb-4 md:mb-0">
       <Link href={`/groups/${group.groups.id}`} className="border p-2 flex gap-2 items-center">

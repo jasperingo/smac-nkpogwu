@@ -8,12 +8,12 @@ export default function ProgramListItem(
   }: { 
     program: {
       programs: ProgramEntity & {
-        coordinators: string;
-        startDatetime: Date;
-        endDatetime: Date;
+        coordinators?: string;
+        startDatetime?: Date;
+        endDatetime?: Date;
       };
-      users: UserEntity | null;
-      groups: GroupEntity | null;
+      users?: UserEntity | null;
+      groups?: GroupEntity | null;
     } 
   }
 ) {

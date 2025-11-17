@@ -147,10 +147,7 @@ export async function findProgramsWithScheduledDatetimesByUserId(
   
   const where = eq(programsTable.userId, userId);
   
-  const programsCount = await database.select({ value: count(programsTable.id) })
-    .from(programsTable)
-    .leftJoin(usersTable, eq(usersTable.id, programsTable.userId))
-    .where(where);
+  const programsCount = await database.$count(programsTable, where);
 
   const programs = await database.select({
     ...getTableColumns(programsTable),
@@ -159,7 +156,6 @@ export async function findProgramsWithScheduledDatetimesByUserId(
   }).from(programsTable)
     .leftJoin(startDateSQ, eq(startDateSQ.programId, programsTable.id))
     .leftJoin(endDateSQ, eq(endDateSQ.programId, programsTable.id))
-    .leftJoin(usersTable, eq(usersTable.id, programsTable.userId))
     .where(where)
     .orderBy(desc(startDateSQ.startDatetime))
     .limit(pagination.pageLimit)
@@ -167,9 +163,54 @@ export async function findProgramsWithScheduledDatetimesByUserId(
 
   return {
     data: programs,
-    totalItems: programsCount[0].value,
+    totalItems: programsCount,
     currentPage: pagination.page,
-    totalPages: calculatePaginationPages(programsCount[0].value, pagination.pageLimit),
+    totalPages: calculatePaginationPages(programsCount, pagination.pageLimit),
+  };
+}
+
+export async function findProgramsWithScheduledDatetimesByGroupId(
+  groupId: number,
+  pagination: PaginationDto
+): Promise<PaginatedListDto<ProgramEntity & { startDatetime: Date; endDatetime: Date; }>> {
+
+  const startDateSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    startDatetime: sql`MIN(${programSchedulesTable.startDatetime})`.mapWith(programSchedulesTable.startDatetime).as('startDatetime')
+  })
+    .from(programSchedulesTable)
+    .groupBy(programSchedulesTable.programId)
+    .as('sdsq');
+  
+  const endDateSQ = database.select({ 
+    programId: programSchedulesTable.programId, 
+    endDatetime: sql`MAX(${programSchedulesTable.endDatetime})`.mapWith(programSchedulesTable.endDatetime).as('endDatetime') 
+  })
+    .from(programSchedulesTable)
+    .groupBy(programSchedulesTable.programId)
+    .as('edsq');
+  
+  const where = eq(programsTable.groupId, groupId);
+  
+  const programsCount = await database.$count(programsTable, where);
+
+  const programs = await database.select({
+    ...getTableColumns(programsTable),
+    startDatetime: startDateSQ.startDatetime,
+    endDatetime: endDateSQ.endDatetime,
+  }).from(programsTable)
+    .leftJoin(startDateSQ, eq(startDateSQ.programId, programsTable.id))
+    .leftJoin(endDateSQ, eq(endDateSQ.programId, programsTable.id))
+    .where(where)
+    .orderBy(desc(startDateSQ.startDatetime))
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return {
+    data: programs,
+    totalItems: programsCount,
+    currentPage: pagination.page,
+    totalPages: calculatePaginationPages(programsCount, pagination.pageLimit),
   };
 }
 

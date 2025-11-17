@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/utils/session';
-import { GroupDefaultImage } from '@/models/entity';
 import { findGroupById } from '@/services/group-service';
+import { GroupDefaultImage, GroupEntityPrivacy } from '@/models/entity';
 import TabList from '@/components/tab-list';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 
@@ -18,6 +18,10 @@ export default async function GroupLayout({ params, children }: Readonly<{ param
 
   if (group === null) {
     notFound();
+  }
+
+  if (group.privacy === GroupEntityPrivacy[1] && session === null) {
+    redirect('/sign-in');
   }
 
   return (
