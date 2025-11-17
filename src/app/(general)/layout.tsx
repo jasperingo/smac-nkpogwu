@@ -27,7 +27,7 @@ export default async function GeneralLayout({ children }: Readonly<{ children: R
       </main>
 
       <footer className="w-full bg-primary text-on-primary absolute bottom-0">
-        <div className="container p-8 lg:flex lg:items-center lg:justify-between lg:gap-8 lg:flex-row-reverse">
+        <div className="container mx-auto p-8 lg:flex lg:items-center lg:justify-between lg:gap-8 lg:flex-row-reverse">
           <ul className="mb-8 lg:mb-0">
             <li className="mb-4">
               <div className="flex gap-2 items-start">
