@@ -103,6 +103,10 @@ export async function programUpdate(state: FormState, formData: FormData): Promi
 export default async function AdminProgramPage({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);
 
+  if (isNaN(id)) {
+    return null;
+  }
+  
   const program = await findProgramAndUserAndGroupById(id);
 
   if (program === null) {

@@ -5,6 +5,10 @@ import SimpleDescriptionList from '@/components/simple-description-list';
 export default async function GroupPage({ params }: Readonly<{ params: Promise<{ id: string }>; }>) {
   const id = Number((await params).id);
 
+  if (isNaN(id)) {
+    return null;
+  }
+  
   const group = await findGroupAndParentById(id);
 
   if (group === null) {

@@ -28,7 +28,15 @@ export async function userResetPassword(state: FormState, formData: FormData): P
 export default async function AdminUserResetPasswordPage({ params }: { params: Promise<{ id: string }>;  }) {
   const id = Number((await params).id);
 
-  const user = (await findUserById(id))!;
+  if (isNaN(id)) {
+    return null;
+  }
+  
+  const user = await findUserById(id);
+
+  if (user === null) {
+    return null;
+  }
 
   if (user.emailAddress === null && user.phoneNumber === null) {
     redirect(`/admin/users/${id}`);

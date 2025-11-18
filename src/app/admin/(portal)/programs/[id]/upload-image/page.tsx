@@ -45,7 +45,15 @@ export async function programImageUpload(state: FormState, formData: FormData): 
 export default async function AdminProgramUploadImagePage({ params }: { params: Promise<{ id: string }>;  }) {
   const id = Number((await params).id);
 
-  const program = (await findProgramById(id))!;
+  if (isNaN(id)) {
+    return null;
+  }
+  
+  const program = await findProgramById(id);
+
+  if (program === null) {
+    return null;
+  }
 
   return (
     <section className="bg-foreground p-4">

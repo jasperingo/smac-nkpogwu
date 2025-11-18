@@ -12,6 +12,10 @@ import ProgramScheduleListItem from '@/components/program-schedule-list-item';
 export default async function ProgramPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ page?: string; }>; }) {
   const id = Number((await params).id);
 
+  if (isNaN(id)) {
+    return null;
+  }
+
   const { page } = await searchParams;
 
   const program = await findProgramAndUserAndGroupById(id);

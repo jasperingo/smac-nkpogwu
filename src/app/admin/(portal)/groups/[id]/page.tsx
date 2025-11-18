@@ -106,6 +106,10 @@ export async function groupUpdate(state: FormState, formData: FormData): Promise
 export default async function AdminGroupPage({ params }: Readonly<{ params: Promise<{ id: string }>; }>) {
   const id = Number((await params).id);
 
+  if (isNaN(id)) {
+    return null;
+  }
+
   const group = await findGroupAndParentById(id);
 
   if (group === null) {

@@ -109,6 +109,10 @@ export async function roleUpdate(state: FormState, formData: FormData): Promise<
 export default async function AdminRolePage({ params }: Readonly<{ params: Promise<{ id: string }>; }>) {
   const id = Number((await params).id);
   
+  if (isNaN(id)) {
+    return null;
+  }
+  
   const role = await findRoleAndGroupById(id);
 
   if (role === null) {

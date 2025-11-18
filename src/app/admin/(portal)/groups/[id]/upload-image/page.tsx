@@ -45,7 +45,15 @@ export async function groupImageUpload(state: FormState, formData: FormData): Pr
 export default async function AdminGroupUploadImagePage({ params }: { params: Promise<{ id: string }>;  }) {
   const id = Number((await params).id);
 
-  const group = (await findGroupById(id))!;
+  if (isNaN(id)) {
+    return null;
+  }
+  
+  const group = await findGroupById(id);
+
+  if (group === null) {
+    return null;
+  }
 
   return (
     <section className="bg-foreground p-4">

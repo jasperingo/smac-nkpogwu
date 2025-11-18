@@ -4,6 +4,10 @@ import SimpleDescriptionList from '@/components/simple-description-list';
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);
 
+  if (isNaN(id)) {
+    return null;
+  }
+  
   const user = await findUserById(id);
 
   if (user === null) {
