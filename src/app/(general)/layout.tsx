@@ -32,14 +32,14 @@ export default async function GeneralLayout({ children }: Readonly<{ children: R
             <li className="mb-4">
               <div className="flex gap-2 items-start">
                 <Facebook />
-                <a href="https://www.facebook.com" target="_blank">Facebook</a>
+                <a href="https://www.facebook.com/smacnkpogwuph" target="_blank">Facebook</a>
               </div>
             </li>
 
             <li className="mb-4">
               <div className="flex gap-2 items-start">
                 <Youtube />
-                <a href="https://www.youtube.com" target="_blank">YouTube</a>
+                <a href="https://www.youtube.com/@Smacnkpogwudndn" target="_blank">YouTube</a>
               </div>
             </li>
 
