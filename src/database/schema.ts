@@ -16,11 +16,14 @@ import {
 
 export const usersTableGenderEnum = ['MALE', 'FEMALE'] as const;
 
+export const usersTableStatusEnum = ['PENDING', 'ACTIVE', 'INACTIVE'] as const;
+
 export const usersTable = mysqlTable('users', {
   id: serial().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   isAdministrator: boolean('is_administrator').notNull().default(false),
+  status: mysqlEnum(usersTableStatusEnum).notNull().default(usersTableStatusEnum[0]),
   title: varchar({ length: 255 }),
   firstName: varchar('first_name', { length: 255 }).notNull(),
   lastName: varchar('last_name', { length: 255 }).notNull(),

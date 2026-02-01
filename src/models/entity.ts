@@ -10,12 +10,15 @@ import {
   roleAssigneesTable, 
   rolesTable, 
   usersTable, 
-  usersTableGenderEnum 
+  usersTableGenderEnum, 
+  usersTableStatusEnum
 } from '@/database/schema';
 
 export const UserDefaultImage = '/images/user.png';
 
 export type UserEntity = InferSelectModel<typeof usersTable>;
+
+export const UserEntityStatus = usersTableStatusEnum;
 
 export const UserEntityGender = usersTableGenderEnum;
 
