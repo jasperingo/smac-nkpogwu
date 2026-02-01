@@ -2,8 +2,9 @@ import z from 'zod';
 import { redirect } from 'next/navigation';
 import AdminIndexForm, { FormState } from './form';
 import { getSession, setSession } from '@/utils/session';
-import { authenticateByEmailAddress, authenticateByIdentifier, authenticateByPhoneNumber } from '@/services/authentication-service';
+import { authenticateByIdentifier } from '@/services/authentication-service';
 import { authenticationIdentifierValidation, authenticationPasswordValidation } from '@/validations/authentication-validation';
+import { UserEntityStatus } from '@/models/entity';
 
 const validationSchema = z.object({
   identifier: authenticationIdentifierValidation,
@@ -38,9 +39,19 @@ export async function adminSignIn(state: FormState, formData: FormData): Promise
   const user = await authenticateByIdentifier(identifier, password);
 
   if (user !== null) {
-    await setSession({ userId: user.id, userIsAdmin: user.isAdministrator });
+    if (user.status === UserEntityStatus[1]) {
+      await setSession({ userId: user.id, userIsAdmin: user.isAdministrator });
 
-    redirect('/admin/dashboard');
+      redirect('/admin/dashboard');
+    } else {
+      return { 
+        values: formValues,
+        errors: {
+          message: 'User is not activated', 
+          fields: { id: null, password: null } 
+        },
+      };
+    }
   }
 
   return { 

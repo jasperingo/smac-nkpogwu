@@ -16,20 +16,20 @@ async function authenticate(user: UserEntity | null, password: string) {
   return null;
 }
 
-export async function authenticateByIdentifier(identifier: string, password: string) {
-  return identifier.includes('@') 
-    ? await authenticateByEmailAddress(identifier, password)
-    : await authenticateByPhoneNumber(identifier, password);
-}
-
-export async function authenticateByPhoneNumber(phoneNumber: string, password: string) {
+async function authenticateByPhoneNumber(phoneNumber: string, password: string) {
   const user = await findUserByPhoneNumber(phoneNumber);
 
   return authenticate(user, password);
 }
 
-export async function authenticateByEmailAddress(emailAddress: string, password: string) {
+async function authenticateByEmailAddress(emailAddress: string, password: string) {
   const user = await findUserByEmailAddress(emailAddress);
   
   return authenticate(user, password);
+}
+
+export async function authenticateByIdentifier(identifier: string, password: string) {
+  return identifier.includes('@') 
+    ? authenticateByEmailAddress(identifier, password)
+    : authenticateByPhoneNumber(identifier, password);
 }
