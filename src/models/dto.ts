@@ -10,6 +10,7 @@ export type PaginatedListDto<T> = {
 export type PaginationDto = { page: number; pageLimit: number; };
 
 export type CreateUserDto = Pick<UserEntity, 
+  | 'status'
   | 'title' 
   | 'firstName' 
   | 'lastName' 

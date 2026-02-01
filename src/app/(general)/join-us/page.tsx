@@ -1,11 +1,11 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
+import SignUpForm, { FormState } from './form';
 import { 
   userDateOfBirthValidation, 
   userEmailAddressValidation, 
   userFirstNameValidation, 
-  userGenderValidation, 
-  userIsAdministratorValidation, 
+  userGenderValidation,
   userLastNameValidation, 
   userMembershipNumberValidation, 
   userMembershipStartDateValidation, 
@@ -13,9 +13,9 @@ import {
   userPhoneNumberValidation, 
   userTitleValidation
 } from '@/validations/user-validation';
+import { getSession } from '@/utils/session';
 import { UserEntityStatus } from '@/models/entity';
 import { createUser } from '@/services/user-service';
-import AdminCreateUserForm, { type FormState } from './form';
 
 const validationSchema = z.object({
   title: userTitleValidation,
@@ -23,7 +23,6 @@ const validationSchema = z.object({
   lastName: userLastNameValidation,
   otherName: userOtherNameValidation,
   gender: userGenderValidation,
-  isAdministrator: userIsAdministratorValidation,
   emailAddress: userEmailAddressValidation,
   phoneNumber: userPhoneNumberValidation,
   dateOfBirth: userDateOfBirthValidation,
@@ -35,7 +34,7 @@ const validationSchema = z.object({
   error: 'Membership start date should only be provided when membership number is provided', 
 });
 
-export async function userCreate(state: FormState, formData: FormData): Promise<FormState> {
+export async function userSignUp(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const title = formData.get('title') as string;
@@ -43,7 +42,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
   const lastName = formData.get('lastName') as string;
   const otherName = formData.get('otherName') as string;
   const gender = formData.get('gender') as string;
-  const isAdministrator = formData.get('isAdministrator') as string;
   const emailAddress = formData.get('emailAddress') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
   const dateOfBirth = formData.get('dateOfBirth') as string;
@@ -56,7 +54,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     lastName,
     otherName,
     gender,
-    isAdministrator,
     emailAddress,
     phoneNumber,
     dateOfBirth,
@@ -64,7 +61,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     membershipStartDatetime,
   };
   
-  const isAdministratorBoolean = isAdministrator === 'true';
   const dateOfBirthDate = new Date(dateOfBirth);
   const membershipStartDatetimeDate = new Date(membershipStartDatetime);
 
@@ -77,7 +73,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     emailAddress,
     phoneNumber,
     membershipNumber,
-    isAdministrator: isAdministratorBoolean,
     dateOfBirth: dateOfBirth.length === 0 ? '' : dateOfBirthDate,
     membershipStartDatetime: membershipStartDatetime.length === 0 ? '' : membershipStartDatetimeDate,
   });
@@ -86,6 +81,7 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     const errors = z.flattenError(validatedResult.error);
 
     return { 
+      success: false,
       values: formStateValues,
       errors: { 
         message: null, 
@@ -95,7 +91,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
           otherName: errors.fieldErrors.otherName?.[0] ?? null,
           gender: errors.fieldErrors.gender?.[0] ?? null,
-          isAdministrator: errors.fieldErrors.isAdministrator?.[0] ?? null,
           emailAddress: errors.fieldErrors.emailAddress?.[0] ?? null,
           phoneNumber: errors.fieldErrors.phoneNumber?.[0] ?? null,
           dateOfBirth: errors.fieldErrors.dateOfBirth?.[0] ?? null,
@@ -106,15 +101,13 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
     };
   }
 
-  let userId: number;
-
   try {
-    userId = await createUser({
-      status: UserEntityStatus[1],
+    await createUser({
+      status: UserEntityStatus[0],
       firstName, 
       lastName,
       gender: gender as any,
-      isAdministrator: isAdministratorBoolean,
+      isAdministrator: false,
       title: title.length === 0 ? null : title,
       otherName: otherName.length === 0 ? null : otherName,
       emailAddress: emailAddress.length === 0 ? null : emailAddress.toLowerCase(),
@@ -124,10 +117,42 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       membershipStartDatetime: membershipStartDatetime.length === 0 ? null : membershipStartDatetimeDate,
       password: emailAddress.length === 0 && phoneNumber.length === 0 ? null : process.env.USER_DEFAULT_PASSWORD!,
     });
-  } catch (error) {
-    console.error('Error creating user: ', error);
 
     return { 
+      success: true,
+      values: { 
+        title: '', 
+        firstName: '', 
+        lastName: '', 
+        otherName: '', 
+        gender: '', 
+        emailAddress: '', 
+        phoneNumber: '', 
+        dateOfBirth: '',
+        membershipNumber: '',
+        membershipStartDatetime: '',
+      },
+      errors: { 
+        message: null, 
+        fields: { 
+          title: null, 
+          firstName: null, 
+          lastName: null, 
+          otherName: null, 
+          gender: null, 
+          emailAddress: null, 
+          phoneNumber: null, 
+          dateOfBirth: null,
+          membershipNumber: null,
+          membershipStartDatetime: null,
+        },
+      },
+    };
+  } catch (error) {
+    console.error('Error creating user from sign up: ', error);
+
+    return { 
+      success: false,
       values: formStateValues,
       errors: { 
         fields: { 
@@ -136,7 +161,6 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
           lastName: null, 
           otherName: null, 
           gender: null, 
-          isAdministrator: null, 
           emailAddress: null, 
           phoneNumber: null, 
           dateOfBirth: null,
@@ -147,15 +171,18 @@ export async function userCreate(state: FormState, formData: FormData): Promise<
       },
     };
   }
-
-  redirect(`/admin/users/${userId}`);
 }
 
-export default async function AdminCreateUserPage() {
+export default async function SignUpPage() {
+  const session = await getSession();
+   
+  if (session !== null) {
+    redirect(`/users/${session.userId}`);
+  }
 
   return (
     <section className="bg-foreground p-4">
-      <AdminCreateUserForm action={userCreate} />
+      <SignUpForm action={userSignUp} />
     </section>
   );
 }

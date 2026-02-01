@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { CalendarFold, Home, LogIn, LogOut, Menu, Phone, Shapes, User, X } from 'lucide-react';
+import { CalendarFold, DoorOpen, Home, LogIn, LogOut, Menu, Phone, Shapes, User, X } from 'lucide-react';
 import { UserEntity } from '@/models/entity';
 import SearchForm from '@/components/search-form';
 
@@ -46,7 +46,7 @@ export default function GeneralLayoutHeader({ user }: Readonly<{ user: UserEntit
     ...baseNavItems, 
     ...(user !== null 
       ? [ { icon: User, href: `/users/${user.id}`, text: 'Profile' }, { icon: LogOut, href: '/sign-out', text: 'Sign out' } ]
-      : [ { icon: LogIn, href: '/sign-in', text: 'Sign in' } ] )
+      : [ { icon: DoorOpen, href: '/join-us', text: 'Join Us' }, { icon: LogIn, href: '/sign-in', text: 'Sign in' } ] )
   ];
 
   return (
