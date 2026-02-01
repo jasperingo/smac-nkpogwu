@@ -1,6 +1,6 @@
 import z from 'zod';
-import { UserEntityGender } from '@/models/entity';
 import { userConstraints } from '@/models/constraints';
+import { UserEntityGender, UserEntityStatus } from '@/models/entity';
 import { userExistByEmailAddress, userExistByPhoneNumber } from '@/services/user-service';
 
 export const userFirstNameValidation = z.string().nonempty('This field is required');
@@ -10,6 +10,8 @@ export const userLastNameValidation = z.string().nonempty('This field is require
 export const userTitleValidation = z.union([z.literal(''), z.string()]);
 
 export const userOtherNameValidation = z.union([z.literal(''), z.string()]);
+
+export const userStatusValidation = z.enum(UserEntityStatus);
 
 export const userGenderValidation = z.enum(UserEntityGender);
 

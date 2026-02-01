@@ -10,6 +10,7 @@ import {
   userMembershipStartDateValidation, 
   userOtherNameValidation, 
   userPhoneNumberValidation, 
+  userStatusValidation, 
   userTitleValidation
 } from '@/validations/user-validation';
 import { getDateInputString } from '@/utils/datetime';
@@ -17,6 +18,7 @@ import AdminUpdateUserForm, { type FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
 
 const validationSchema = z.object({
+  status: userStatusValidation.optional(),
   title: userTitleValidation.optional(),
   firstName: userFirstNameValidation.optional(),
   lastName: userLastNameValidation.optional(),
@@ -38,6 +40,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   'use server'
 
   const userId = Number(formData.get('userId'));
+  const status = formData.get('status') as string;
   const title = formData.get('title') as string;
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
@@ -51,6 +54,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const membershipStartDatetime = formData.get('membershipStartDatetime') as string;
 
   const formStateValues: FormState['values'] = { 
+    status,
     title,
     firstName, 
     lastName,
@@ -72,6 +76,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
   const validateMembershipStartDatetime = membershipStartDatetime !== state.values.membershipStartDatetime || state.errors.fields.membershipStartDatetime !== null;
 
   const validatedResult = await validationSchema.safeParseAsync({
+    status: status !== state.values.status || state.errors.fields.status !== null ? status : undefined,
     title: title !== state.values.title || state.errors.fields.title !== null ? title : undefined,
     firstName: firstName !== state.values.firstName || state.errors.fields.firstName !== null ? firstName : undefined, 
     lastName: lastName !== state.values.lastName || state.errors.fields.lastName !== null ? lastName : undefined,
@@ -94,6 +99,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       errors: { 
         message: null, 
         fields: {
+          status: errors.fieldErrors.status?.[0] ?? null,
           title: errors.fieldErrors.title?.[0] ?? null,
           firstName: errors.fieldErrors.firstName?.[0] ?? null,
           lastName: errors.fieldErrors.lastName?.[0] ?? null,
@@ -112,6 +118,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
 
   try {
     const user = await updateUser(userId, {
+      status: status !== state.values.status ? (status as any) : undefined,
       firstName: firstName !== state.values.firstName ? firstName : undefined, 
       lastName: lastName !== state.values.lastName ? lastName : undefined,
       title: title !== state.values.title ? (title.length === 0 ? null : title) : undefined,
@@ -134,6 +141,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       errors: { 
         message: null, 
         fields: { 
+          status: null, 
           title: null, 
           firstName: null, 
           lastName: null, 
@@ -148,6 +156,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
         },
       },
       values: {
+        status: user.status,
         title: user.title ?? '',
         firstName: user.firstName,
         lastName: user.lastName, 
@@ -169,6 +178,7 @@ export async function userUpdate(state: FormState, formData: FormData): Promise<
       values: formStateValues,
       errors: { 
         fields: {
+          status: null, 
           title: null, 
           firstName: null, 
           lastName: null, 

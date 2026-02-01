@@ -7,12 +7,13 @@ import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
 import BooleanFormSelectField from '@/components/boolean-form-select-field';
 import { userConstraints } from '@/models/constraints';
-import { UserEntity, UserEntityGender } from '@/models/entity';
+import { UserEntity, UserEntityGender, UserEntityStatus } from '@/models/entity';
 import { getDateInputString, getYesterdayDateString } from '@/utils/datetime';
 
 export type FormState = { 
   success: boolean;
   values: { 
+    status: string; 
     title: string; 
     firstName: string; 
     lastName: string;
@@ -28,6 +29,7 @@ export type FormState = {
   errors: { 
     message: string | null; 
     fields: { 
+      status: string | null; 
       title: string | null; 
       firstName: string | null; 
       lastName: string | null; 
@@ -46,6 +48,7 @@ export type FormState = {
 export const initialErrorState: FormState['errors'] = { 
   message: null, 
   fields: { 
+    status: null, 
     title: null, 
     firstName: null, 
     lastName: null, 
@@ -67,6 +70,7 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
     success: false,
     errors: initialErrorState,
     values: { 
+      status: user.status, 
       title: user.title ?? '', 
       firstName: user.firstName, 
       lastName: user.lastName, 
@@ -92,6 +96,15 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
   return (
     <ButtonForm text="Update user" isPending={isPending} action={formAction}>
       <input type="hidden" name="userId" defaultValue={user.id} />
+
+      <FormSelectField 
+        id="status" 
+        name="status" 
+        label="Status" 
+        options={UserEntityStatus.filter((s) => user.status === UserEntityStatus[0] || s !== UserEntityStatus[0]).map((s) => ({ value: s }))}
+        value={state.values.status} 
+        error={state.errors.fields.status} 
+      />
 
       <FormInputField 
         id="title" 
