@@ -29,7 +29,7 @@ export default function AdminCreateRoleAssigneeForm(
     roleId: number; 
     search?: string; 
     users: PaginatedListDto<UserEntity> | null; 
-    groupMembers: PaginatedListDto<{ users: UserEntity | null; groupMembers: GroupMemberEntity; }> | null;
+    groupMembers: PaginatedListDto<{ users: UserEntity; groupMembers: GroupMemberEntity; }> | null;
     action: (state: FormState, formData: FormData) => Promise<FormState>; 
   }
 ) {
@@ -81,10 +81,10 @@ export default function AdminCreateRoleAssigneeForm(
                 label: (
                   <>
                     <div>ID: { member.groupMembers.id }</div>
-                    <div>Name: { member.users?.firstName } { member.users?.lastName }</div>
-                    <div>Email: { member.users?.emailAddress ?? '(not set)' }</div>
-                    <div>Phone: { member.users?.phoneNumber ?? '(not set)' }</div>
-                    <div>Membership: { member.users?.membershipNumber ?? '(not set)' }</div>
+                    <div>Name: { member.users.firstName } { member.users.lastName }</div>
+                    <div>Email: { member.users.emailAddress ?? '(not set)' }</div>
+                    <div>Phone: { member.users.phoneNumber ?? '(not set)' }</div>
+                    <div>Membership: { member.users.membershipNumber ?? '(not set)' }</div>
                   </>
                 ) 
               }))}

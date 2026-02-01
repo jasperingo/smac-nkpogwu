@@ -2,11 +2,11 @@ import z from 'zod';
 import { redirect } from 'next/navigation';
 import SearchForm from '@/components/search-form';
 import AdminCreateRoleAssigneeForm, { FormState } from './form';
+import { UserEntityStatus } from '@/models/entity';
 import { findRoleById } from '@/services/role-service';
 import { resolvePaginationParams } from '@/utils/pagination';
-import { findUsersNotInRole } from '@/services/user-service';
 import { createRoleAssignee } from '@/services/role-assignee-service';
-import { findGroupMembersAndUsersNotInRole } from '@/services/group-member-service';
+import { findUsersNotInGroupRole, findUsersNotInRole } from '@/services/user-service';
 
 const nanOrZeroValidation = z.union([z.nan(), z.literal(0)]);
 
@@ -19,31 +19,34 @@ export async function roleAssigneeCreate(state: FormState, formData: FormData): 
   'use server'
   
   const roleId = Number(formData.get('roleId'));
-  const userId = Number(formData.get('userId'));
-  const groupMemberId = Number(formData.get('groupMemberId'));
+  const userId = formData.get('userId');
+  const groupMemberId = formData.get('groupMemberId');
 
-  const validatedResult = validationSchema.safeParse([userId, groupMemberId]);
+  const userIdNumber = Number(userId);
+  const groupMemberIdNumber = Number(groupMemberId);
+
+  const validatedResult = validationSchema.safeParse([userIdNumber, groupMemberIdNumber]);
 
   if (!validatedResult.success) {
     const errors = z.flattenError(validatedResult.error);
 
     return { 
-      value: userId || groupMemberId,
+      value: userIdNumber || groupMemberIdNumber,
       error: errors.fieldErrors?.[0]?.[0] ?? errors.fieldErrors?.[1]?.[0] ?? errors.formErrors?.[0] ?? null,
     };
   }
 
   try {
-    if (!isNaN(userId)) {
-      await createRoleAssignee(roleId, { type: 'user', userId });
+    if (userId !== null) {
+      await createRoleAssignee(roleId, { type: 'user', userId: userIdNumber });
     } else {
-      await createRoleAssignee(roleId, { type: 'groupMember', groupMemberId });
+      await createRoleAssignee(roleId, { type: 'groupMember', groupMemberId: groupMemberIdNumber });
     }
   } catch (error) {
     console.error('Error creating role assignee: ', error);
 
     return { 
-      value: userId || groupMemberId,
+      value: userIdNumber || groupMemberIdNumber,
       error: error instanceof Error ? error.message : error as string,
     };
   }
@@ -62,14 +65,29 @@ export default async function AdminCreateRoleAssigneePage(
 
   let users: Awaited<ReturnType<typeof findUsersNotInRole>> | null = null;
 
-  let groupMembers: Awaited<ReturnType<typeof findGroupMembersAndUsersNotInRole>> | null = null;
+  let groupMembers: Awaited<ReturnType<typeof findUsersNotInGroupRole>> | null = null;
 
   if (role.groupId === null) {
-    users = await findUsersNotInRole({ roleId: id, search: search?.length === 0 ? undefined : search }, resolvePaginationParams(page));
+    users = await findUsersNotInRole(
+      { 
+        roleId: id, 
+        status: UserEntityStatus[1], 
+        search: search?.length === 0 ? undefined : search 
+      }, 
+      resolvePaginationParams(page)
+    );
   }
 
   if (role.groupId !== null) {
-    groupMembers = await findGroupMembersAndUsersNotInRole({ roleId: id, search: search?.length === 0 ? undefined : search }, resolvePaginationParams(page));
+    groupMembers = await findUsersNotInGroupRole(
+      { 
+        roleId: id, 
+        groupId: role.groupId, 
+        status: UserEntityStatus[1], 
+        search: search?.length === 0 ? undefined : search 
+      }, 
+      resolvePaginationParams(page)
+    );
   }
 
   return (

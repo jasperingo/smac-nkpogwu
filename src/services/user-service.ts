@@ -1,12 +1,13 @@
 'use server'
 
 import { and, count, desc, eq, getTableColumns, isNull, like, not, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/mysql-core';
 import { hashExecute } from '@/utils/hash';
-import { UserEntity, } from '@/models/entity';
 import { database } from '@/database/connection';
+import { GroupMemberEntity, UserEntity, UserEntityStatus } from '@/models/entity';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateUserDto, FindUsersDto, PaginatedListDto, PaginationDto, UpdateUserDto } from '@/models/dto';
-import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable, usersTableStatusEnum } from '@/database/schema';
+import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable } from '@/database/schema';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
   const users = await database.select({ id: usersTable.id })
@@ -50,7 +51,6 @@ function getUsersSearchWhere(search?: string) {
   return search === undefined 
     ? undefined 
     : or(
-        usersTableStatusEnum.includes(search as any) ? eq(usersTable.status, search as any) : undefined,
         eq(usersTable.emailAddress, search),
         eq(usersTable.phoneNumber, search),
         eq(usersTable.membershipNumber, search),
@@ -79,23 +79,28 @@ export async function findUsers(dto: FindUsersDto, pagination: PaginationDto): P
   };
 }
 
-export async function findUsersNotInGroup(dto: { groupId: number; search?: string; }, pagination: PaginationDto): Promise<PaginatedListDto<UserEntity>> {
+export async function findUsersNotInGroup(
+  dto: { 
+    groupId: number; 
+    status: typeof UserEntityStatus[number]; 
+    search?: string; 
+  }, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<UserEntity>> {
   const where = and(
-    or(
-      isNull(groupMembersTable.groupId),
-      not(eq(groupMembersTable.groupId, dto.groupId))
-    ),
+    isNull(groupMembersTable.userId),
+    eq(usersTable.status, dto.status),
     getUsersSearchWhere(dto.search),
   );
   
   const usersCount = await database.select({ value: count(usersTable.id) })
     .from(usersTable)
-    .leftJoin(groupMembersTable, eq(groupMembersTable.userId, usersTable.id))
+    .leftJoin(groupMembersTable, and(eq(groupMembersTable.userId, usersTable.id), eq(groupMembersTable.groupId, dto.groupId)))
     .where(where);
 
   const users = await database.select({ ...getTableColumns(usersTable) })
     .from(usersTable)
-    .leftJoin(groupMembersTable, eq(groupMembersTable.userId, usersTable.id))
+    .leftJoin(groupMembersTable, and(eq(groupMembersTable.userId, usersTable.id), eq(groupMembersTable.groupId, dto.groupId)))
     .where(where)
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
@@ -139,23 +144,67 @@ export async function findUsersNotCoordinatorInProgramSchedule(dto: { programSch
   };
 }
 
-export async function findUsersNotInRole(dto: { roleId: number; search?: string; }, pagination: PaginationDto): Promise<PaginatedListDto<UserEntity>> {
+export async function findUsersNotInRole(
+  dto: { 
+    roleId: number; 
+    status: typeof UserEntityStatus[number]; 
+    search?: string; 
+  }, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<UserEntity>> {
   const where = and(
-    or(
-      isNull(roleAssigneesTable.roleId),
-      not(eq(roleAssigneesTable.roleId, dto.roleId))
-    ),
+    isNull(roleAssigneesTable.userId),
+    eq(usersTable.status, dto.status),
     getUsersSearchWhere(dto.search),
   );
   
   const usersCount = await database.select({ value: count(usersTable.id) })
     .from(usersTable)
-    .leftJoin(roleAssigneesTable, eq(roleAssigneesTable.userId, usersTable.id))
+    .leftJoin(roleAssigneesTable, and(eq(roleAssigneesTable.userId, usersTable.id), eq(roleAssigneesTable.roleId, dto.roleId)))
     .where(where);
 
   const users = await database.select({ ...getTableColumns(usersTable) })
     .from(usersTable)
-    .leftJoin(roleAssigneesTable, eq(roleAssigneesTable.userId, usersTable.id))
+    .leftJoin(roleAssigneesTable, and(eq(roleAssigneesTable.userId, usersTable.id), eq(roleAssigneesTable.roleId, dto.roleId)))
+    .where(where)
+    .limit(pagination.pageLimit)
+    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
+
+  return { 
+    data: users, 
+    currentPage: pagination.page, 
+    totalItems: usersCount[0].value, 
+    totalPages: calculatePaginationPages(usersCount[0].value, pagination.pageLimit) 
+  };
+}
+
+export async function findUsersNotInGroupRole(
+  dto: { 
+    roleId: number; 
+    groupId: number; 
+    status: typeof UserEntityStatus[number]; 
+    search?: string; 
+  }, 
+  pagination: PaginationDto
+): Promise<PaginatedListDto<{ users: UserEntity; groupMembers: GroupMemberEntity; }>> {
+  const groupMemberAliasTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
+
+  const where = and(
+    isNull(roleAssigneesTable.groupMemberId),
+    eq(usersTable.status, dto.status),
+    getUsersSearchWhere(dto.search),
+  );
+  
+  const usersCount = await database.select({ value: count(usersTable.id) })
+    .from(usersTable)
+    .innerJoin(groupMemberAliasTable, and(eq(groupMemberAliasTable.userId, usersTable.id), eq(groupMemberAliasTable.groupId, dto.groupId)))
+    .leftJoin(roleAssigneesTable, and(eq(roleAssigneesTable.groupMemberId, groupMemberAliasTable.id), eq(roleAssigneesTable.roleId, dto.roleId)))
+    .where(where);
+
+  const users = await database.select()
+    .from(usersTable)
+    .innerJoin(groupMemberAliasTable, and(eq(groupMemberAliasTable.userId, usersTable.id), eq(groupMemberAliasTable.groupId, dto.groupId)))
+    .leftJoin(roleAssigneesTable, and(eq(roleAssigneesTable.groupMemberId, groupMemberAliasTable.id), eq(roleAssigneesTable.roleId, dto.roleId)))
     .where(where)
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));

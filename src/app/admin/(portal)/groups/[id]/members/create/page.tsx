@@ -5,6 +5,7 @@ import { resolvePaginationParams } from '@/utils/pagination';
 import { findUsersNotInGroup } from '@/services/user-service';
 import AdminCreateGroupMemberForm, { FormState } from './form';
 import { createGroupMember } from '@/services/group-member-service';
+import { UserEntityStatus } from '@/models/entity';
 
 const validationSchema = z.number('User not selected').gt(0, 'User not selected');
 
@@ -46,7 +47,7 @@ export default async function AdminCreateGroupMemberPage(
 
   const { page, search } = await searchParams;
 
-  const users = await findUsersNotInGroup({ groupId: id, search: search?.length === 0 ? undefined : search }, resolvePaginationParams(page));
+  const users = await findUsersNotInGroup({ groupId: id, status: UserEntityStatus[1], search: search?.length === 0 ? undefined : search }, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">

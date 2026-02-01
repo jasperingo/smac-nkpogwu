@@ -9,11 +9,13 @@ import { GroupEntity, GroupMemberEntity, RoleAssigneeEntity, RoleEntity, UserEnt
 import { groupMembersTable, groupsTable, roleAssigneesTable, rolesTable, usersTable } from '@/database/schema';
 
 export async function findRoleAssigneeAndUserById(id: number): Promise<{ roleAssignees: RoleAssigneeEntity;  users: UserEntity | null; } | null> {
-   const leftTable = alias(roleAssigneesTable, "roleAssignees"); // used alias so result property is roleAssignees and not role_assignees
+  const leftTable = alias(roleAssigneesTable, "roleAssignees"); // used alias so result property is roleAssignees and not role_assignees
+  const groupMemberAliasTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
   
   const assignees = await database.select()
     .from(leftTable)
-    .leftJoin(usersTable, eq(leftTable.userId, usersTable.id))
+    .leftJoin(groupMemberAliasTable, eq(leftTable.groupMemberId, groupMemberAliasTable.id))
+    .leftJoin(usersTable, or(eq(leftTable.userId, usersTable.id), eq(groupMemberAliasTable.userId, usersTable.id)))
     .where(eq(leftTable.id, id));
 
   return assignees.length === 0 ? null : assignees[0];
