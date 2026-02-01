@@ -2,11 +2,11 @@
 
 import { and, count, desc, eq, getTableColumns, isNull, like, not, or, sql } from 'drizzle-orm';
 import { hashExecute } from '@/utils/hash';
-import { UserEntity } from '@/models/entity';
+import { UserEntity, } from '@/models/entity';
 import { database } from '@/database/connection';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateUserDto, FindUsersDto, PaginatedListDto, PaginationDto, UpdateUserDto } from '@/models/dto';
-import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable } from '@/database/schema';
+import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable, usersTableStatusEnum } from '@/database/schema';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
   const users = await database.select({ id: usersTable.id })
@@ -50,6 +50,7 @@ function getUsersSearchWhere(search?: string) {
   return search === undefined 
     ? undefined 
     : or(
+        usersTableStatusEnum.includes(search as any) ? eq(usersTable.status, search as any) : undefined,
         eq(usersTable.emailAddress, search),
         eq(usersTable.phoneNumber, search),
         eq(usersTable.membershipNumber, search),

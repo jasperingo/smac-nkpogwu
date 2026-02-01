@@ -16,7 +16,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
 
       <MenuList items={[ { href: 'users/create', text: 'Add user' } ]} />
 
-      <SearchForm value={search} action="/admin/users" placeholder="Search by ID, Name, Email, Phone or Membership" />
+      <SearchForm value={search} action="/admin/users" placeholder="Search by ID, Status, Name, Email, Phone or Membership" />
 
       <GenericTable
         headings={userTableHeadings}

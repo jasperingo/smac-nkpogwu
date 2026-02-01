@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { UserEntityStatus } from '@/models/entity';
 import { findUsers } from '@/services/user-service';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 export default async function UsersPage({ searchParams }: { searchParams: Promise<{ page?: string; }> }) {
   const { page } = await searchParams;
 
-  const users = await findUsers({ }, resolvePaginationParams(page));
+  const users = await findUsers({ search: UserEntityStatus[1] }, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">
