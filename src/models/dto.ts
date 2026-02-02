@@ -27,7 +27,7 @@ export type CreateUserDto = Pick<UserEntity,
 
 export type UpdateUserDto = Partial<CreateUserDto & Pick<UserEntity, 'imageUrl'>>;
 
-export type FindUsersDto = { search?: string; };
+export type FindUsersDto = { search?: string; status?: UserEntity['status'] };
 
 export type CreateGroupDto = Pick<GroupEntity, 'name' | 'privacy' | 'spotlighted' | 'description' | 'parentId'>;
 

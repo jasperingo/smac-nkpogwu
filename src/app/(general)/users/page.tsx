@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function UsersPage({ searchParams }: { searchParams: Promise<{ page?: string; }> }) {
   const { page } = await searchParams;
 
-  const users = await findUsers({ search: UserEntityStatus[1] }, resolvePaginationParams(page));
+  const users = await findUsers({ status: UserEntityStatus[1] }, resolvePaginationParams(page));
 
   return (
     <section className="bg-foreground p-4">

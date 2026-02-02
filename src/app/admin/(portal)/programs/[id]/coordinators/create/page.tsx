@@ -2,9 +2,10 @@ import z from 'zod';
 import { notFound, redirect } from 'next/navigation';
 import SearchForm from '@/components/search-form';
 import AdminCreateProgramCoordinatorForm, { FormState } from './form';
+import { UserEntityStatus } from '@/models/entity';
+import { findUsers } from '@/services/user-service';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { createProgramCoordinator } from '@/services/program-coordinator-service';
-import { findUsersNotCoordinatorInProgramSchedule } from '@/services/user-service';
 import { findProgramScheduleByIdAndProgramId } from '@/services/program-schedule-service';
 
 const validationSchema = z.object({
@@ -90,8 +91,13 @@ export default async function AdminCreateProgramCoordinatorPage(
     notFound();
   }
   
-  const users = await findUsersNotCoordinatorInProgramSchedule(
-    { programScheduleId: scheduleId, search: search?.length === 0 ? undefined : search }, resolvePaginationParams(page));
+  const users = await findUsers(
+    { 
+      status: UserEntityStatus[1], 
+      search: search?.length === 0 ? undefined : search 
+    }, 
+    resolvePaginationParams(page)
+  );
 
   return (
     <section className="bg-foreground p-4">

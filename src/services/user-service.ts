@@ -1,13 +1,13 @@
 'use server'
 
-import { and, count, desc, eq, getTableColumns, isNull, like, not, or, sql } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, isNull, like, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { hashExecute } from '@/utils/hash';
 import { database } from '@/database/connection';
 import { GroupMemberEntity, UserEntity, UserEntityStatus } from '@/models/entity';
+import { groupMembersTable, roleAssigneesTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 import { CreateUserDto, FindUsersDto, PaginatedListDto, PaginationDto, UpdateUserDto } from '@/models/dto';
-import { groupMembersTable, programCoordinatorsTable, roleAssigneesTable, usersTable } from '@/database/schema';
 
 export async function userExistByPhoneNumber(phoneNumber: string) {
   const users = await database.select({ id: usersTable.id })
@@ -60,7 +60,12 @@ function getUsersSearchWhere(search?: string) {
 }
 
 export async function findUsers(dto: FindUsersDto, pagination: PaginationDto): Promise<PaginatedListDto<UserEntity>> {
-  const where = getUsersSearchWhere(dto.search);
+  const where = dto.status === undefined 
+    ? getUsersSearchWhere(dto.search)
+    : and(
+        eq(usersTable.status, dto.status),
+        getUsersSearchWhere(dto.search),
+      );
 
   const count = await database.$count(usersTable, where);
 
@@ -101,37 +106,6 @@ export async function findUsersNotInGroup(
   const users = await database.select({ ...getTableColumns(usersTable) })
     .from(usersTable)
     .leftJoin(groupMembersTable, and(eq(groupMembersTable.userId, usersTable.id), eq(groupMembersTable.groupId, dto.groupId)))
-    .where(where)
-    .limit(pagination.pageLimit)
-    .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
-
-  return { 
-    data: users, 
-    currentPage: pagination.page, 
-    totalItems: usersCount[0].value, 
-    totalPages: calculatePaginationPages(usersCount[0].value, pagination.pageLimit) 
-  };
-}
-
-export async function findUsersNotCoordinatorInProgramSchedule(dto: { programScheduleId: number; search?: string; }, pagination: PaginationDto)
-  : Promise<PaginatedListDto<UserEntity>> {
-  
-  const where = and(
-    or(
-      isNull(programCoordinatorsTable.programScheduleId),
-      not(eq(programCoordinatorsTable.programScheduleId, dto.programScheduleId))
-    ),
-    getUsersSearchWhere(dto.search),
-  );
-  
-  const usersCount = await database.select({ value: count(usersTable.id) })
-    .from(usersTable)
-    .leftJoin(programCoordinatorsTable, eq(programCoordinatorsTable.userId, usersTable.id))
-    .where(where);
-
-  const users = await database.select({ ...getTableColumns(usersTable) })
-    .from(usersTable)
-    .leftJoin(programCoordinatorsTable, eq(programCoordinatorsTable.userId, usersTable.id))
     .where(where)
     .limit(pagination.pageLimit)
     .offset(calculatePaginationOffset(pagination.page, pagination.pageLimit));
