@@ -68,10 +68,9 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
         ]} 
       />
 
-      <div className="font-bold mb-1">Schedules and Activities</div>
-
       <GenericUnorderedList 
         items={schedules.data}
+        responsiveness="none"
         emptyText="No schedules available"
         renderItem={(schedule) => (
           <ProgramScheduleListItem
