@@ -24,13 +24,9 @@ export default async function GroupPage({ params }: Readonly<{ params: Promise<{
         itemsSpacing="md"
         items={[
           { 
-            term: 'Name', 
-            displayRow: true,
-            details: groups.name, 
-          },
-          { 
             term: 'Description', 
             displayRow: false,
+            remove: groups.description === null,
             details: groups.description ? (<p className="whitespace-pre-wrap">{ groups.description }</p>) : '(Not set)', 
           },
           { 

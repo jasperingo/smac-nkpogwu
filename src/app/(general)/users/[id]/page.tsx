@@ -21,23 +21,48 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     return null;
   }
 
-  const hideSensitiveData = session.userId !== user.id;
+  const notUserProfile = session.userId !== user.id;
 
   return (
     <section className="bg-foreground p-4">
       
       <SimpleDescriptionList
         items={[
-          { term: 'Title', details: user.title ?? '(Not set)', displayRow: true },
+          { 
+            term: 'Title', 
+            displayRow: true, 
+            details: user.title ?? '(Not set)', 
+            remove: notUserProfile && user.title === null,
+          },
           { term: 'First name', details: user.firstName, displayRow: true },
           { term: 'Last name', details: user.lastName, displayRow: true },
-          { term: 'Other name', details: user.otherName ?? '(Not set)', displayRow: true },
+          { 
+            term: 'Other name', 
+            displayRow: true, 
+            details: user.otherName ?? '(Not set)', 
+            remove: notUserProfile && user.otherName === null,
+          },
           { term: 'Gender', details: user.gender, displayRow: true },
-          { term: 'Date of Birth', details: user.dateOfBirth?.toLocaleDateString()?.substring(0, 5) ?? '(Not set)', displayRow: true },
-          { term: 'Email', details: user.emailAddress ?? '(Not set)', displayRow: true, remove: hideSensitiveData },
-          { term: 'Phone', details: user.phoneNumber ?? '(Not set)', displayRow: true, remove: hideSensitiveData },
-          { term: 'Membership number', details: user.membershipNumber ?? '(Not set)', displayRow: true },
-          { term: 'Membership date', details: user.membershipStartDatetime?.toLocaleString() ?? '(Not set)', displayRow: true },
+          { 
+            term: 'Date of Birth', 
+            displayRow: true, 
+            remove: notUserProfile && user.dateOfBirth === null,
+            details: user.dateOfBirth?.toLocaleDateString('en-GB', { month: 'long', day: 'numeric', weekday: 'long' }) ?? '(Not set)', 
+          },
+          { term: 'Email', details: user.emailAddress ?? '(Not set)', displayRow: true, remove: notUserProfile },
+          { term: 'Phone', details: user.phoneNumber ?? '(Not set)', displayRow: true, remove: notUserProfile },
+          { 
+            term: 'Membership number', 
+            displayRow: true, 
+            details: user.membershipNumber ?? '(Not set)', 
+            remove: notUserProfile && user.membershipNumber === null,
+          },
+          { 
+            term: 'Membership date', 
+            displayRow: true, 
+            remove: notUserProfile && user.membershipStartDatetime === null,
+            details: user.membershipStartDatetime?.toLocaleString() ?? '(Not set)', 
+          },
         ]} 
       />
       

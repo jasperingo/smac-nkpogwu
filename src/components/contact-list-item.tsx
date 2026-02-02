@@ -39,6 +39,7 @@ export default function ContactListItem(
               { 
                 term: 'Email', 
                 displayRow: true,
+                remove: !contact.users?.emailAddress,
                 details: contact.users?.emailAddress 
                   ? <a href={`mailto:${contact.users?.emailAddress}`} target="_blank" className="text-blue-600">{ contact.users?.emailAddress }</a> 
                   : '(Not set)', 
@@ -46,6 +47,7 @@ export default function ContactListItem(
               { 
                 term: 'Phone', 
                 displayRow: true,
+                remove: !contact.users?.phoneNumber,
                 details: contact.users?.phoneNumber 
                   ? <a href={`tel:${contact.users?.phoneNumber}`} target="_blank" className="text-blue-600">{ contact.users?.phoneNumber }</a>
                   : '(Not set)', 
