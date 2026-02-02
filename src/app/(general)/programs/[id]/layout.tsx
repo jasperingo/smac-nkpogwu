@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/utils/session';
 import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
+import ProgramStateDiv from '@/components/program-state-div';
 import ItemPageTopDetails from '@/components/item-page-top-details';
 import { GroupEntityPrivacy, ProgramDefaultImage } from '@/models/entity';
 import { findProgramAndUserAndGroupById } from '@/services/program-service';
@@ -53,15 +54,11 @@ export default async function ProgramLayout({ params, children }: Readonly<{ par
   return (
     <>
       <ItemPageTopDetails title={program.programs.name} imageUrl={program.programs.imageUrl ?? ProgramDefaultImage}>
-        { 
-          firstSchedule && lastSchedule ? (
-            lastSchedule.endDatetime.getTime() < Date.now() 
-              ? <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-gray-600 text-white">Ended</div> 
-              : firstSchedule.startDatetime.getTime() > Date.now()
-                ? <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-blue-600 text-white">Upcoming</div> 
-                : <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-green-600 text-white">On going</div> 
-          ) : <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-orange-600 text-white">Unscheduled</div> 
-        }
+      
+        <div className="mt-2 flex justify-center">
+          <ProgramStateDiv startDatetime={firstSchedule?.startDatetime} endDatetime={lastSchedule?.endDatetime} />   
+        </div>
+   
       </ItemPageTopDetails>
 
       { children }

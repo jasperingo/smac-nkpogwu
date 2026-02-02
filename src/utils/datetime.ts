@@ -1,3 +1,12 @@
+const displayFormatter = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true
+});
 
 export function getYesterdayDateString() {
   const date = new Date();
@@ -16,4 +25,8 @@ export function getDateInputString(date: Date) {
 
 export function getDatetimeInputString(datetime: Date) {
   return datetime.toISOString().slice(0, 16);
+}
+
+export function getDisplayDatetime(datetime: Date) {
+  return displayFormatter.format(datetime);
 }

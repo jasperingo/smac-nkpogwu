@@ -38,8 +38,8 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
       <SimpleDescriptionList
         itemsSpacing="md"
         items={[
-          { term: 'Theme', details: program.programs.theme ?? '(Not set)', displayRow: true },
-          { term: 'Topic', details: program.programs.topic ?? '(Not set)', displayRow: true },
+          { term: 'Theme', details: program.programs.theme ?? '(Not set)', displayRow: true, remove: program.programs.theme === null },
+          { term: 'Topic', details: program.programs.topic ?? '(Not set)', displayRow: true, remove: program.programs.topic === null },
           { 
             term: 'Group', 
             displayRow: false,
@@ -62,6 +62,7 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
           { 
             term: 'Description',
             displayRow: false,
+            remove: program.programs.description === null,
             details: program.programs.description ? (<p className="whitespace-pre-wrap">{ program.programs.description }</p>) : '(Not set)', 
           },
         ]} 

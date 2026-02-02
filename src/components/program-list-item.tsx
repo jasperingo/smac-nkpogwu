@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import ProgramStateDiv from './program-state-div';
+import { getDisplayDatetime } from '@/utils/datetime';
 import { GroupEntity, ProgramDefaultImage, ProgramEntity, UserEntity } from '@/models/entity';
 
 export default function ProgramListItem(
@@ -29,7 +31,7 @@ export default function ProgramListItem(
         />
 
         <div className="p-2">
-          <div className="font-bold">{ program.programs.name }</div>
+          <div className="font-bold text-lg">{ program.programs.name }</div>
           
           { program.programs.theme && <div className="mb-1">Theme: { program.programs.theme }</div> }
 
@@ -37,25 +39,17 @@ export default function ProgramListItem(
 
           { 
             program.programs.startDatetime && (
-              <div className="w-fit mb-1 bg-gray-200 px-2 py-0.5">From: { program.programs.startDatetime.toLocaleString() }</div> 
+              <div className="w-fit mb-1 bg-gray-200 px-2 py-0.5">From: { getDisplayDatetime(program.programs.startDatetime) }</div> 
             )
           }
           
           { 
             program.programs.endDatetime && (
-              <div className="w-fit mb-1 bg-gray-200 px-2 py-0.5">To: { program.programs.endDatetime.toLocaleString() }</div> 
+              <div className="w-fit mb-1 bg-gray-200 px-2 py-0.5">To: { getDisplayDatetime(program.programs.endDatetime) }</div> 
             )
           }
 
-          { 
-            program.programs.startDatetime && program.programs.endDatetime ? (
-              program.programs.endDatetime.getTime() < Date.now() 
-                ? <div className="w-fit px-2 py-1 text-sm bg-gray-600 text-white">Ended</div> 
-                : program.programs.startDatetime.getTime() > Date.now()
-                  ? <div className="w-fit px-2 py-1 text-sm bg-blue-600 text-white">Upcoming</div> 
-                  : <div className="w-fit px-2 py-1 text-sm bg-green-600 text-white">Ongoing</div> 
-            ) : <div className="w-fit px-2 py-1 text-sm bg-orange-600 text-white">Unscheduled</div> 
-          }
+          <ProgramStateDiv startDatetime={program.programs.startDatetime} endDatetime={program.programs.endDatetime} />
 
           { 
             (program.users || program.groups) && (
@@ -67,19 +61,15 @@ export default function ProgramListItem(
 
           { 
             program.programs.coordinators && (
-              <>
-                <div className="font-semibold">Coordinators:</div> 
+              <ul>
+                {
+                  program.programs.coordinators.split('|').map((coordinator, index) => {
+                    const parts = coordinator.split('=');
 
-                <ul>
-                  {
-                    program.programs.coordinators.split('|').map((coordinator, index) => {
-                      const parts = coordinator.split('=');
-
-                      return <li key={index}>{ parts[0] } - { parts[1] }</li>
-                    }) 
-                  }
-                </ul>
-              </>
+                    return <li key={index}>{ parts[0] } - { parts[1] }</li>
+                  }) 
+                }
+              </ul>
             )
           }
         </div>
