@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
-import { Funnel } from 'lucide-react';
 import { getSession } from '@/utils/session';
 import { ProgramScheduleStates } from '@/models/entity';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 import { findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators } from '@/services/program-service';
+import FilterForm from '@/components/filter-form';
 import PaginationList from '@/components/pagination-list';
 import ProgramListItem from '@/components/program-list-item';
 import GenericUnorderedList from '@/components/generic-unordered-list';
@@ -31,22 +31,19 @@ export default async function ProgramsPage({ searchParams }: Readonly<{ searchPa
 
   return (
     <section className="bg-foreground p-4">
-      <form action="/programs" className="my-4">
-        <select 
-          name="scheduleState"
-          defaultValue={scheduleStateValue}
-          className="inline-block w-full p-2 pr-12 outline-0 border border-primary"
-        >
-          {
-            ProgramScheduleStates.map((option) => <option key={option} value={option}>{ option.substring(0, 1).toUpperCase() + option.substring(1) }</option>)
-          }
-        </select>
 
-        <button type="submit" className="-ml-16 px-4 py-1 align-middle text-center text-primary bg-foreground hover:bg-gray-300">
-          <Funnel />
-          <span className="sr-only">Submit filter form</span>
-        </button>
-      </form>
+      <FilterForm 
+        action="/programs"
+        fields={[
+          {
+            id: 'scheduleState',
+            name: 'scheduleState',
+            type: 'select',
+            value: scheduleStateValue,
+            options: ProgramScheduleStates.map((s) => ({ value: s, text: s.substring(0, 1).toUpperCase() + s.substring(1) })),
+          }
+        ]}
+      />
 
       <GenericUnorderedList 
         items={programs.data}

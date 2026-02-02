@@ -56,11 +56,11 @@ export default async function ProgramLayout({ params, children }: Readonly<{ par
         { 
           firstSchedule && lastSchedule ? (
             lastSchedule.endDatetime.getTime() < Date.now() 
-              ? <div className="w-fit mt-2 px-2 py-1 text-sm bg-gray-600 text-white">Ended</div> 
+              ? <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-gray-600 text-white">Ended</div> 
               : firstSchedule.startDatetime.getTime() > Date.now()
-                ? <div className="w-fit mt-2 px-2 py-1 text-sm bg-blue-600 text-white">Upcoming</div> 
-                : <div className="w-fit mt-2 px-2 py-1 text-sm bg-green-600 text-white">On going</div> 
-          ) : <div className="w-fit mt-2 px-2 py-1 text-sm bg-orange-600 text-white">Unscheduled</div> 
+                ? <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-blue-600 text-white">Upcoming</div> 
+                : <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-green-600 text-white">On going</div> 
+          ) : <div className="w-fit mx-auto mt-2 px-2 py-1 text-sm bg-orange-600 text-white">Unscheduled</div> 
         }
       </ItemPageTopDetails>
 

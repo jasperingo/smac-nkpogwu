@@ -58,7 +58,7 @@ export default async function UserLayout({ params, children }: Readonly<{ params
           session?.userId === id && user.isAdministrator && (
             <Link 
               href="/admin" 
-              className="flex gap-2 items-center w-fit mt-2 bg-primary text-on-primary px-4 py-2 hover:bg-primary-variant"
+              className="flex gap-2 items-center w-fit mx-auto mt-2 bg-primary text-on-primary px-4 py-2 hover:bg-primary-variant"
             >
               <UserLock />
               <span>Admin portal</span>

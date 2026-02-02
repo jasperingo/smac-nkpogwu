@@ -15,7 +15,7 @@ import { findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordi
 export function HomePageSection({ heading, seeMoreHref, children }: { heading: string; seeMoreHref?: string; children: React.ReactNode; }) {
   return (
     <section className="mb-8 bg-foreground p-4">
-      <h2 className="font-bold mb-2 text-lg md:text-xl">{ heading }</h2>
+      <h2 className="text-primary font-bold mb-4 text-xl md:text-2xl">{ heading }</h2>
 
       { children }
 
@@ -95,31 +95,39 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HomePageSection heading="Upcoming programs" seeMoreHref="/programs?scheduleState=upcoming">
+      {
+        upcomingPrograms.totalItems > 0 && (
+          <HomePageSection heading="Upcoming programs" seeMoreHref="/programs?scheduleState=upcoming">
 
-        <GenericUnorderedList 
-          items={upcomingPrograms.data}
-          emptyText="No upcoming program at the moment"
-          renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
-        />
+            <GenericUnorderedList 
+              items={upcomingPrograms.data}
+              emptyText="No upcoming program at the moment"
+              renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
+            />
 
-      </HomePageSection>
+          </HomePageSection>
+        )
+      }
 
-      <HomePageSection heading="Ongoing programs" seeMoreHref="/programs?scheduleState=ongoing">
+      {
+        ongoingPrograms.totalItems > 0 && (
+          <HomePageSection heading="Ongoing programs" seeMoreHref="/programs?scheduleState=ongoing">
 
-        <GenericUnorderedList 
-          items={ongoingPrograms.data}
-          emptyText="No ongoing program at the moment"
-          renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
-        />
+            <GenericUnorderedList 
+              items={ongoingPrograms.data}
+              emptyText="No ongoing program at the moment"
+              renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
+            />
 
-      </HomePageSection>
+          </HomePageSection>
+        )
+      }
 
-      <HomePageSection heading="Just concluded programs" seeMoreHref="/programs?scheduleState=ended">
+      <HomePageSection heading="Concluded programs" seeMoreHref="/programs?scheduleState=ended">
 
         <GenericUnorderedList 
           items={endedPrograms.data}
-          emptyText="No just concluded program at the moment"
+          emptyText="No concluded program at the moment"
           renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
         />
 
