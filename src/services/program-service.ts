@@ -3,8 +3,8 @@
 import { and, count, desc, eq, getTableColumns, gt, isNotNull, isNull, like, lt, lte, or, sql } from 'drizzle-orm';
 import { database } from '@/database/connection';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
-import { GroupEntity, GroupEntityPrivacy, ProgramEntity, ProgramScheduleState, UserEntity } from '@/models/entity';
 import { CreateProgramDto, PaginatedListDto, PaginationDto, UpdateProgramDto } from '@/models/dto';
+import { GroupEntity, GroupEntityPrivacy, ProgramEntity, ProgramScheduleState, UserEntity } from '@/models/entity';
 import { groupsTable, programCoordinatorsTable, programSchedulesTable, programsTable, usersTable } from '@/database/schema';
 
 export async function countAllPrograms() {
@@ -216,7 +216,7 @@ export async function findProgramsWithScheduledDatetimesByGroupId(
 }
 
 export async function findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
-  filter: { search?: string; scheduleState?: ProgramScheduleState, publicOnly?: boolean; },
+  filter: { search?: string; scheduleState?: ProgramScheduleState, publicOnly?: boolean; groupId?: number },
   pagination: PaginationDto
 ): Promise<PaginatedListDto<{ programs: ProgramEntity & { coordinators: string; startDatetime: Date; endDatetime: Date; }; users: UserEntity | null; groups: GroupEntity | null; }>> {
 
@@ -256,11 +256,15 @@ export async function findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpot
         isNaN(Number(filter.search)) ? undefined : eq(programsTable.id, Number(filter.search)),
       );
 
-  if (filter.publicOnly) {
+  if (filter.publicOnly === true) {
     where = and(where, or(
       and(isNull(programsTable.userId), isNull(programsTable.groupId)), 
       and(isNotNull(programsTable.groupId), eq(groupsTable.privacy, GroupEntityPrivacy[0]))
     ))
+  }
+
+  if (filter.groupId !== undefined) {
+    where = and(where, eq(programsTable.groupId, filter.groupId))
   }
 
   if (filter.scheduleState !== undefined && filter.scheduleState !== 'all') {

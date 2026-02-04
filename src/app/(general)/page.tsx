@@ -34,42 +34,46 @@ export function HomePageSection({ heading, seeMoreHref, children }: { heading: s
   );
 }
 
+const pagination = resolvePaginationParams(1, 4);
+
 export default async function HomePage() {
   const session = await getSession();
 
-  const groups = await findGroupsAndParents(
-    { 
-      spotlighted: true,
-      privacy: session === null ? GroupEntityPrivacy[0] : undefined, 
-    }, 
-    resolvePaginationParams(1, 4)
-  );
+  const [contacts, groups, upcomingPrograms, ongoingPrograms, endedPrograms] = await Promise.all([
+    findRoleAssigneesAndGroupsAndUsersByContactableRole({}, resolvePaginationParams(1, 4)),
+    findGroupsAndParents(
+      { 
+        spotlighted: true,
+        privacy: session === null ? GroupEntityPrivacy[0] : undefined, 
+      }, 
+      pagination
+    ),
+    findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
+      { 
+        publicOnly: session === null,
+        scheduleState: 'upcoming',
+      }, 
+      pagination
+    ),
+    findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
+      { 
+        publicOnly: session === null,
+        scheduleState: 'ongoing',
+      }, 
+      pagination
+    ),
+    findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
+      { 
+        publicOnly: session === null,
+        scheduleState: 'ended',
+      }, 
+      pagination
+    )
+  ]);
 
-  const upcomingPrograms = await findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
-    { 
-      publicOnly: session === null,
-      scheduleState: 'upcoming',
-    }, 
-    resolvePaginationParams(1, 4)
+  const groupsPrograms = await Promise.all(
+    groups.data.map((group) => findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators({ groupId: group.groups.id }, pagination))
   );
-
-  const ongoingPrograms = await findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
-    { 
-      publicOnly: session === null,
-      scheduleState: 'ongoing',
-    }, 
-    resolvePaginationParams(1, 4)
-  );
-
-  const endedPrograms = await findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators(
-    { 
-      publicOnly: session === null,
-      scheduleState: 'ended',
-    }, 
-    resolvePaginationParams(1, 4)
-  );
-
-  const contacts = await findRoleAssigneesAndGroupsAndUsersByContactableRole({}, resolvePaginationParams(1, 4));
 
   return (
     <>
@@ -123,35 +127,71 @@ export default async function HomePage() {
         )
       }
 
-      <HomePageSection heading="Concluded programs" seeMoreHref="/programs?scheduleState=ended">
+      {
+        endedPrograms.totalItems > 0 && (
+          <HomePageSection heading="Concluded programs" seeMoreHref="/programs?scheduleState=ended">
 
-        <GenericUnorderedList 
-          items={endedPrograms.data}
-          emptyText="No concluded program at the moment"
-          renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
-        />
+            <GenericUnorderedList 
+              items={endedPrograms.data}
+              emptyText="No concluded program at the moment"
+              renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
+            />
 
-      </HomePageSection>
+          </HomePageSection>
+        )
+      }
 
-      <HomePageSection heading="Groups" seeMoreHref="/groups">
+      {
+        groupsPrograms.map((programs) => {
+          if (programs.totalItems === 0) {
+            return null;
+          }
 
-        <GenericUnorderedList 
-          items={groups.data}
-          emptyText="No group at the moment"
-          renderItem={(group) => <GroupListItem key={group.groups.id} group={group} />}
-        />
+          return (
+            <HomePageSection 
+              key={programs.data[0].groups?.id} 
+              heading={`${programs.data[0].groups?.name} programs`} 
+              seeMoreHref={`/groups/${programs.data[0].groups?.id}/programs`}
+            >
 
-      </HomePageSection>
+              <GenericUnorderedList 
+                items={programs.data}
+                emptyText={`No ${programs.data[0].groups?.name} program at the moment`}
+                renderItem={(program) => <ProgramListItem key={program.programs.id} program={program} />}
+              />
 
-      <HomePageSection heading="People to contact" seeMoreHref="/contacts">
+            </HomePageSection>
+          )
+        })
+      }
 
-        <GenericUnorderedList 
-          items={contacts.data}
-          emptyText="No person to contact at the moment"
-          renderItem={(contact) => <ContactListItem key={contact.roleAssignees.id} contact={contact} />}
-        />
+      {
+        groups.totalItems > 0 && (
+          <HomePageSection heading="Groups" seeMoreHref="/groups">
 
-      </HomePageSection>
+            <GenericUnorderedList 
+              items={groups.data}
+              emptyText="No group at the moment"
+              renderItem={(group) => <GroupListItem key={group.groups.id} group={group} />}
+            />
+
+          </HomePageSection>
+        )
+      }
+
+      {
+        contacts.totalItems > 0 && (
+          <HomePageSection heading="People to contact" seeMoreHref="/contacts">
+
+            <GenericUnorderedList 
+              items={contacts.data}
+              emptyText="No person to contact at the moment"
+              renderItem={(contact) => <ContactListItem key={contact.roleAssignees.id} contact={contact} />}
+            />
+
+          </HomePageSection>
+        )
+      }
     </>
   );
 }
