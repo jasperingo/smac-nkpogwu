@@ -83,12 +83,12 @@ export default async function UserLayout({ params, children }: Readonly<{ params
             href: '/groups',
           },
           { 
-            text: 'Programs',
-            href: '/programs',
-          },
-          { 
             text: 'Program coordinations',
             href: '/program-coordinations',
+          },
+          { 
+            text: 'Programs',
+            href: '/programs',
           },
           { 
             text: 'Change password',

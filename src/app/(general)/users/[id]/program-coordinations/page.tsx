@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import PaginationList from '@/components/pagination-list';
-import ProgramStateDiv from '@/components/program-state-div';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 import SimpleDescriptionList from '@/components/simple-description-list';
 import { getDisplayDatetime } from '@/utils/datetime';
@@ -44,11 +43,6 @@ export default async function UserProgramCoordinationsPage(
                     term: 'End date', 
                     displayRow: true,
                     details: coordination.programSchedules?.endDatetime ? getDisplayDatetime(coordination.programSchedules?.endDatetime) : '(Not set)', 
-                  },
-                  { 
-                    term: 'Status', 
-                    displayRow: true,
-                    details: <ProgramStateDiv startDatetime={coordination.programSchedules?.startDatetime} endDatetime={coordination.programSchedules?.endDatetime} />,
                   },
                 ]} 
               />

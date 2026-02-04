@@ -60,6 +60,10 @@ export default async function GroupLayout({ params, children }: Readonly<{ param
             href: '',
           },
           { 
+            text: 'Programs',
+            href: '/programs',
+          },
+          { 
             text: 'Members',
             href: '/members',
             remove: session === null,
@@ -67,10 +71,6 @@ export default async function GroupLayout({ params, children }: Readonly<{ param
           { 
             text: 'Sub groups',
             href: '/sub-groups',
-          },
-          { 
-            text: 'Programs',
-            href: '/programs',
           },
           {
             text: 'Roles',

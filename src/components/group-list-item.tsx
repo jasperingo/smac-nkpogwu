@@ -12,6 +12,8 @@ export default function GroupListItem({ group }: { group: { groups: GroupEntity;
           <div className="font-bold">{ group.groups.name }</div>
           
           { group.parent && <div>{ group.parent.name }</div> }
+
+          <div className="text-sm text-gray-600">{ group.groups.description }</div>
         </div>
       </Link>
     </li>

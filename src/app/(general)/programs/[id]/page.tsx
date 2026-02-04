@@ -8,6 +8,7 @@ import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 import SimpleDescriptionList from '@/components/simple-description-list';
 import ProgramScheduleListItem from '@/components/program-schedule-list-item';
+import { Shapes, User } from 'lucide-react';
 
 export default async function ProgramPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ page?: string; }>; }) {
   const id = Number((await params).id);
@@ -42,20 +43,29 @@ export default async function ProgramPage({ params, searchParams }: { params: Pr
           { term: 'Topic', details: program.programs.topic ?? '(Not set)', displayRow: true, remove: program.programs.topic === null },
           { 
             term: 'Group', 
-            displayRow: false,
+            displayRow: true,
             remove: program.groups === null,
-            details: (<Link href={`/groups/${program.groups?.id}`} className="inline-block px-4 py-0.5 border">{ program.groups?.name }</Link>),
+            details: (
+              <Link 
+                href={`/groups/${program.groups?.id}`} 
+                className="flex gap-2 items-center text-primary px-2 py-1 bg-gray-200 hover:bg-gray-400"
+              >
+                <Shapes />
+                <div>{ program.groups?.name }</div>
+              </Link>
+            ),
           },
           { 
             term: 'User', 
-            displayRow: false,
+            displayRow: true,
             remove: program.users === null,
             details: (
               <Link 
                 href={`/usesrs/${program.users?.id}`}
-                className="inline-block px-4 py-0.5 border"
+                className="flex gap-2 items-center text-primary px-2 py-1 bg-gray-200 hover:bg-gray-400"
               >
-                { program.users?.title ?? '' } { program.users?.firstName } { program.users?.lastName }
+                <User />
+                <div>{ program.users?.title ?? '' } { program.users?.firstName } { program.users?.lastName }</div>
               </Link>
             ),
           },

@@ -38,6 +38,15 @@ export default async function GroupPage({ params }: Readonly<{ params: Promise<{
         ]} 
       />
 
+      {
+        groups.description === null && parent === null && (
+          <div className="p-2 bg-gray-200">
+            <div>No details to show at the moment</div>
+            <div>You can check out the programs, sub groups, or members of this group</div>
+          </div>
+        )
+      }
+
     </section>
   );
 }
