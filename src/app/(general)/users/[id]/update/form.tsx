@@ -5,21 +5,18 @@ import { toast } from 'react-toastify';
 import ButtonForm from '@/components/button-form';
 import FormInputField from '@/components/form-input-field';
 import FormSelectField from '@/components/form-select-field';
-import BooleanFormSelectField from '@/components/boolean-form-select-field';
 import { userConstraints } from '@/models/constraints';
+import { UserEntity, UserEntityGender } from '@/models/entity';
 import { getDateInputString, getYesterdayDateString } from '@/utils/datetime';
-import { UserEntity, UserEntityGender, UserEntityStatus } from '@/models/entity';
 
 export type FormState = { 
   success: boolean;
-  values: { 
-    status: string; 
+  values: {
     title: string; 
     firstName: string; 
     lastName: string;
     otherName: string;
     gender: string;
-    isAdministrator: string;
     emailAddress: string; 
     phoneNumber: string; 
     dateOfBirth: string;
@@ -29,13 +26,11 @@ export type FormState = {
   errors: { 
     message: string | null; 
     fields: { 
-      status: string | null; 
       title: string | null; 
       firstName: string | null; 
       lastName: string | null; 
       otherName: string | null; 
-      gender: string | null; 
-      isAdministrator: string | null; 
+      gender: string | null;
       emailAddress: string | null; 
       phoneNumber: string | null; 
       dateOfBirth: string | null;
@@ -47,14 +42,12 @@ export type FormState = {
 
 export const initialErrorState: FormState['errors'] = { 
   message: null, 
-  fields: { 
-    status: null, 
+  fields: {
     title: null, 
     firstName: null, 
     lastName: null, 
     otherName: null, 
-    gender: null, 
-    isAdministrator: null, 
+    gender: null,
     emailAddress: null, 
     phoneNumber: null, 
     dateOfBirth: null,
@@ -63,20 +56,18 @@ export const initialErrorState: FormState['errors'] = {
   } 
 };
 
-export default function AdminUpdateUserForm({ user, action }: { user: UserEntity; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
+export default function UpdateUserForm({ user, action }: { user: UserEntity; action: (state: FormState, formData: FormData) => Promise<FormState>; }) {
   const dateOfBirthMax = getYesterdayDateString();
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(action, { 
     success: false,
     errors: initialErrorState,
     values: { 
-      status: user.status, 
       title: user.title ?? '', 
       firstName: user.firstName, 
       lastName: user.lastName, 
       otherName: user.otherName ?? '', 
-      gender: user.gender, 
-      isAdministrator: user.isAdministrator.toString(), 
+      gender: user.gender,
       emailAddress: user.emailAddress ?? '', 
       phoneNumber: user.phoneNumber ?? '',
       dateOfBirth: user.dateOfBirth ? getDateInputString(user.dateOfBirth) : '',
@@ -87,24 +78,15 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
 
   useEffect(() => {
     if (state.success) {
-      toast('User details updated', { type: 'success' });
+      toast('Details updated', { type: 'success' });
     } else if (state.errors.message) {
       toast(state.errors.message, { type: 'error' });
     } 
   }, [state]);
 
   return (
-    <ButtonForm text="Update user" isPending={isPending} action={formAction}>
+    <ButtonForm text="Update details" isPending={isPending} action={formAction}>
       <input type="hidden" name="userId" defaultValue={user.id} />
-
-      <FormSelectField 
-        id="status" 
-        name="status" 
-        label="Status" 
-        options={UserEntityStatus.filter((s) => user.status === UserEntityStatus[0] || s !== UserEntityStatus[0]).map((s) => ({ value: s }))}
-        value={state.values.status} 
-        error={state.errors.fields.status} 
-      />
 
       <FormInputField 
         id="title" 
@@ -147,14 +129,6 @@ export default function AdminUpdateUserForm({ user, action }: { user: UserEntity
         options={UserEntityGender.map((g) => ({ value: g }))}
         value={state.values.gender} 
         error={state.errors.fields.gender} 
-      />
-
-      <BooleanFormSelectField 
-        id="administrator" 
-        name="isAdministrator" 
-        label="Is Administrator" 
-        value={state.values.isAdministrator} 
-        error={state.errors.fields.isAdministrator} 
       />
 
       <FormInputField 
