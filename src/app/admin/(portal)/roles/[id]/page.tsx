@@ -15,7 +15,7 @@ const validationSchema = z.object({
   error: 'Role with name already exists', 
 });
 
-export async function roleUpdate(state: FormState, formData: FormData): Promise<FormState> {
+async function roleUpdate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const groupId = Number(formData.get('groupId'));

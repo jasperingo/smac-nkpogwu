@@ -5,7 +5,7 @@ import { findUserById, updateUser } from '@/services/user-service';
 import { imageFileValidation } from '@/validations/images-validation';
 import ImageUploadForm, { FormState } from '@/components/image-upload-form';
 
-export async function userImageUpload(state: FormState, formData: FormData): Promise<FormState> {
+async function userImageUpload(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const userId = Number(formData.get('userId'));

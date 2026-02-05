@@ -27,7 +27,7 @@ export type FormState = {
   };
 };
 
-export const initialState: FormState = {
+const initialState: FormState = {
   errors: { 
     message: null, 
     fields: { 

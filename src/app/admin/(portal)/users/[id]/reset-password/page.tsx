@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import AdminResetUserPasswordForm, { FormState } from './form';
 import { findUserById, updateUser } from '@/services/user-service';
 
-export async function userResetPassword(state: FormState, formData: FormData): Promise<FormState> {
+async function userResetPassword(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const userId = Number(formData.get('userId'));

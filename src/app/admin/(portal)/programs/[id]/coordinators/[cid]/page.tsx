@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import AdminDeleteProgramScheduleForm, { FormState } from './form';
 import { deleteProgramCoordinator, findProgramCoordinatorAndUserById } from '@/services/program-coordinator-service';
 
-export async function programCoordinatorDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function programCoordinatorDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId')); // TODO: In v2 check that ID exists

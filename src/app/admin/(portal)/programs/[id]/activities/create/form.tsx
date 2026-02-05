@@ -22,7 +22,7 @@ export type FormState = {
   };
 };
 
-export const initialState: FormState = {
+const initialState: FormState = {
   values: {
     name: '', 
     description: '', 

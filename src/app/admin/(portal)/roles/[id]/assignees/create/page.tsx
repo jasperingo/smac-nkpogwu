@@ -15,7 +15,7 @@ const validationSchema = z.union([
   z.tuple([nanOrZeroValidation, z.number('Group member not selected').gt(0, 'Group member not selected')], 'Group member not selected'),
 ], 'Invalid selection');
 
-export async function roleAssigneeCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function roleAssigneeCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
   
   const roleId = Number(formData.get('roleId'));

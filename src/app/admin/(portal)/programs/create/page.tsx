@@ -19,7 +19,7 @@ const validationSchema = z.object({
   description: programDescriptionValidation,
 });
 
-export async function programCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function programCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const userId = Number(formData.get('userId')); // TODO: In v2 check that ID exists

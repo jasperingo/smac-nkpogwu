@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import AdminDeleteGroupMemberForm, { FormState } from './form';
 import { deleteGroupMember, findGroupMemberAndUserById } from '@/services/group-member-service';
 
-export async function groupMemberDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function groupMemberDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const groupId = Number(formData.get('groupId')); // TODO: In v2 check that ID exists

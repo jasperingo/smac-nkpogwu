@@ -17,7 +17,7 @@ const validationSchema = z.object({
   description: groupDescriptionValidation.optional(),
 });
 
-export async function groupUpdate(state: FormState, formData: FormData): Promise<FormState> {
+async function groupUpdate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const groupId = Number(formData.get('groupId'));

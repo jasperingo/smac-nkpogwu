@@ -14,7 +14,7 @@ const validationSchema = z.object({
   error: 'An activity with this name already exists for this program schedule', 
 });
 
-export async function programActivityCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function programActivityCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId')); // TODO: In v2 check that ID exists

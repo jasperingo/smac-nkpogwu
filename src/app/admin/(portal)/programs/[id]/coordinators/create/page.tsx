@@ -14,7 +14,7 @@ const validationSchema = z.object({
   userId: z.number('User not selected').gt(0, 'User not selected'),
 });
 
-export async function programCoordinatorCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function programCoordinatorCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId')); // TODO: In v2 check that ID exists

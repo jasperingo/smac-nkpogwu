@@ -5,7 +5,7 @@ import { imageFileValidation } from '@/validations/images-validation';
 import { findProgramById, updateProgam } from '@/services/program-service';
 import ImageUploadForm, { FormState } from '@/components/image-upload-form';
 
-export async function programImageUpload(state: FormState, formData: FormData): Promise<FormState> {
+async function programImageUpload(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId'));

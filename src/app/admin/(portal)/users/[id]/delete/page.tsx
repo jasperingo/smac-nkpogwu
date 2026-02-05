@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { deleteUser } from '@/services/user-service';
 import DeleteForm, { FormState } from '@/components/delete-form';
 
-export async function userDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function userDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const userId = Number(formData.get('userId')); // TODO: In v2 check that ID exists

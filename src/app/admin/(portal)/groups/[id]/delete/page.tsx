@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { deleteGroup } from '@/services/group-service';
 import DeleteForm, { FormState } from '@/components/delete-form';
 
-export async function groupDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function groupDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const groupId = Number(formData.get('groupId')); // TODO: In v2 check that ID exists

@@ -15,7 +15,7 @@ const validationSchema = z.object({
   description: programDescriptionValidation.optional(),
 });
 
-export async function programUpdate(state: FormState, formData: FormData): Promise<FormState> {
+async function programUpdate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId'));

@@ -5,7 +5,7 @@ import { findGroupById, updateGroup } from '@/services/group-service';
 import { imageFileValidation } from '@/validations/images-validation';
 import ImageUploadForm, { FormState } from '@/components/image-upload-form';
 
-export async function groupImageUpload(state: FormState, formData: FormData): Promise<FormState> {
+async function groupImageUpload(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const groupId = Number(formData.get('groupId'));

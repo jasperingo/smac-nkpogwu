@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { deleteProgram } from '@/services/program-service';
 import DeleteForm, { FormState } from '@/components/delete-form';
 
-export async function programDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function programDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId')); // TODO: In v2 check that ID exists

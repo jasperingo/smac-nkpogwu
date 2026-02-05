@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import AdminDeleteRoleAssigneeForm, { FormState } from './form';
 import { deleteRoleAssignee, findRoleAssigneeAndUserById } from '@/services/role-assignee-service';
 
-export async function roleAssigneeDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function roleAssigneeDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const roleId = Number(formData.get('roleId')); // TODO: In v2 check that ID exists

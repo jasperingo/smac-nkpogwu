@@ -36,7 +36,7 @@ const validationSchema = z.object({
   error: 'This schedule overlaps the start date and end date of another schedule', 
 }); // TODO: In v2 consider excluding current schedule from check
 
-export async function programScheduleUpdate(state: FormState, formData: FormData): Promise<FormState> {
+async function programScheduleUpdate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId')); // TODO: In v2 check that ID exists

@@ -1,3 +1,4 @@
+import { Shapes, User } from 'lucide-react';
 import Link from 'next/link';
 import { resolvePaginationParams } from '@/utils/pagination';
 import { findProgramAndUserAndGroupById } from '@/services/program-service';
@@ -8,7 +9,6 @@ import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 import SimpleDescriptionList from '@/components/simple-description-list';
 import ProgramScheduleListItem from '@/components/program-schedule-list-item';
-import { Shapes, User } from 'lucide-react';
 
 export default async function ProgramPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ page?: string; }>; }) {
   const id = Number((await params).id);

@@ -22,7 +22,7 @@ const validationSchema = z.object({
   error: 'Password is not correct', 
 });
 
-export async function userPasswordUpdate(state: FormState, formData: FormData): Promise<FormState> {
+async function userPasswordUpdate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const userId = Number(formData.get('userId')); // TODO: In v2 check that ID exists

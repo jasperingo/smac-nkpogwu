@@ -42,7 +42,7 @@ export type FormState = {
   };
 };
 
-export const initialState: FormState = { 
+const initialState: FormState = { 
   success: false,
   values: { 
     title: '', 

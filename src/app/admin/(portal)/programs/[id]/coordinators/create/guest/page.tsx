@@ -15,7 +15,7 @@ const validationSchema = z.object({
   error: 'A coordinator with this name already exists', 
 });
 
-export async function guestProgramCoordinatorCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function guestProgramCoordinatorCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const programId = Number(formData.get('programId')); // TODO: In v2 check that ID exists

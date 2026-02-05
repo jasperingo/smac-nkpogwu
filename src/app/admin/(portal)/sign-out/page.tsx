@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import AdminSignOutForm from './form';
 import { removeSession } from '@/utils/session';
 
-export async function adminSignOut(state: any, formData: FormData) {
+async function adminSignOut(state: any, formData: FormData) {
   'use server'
 
   await removeSession();

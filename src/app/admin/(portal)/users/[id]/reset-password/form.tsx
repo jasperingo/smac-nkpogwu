@@ -10,7 +10,7 @@ export type FormState = {
   error: string | null;
 };
 
-export const initialState: FormState = { 
+const initialState: FormState = { 
   success: false,
   error: null,
 };

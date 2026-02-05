@@ -1,9 +1,9 @@
-import { countAllGroups } from '@/services/group-service';
-import { countAllPrograms } from '@/services/program-service';
 import { countAllRoles } from '@/services/role-service';
 import { countAllUsers } from '@/services/user-service';
+import { countAllGroups } from '@/services/group-service';
+import { countAllPrograms } from '@/services/program-service';
 
-export function DescriptionListItem({ term, detail }: { term: string; detail: string | number; }) {
+function DescriptionListItem({ term, detail }: { term: string; detail: string | number; }) {
   return (
     <div className="border text-center py-4 px-2">
       <dd className="font-bold text-2xl">{ detail }</dd>

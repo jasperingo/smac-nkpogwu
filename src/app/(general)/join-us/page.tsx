@@ -34,7 +34,7 @@ const validationSchema = z.object({
   error: 'Membership start date should only be provided when membership number is provided', 
 });
 
-export async function userSignUp(state: FormState, formData: FormData): Promise<FormState> {
+async function userSignUp(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const title = formData.get('title') as string;

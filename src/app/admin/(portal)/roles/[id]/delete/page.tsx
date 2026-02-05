@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { deleteRole } from '@/services/role-service';
 import DeleteForm, { FormState } from '@/components/delete-form';
 
-export async function roleDelete(state: FormState, formData: FormData): Promise<FormState> {
+async function roleDelete(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const roleId = Number(formData.get('roleId')); // TODO: In v2 check that ID exists

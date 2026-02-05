@@ -17,7 +17,7 @@ const validationSchema = z.object({
   error: 'Role with name already exists', 
 });
 
-export async function roleCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function roleCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const groupId = Number(formData.get('groupId')); // TODO: In v2 check that ID exists

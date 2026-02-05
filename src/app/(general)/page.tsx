@@ -12,7 +12,7 @@ import GenericUnorderedList from '@/components/generic-unordered-list';
 import { findRoleAssigneesAndGroupsAndUsersByContactableRole } from '@/services/role-assignee-service';
 import { findProgramsAndUsersAndGroupsWithScheduledDatetimesAndSpotlightedCoordinators } from '@/services/program-service';
 
-export function HomePageSection({ heading, seeMoreHref, children }: { heading: string; seeMoreHref?: string; children: React.ReactNode; }) {
+function HomePageSection({ heading, seeMoreHref, children }: { heading: string; seeMoreHref?: string; children: React.ReactNode; }) {
   return (
     <section className="mb-8 bg-foreground p-4">
       <h2 className="text-primary font-bold mb-4 text-xl md:text-2xl">{ heading }</h2>

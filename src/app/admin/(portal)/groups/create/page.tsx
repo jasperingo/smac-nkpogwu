@@ -16,7 +16,7 @@ const validationSchema = z.object({
   description: groupDescriptionValidation,
 });
 
-export async function groupCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function groupCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
 
   const parentId = Number(formData.get('parentId')); // TODO: In v2 check that ID exists

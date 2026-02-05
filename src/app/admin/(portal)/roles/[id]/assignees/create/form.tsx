@@ -13,7 +13,7 @@ export type FormState = {
   error: string | null;
 };
 
-export const initialState: FormState = { 
+const initialState: FormState = { 
   value: 0,
   error: null,
 };

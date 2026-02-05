@@ -9,7 +9,7 @@ import { UserEntityStatus } from '@/models/entity';
 
 const validationSchema = z.number('User not selected').gt(0, 'User not selected');
 
-export async function groupMemberCreate(state: FormState, formData: FormData): Promise<FormState> {
+async function groupMemberCreate(state: FormState, formData: FormData): Promise<FormState> {
   'use server'
   
   const userId = Number(formData.get('userId'));
