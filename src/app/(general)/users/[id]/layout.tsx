@@ -96,6 +96,11 @@ export default async function UserLayout({ params, children }: Readonly<{ params
             remove: session?.userId !== id,
           },
           { 
+            text: 'Upload image',
+            href: '/upload-image',
+            remove: session?.userId !== id,
+          },
+          { 
             text: 'Change password',
             href: '/update-password',
             remove: session?.userId !== id,
