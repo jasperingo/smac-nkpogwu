@@ -8,6 +8,10 @@ import { GroupEntity, GroupMemberEntity, UserEntity } from '@/models/entity';
 import { groupMembersTable, groupsTable, usersTable } from '@/database/schema';
 import { calculatePaginationOffset, calculatePaginationPages } from '@/utils/pagination';
 
+export async function countGroupMembersByGroupId(groupId: number): Promise<number> {
+  return database.$count(groupMembersTable, eq(groupMembersTable.groupId, groupId));
+}
+
 export async function findGroupMemberAndUserById(id: number): Promise<{ groupMembers: GroupMemberEntity; users: UserEntity | null; } | null> {
   const leftTable = alias(groupMembersTable, "groupMembers"); // used alias so result property is groupMembers and not group_members
   

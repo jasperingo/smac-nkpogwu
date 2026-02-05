@@ -6,7 +6,9 @@ import {
   groupSpotlightedValidation 
 } from '@/validations/groups-validation';
 import AdminUpdateGroupForm, { type FormState } from './form';
-import { findGroupAndParentById, updateGroup } from '@/services/group-service';
+import SimpleDescriptionList from '@/components/simple-description-list';
+import { countGroupMembersByGroupId } from '@/services/group-member-service';
+import { countGroupsByParentId, findGroupAndParentById, updateGroup } from '@/services/group-service';
 
 const validationSchema = z.object({
   name: groupNameValidation.optional(),
@@ -118,8 +120,29 @@ export default async function AdminGroupPage({ params }: Readonly<{ params: Prom
 
   const { groups, parent } = group;
 
+  const [membersCount, subGroupsCount] = await Promise.all([ countGroupMembersByGroupId(groups.id), countGroupsByParentId(groups.id) ]);
+
   return (
     <section className="bg-foreground p-4">
+      <div className="bg-gray-200 px-2 pt-2 pb-1 mb-4">
+        
+        <SimpleDescriptionList
+          itemsSpacing="md"
+          items={[
+            { 
+              term: 'Number of members', 
+              displayRow: true,
+              details: membersCount, 
+            },
+            { 
+              term: 'Number of sub groups', 
+              displayRow: true, 
+              details: subGroupsCount, 
+            },
+          ]} 
+        />
+      
+      </div>
 
       <AdminUpdateGroupForm group={groups} parent={parent} action={groupUpdate} />
 

@@ -47,7 +47,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
             term: 'Date of Birth', 
             displayRow: true, 
             remove: notUserProfile && user.dateOfBirth === null,
-            details: user.dateOfBirth?.toLocaleDateString('en-GB', { month: 'long', day: 'numeric', weekday: 'long' }) ?? '(Not set)', 
+            details: user.dateOfBirth?.toLocaleDateString('en-GB', { month: 'long', day: 'numeric' }) ?? '(Not set)', 
           },
           { term: 'Email', details: user.emailAddress ?? '(Not set)', displayRow: true, remove: notUserProfile },
           { term: 'Phone', details: user.phoneNumber ?? '(Not set)', displayRow: true, remove: notUserProfile },

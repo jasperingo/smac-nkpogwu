@@ -20,6 +20,10 @@ export async function countAllGroups() {
   return database.$count(groupsTable);
 }
 
+export async function countGroupsByParentId(parentId: number): Promise<number> {
+  return database.$count(groupsTable, eq(groupsTable.parentId, parentId));
+}
+
 export async function findGroupById(id: number): Promise<GroupEntity | null> {
   const groups = await database.select().from(groupsTable).where(eq(groupsTable.id, id));
 
