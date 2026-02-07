@@ -1,5 +1,5 @@
 CREATE TABLE `groups` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`created_datetime` datetime NOT NULL DEFAULT now(),
 	`updated_datetime` datetime,
 	`parent_id` bigint unsigned,

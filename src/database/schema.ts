@@ -7,8 +7,7 @@ import {
   foreignKey, 
   int, 
   mysqlEnum, 
-  mysqlTable, 
-  serial, 
+  mysqlTable,
   text, 
   unique, 
   varchar 
@@ -19,7 +18,7 @@ export const usersTableGenderEnum = ['MALE', 'FEMALE'] as const;
 export const usersTableStatusEnum = ['PENDING', 'ACTIVE', 'INACTIVE'] as const;
 
 export const usersTable = mysqlTable('users', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   isAdministrator: boolean('is_administrator').notNull().default(false),
@@ -43,7 +42,7 @@ export const usersTable = mysqlTable('users', {
 export const groupsTablePrivacyEnum = ['PUBLIC', 'PRIVATE'] as const;
 
 export const groupsTable = mysqlTable('groups', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   parentId: bigint('parent_id', { mode: 'number', unsigned: true }),
@@ -61,7 +60,7 @@ export const groupsTable = mysqlTable('groups', {
 
 
 export const groupMembersTable = mysqlTable('group_members', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   userId: bigint('user_id', { mode: 'number', unsigned: true }).notNull(),
@@ -80,7 +79,7 @@ export const groupMembersTable = mysqlTable('group_members', {
 
 
 export const rolesTable = mysqlTable('roles', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   groupId: bigint('group_id', { mode: 'number', unsigned: true }),
@@ -98,7 +97,7 @@ export const rolesTable = mysqlTable('roles', {
 
 
 export const roleAssigneesTable = mysqlTable('role_assignees', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   roleId: bigint('role_id', { mode: 'number', unsigned: true }).notNull(),
@@ -123,7 +122,7 @@ export const roleAssigneesTable = mysqlTable('role_assignees', {
 
 
 export const programsTable = mysqlTable('programs', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   userId: bigint('user_id', { mode: 'number', unsigned: true }),
@@ -146,7 +145,7 @@ export const programsTable = mysqlTable('programs', {
 
 
 export const programSchedulesTable = mysqlTable('program_schedules', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   programId: bigint('program_id', { mode: 'number', unsigned: true }).notNull(),
@@ -166,7 +165,7 @@ export const programSchedulesTable = mysqlTable('program_schedules', {
 
 
 export const programActivitiesTable = mysqlTable('program_activities', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   programScheduleId: bigint('program_schedule_id', { mode: 'number', unsigned: true }).notNull(),
@@ -182,7 +181,7 @@ export const programActivitiesTable = mysqlTable('program_activities', {
 
 
 export const programCoordinatorsTable = mysqlTable('program_coordinators', {
-  id: serial().primaryKey(),
+  id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
   createdDatetime: datetime('created_datetime').notNull().default(sql`now()`),
   updatedDatetime: datetime('updated_datetime'),
   programScheduleId: bigint('program_schedule_id', { mode: 'number', unsigned: true }).notNull(),

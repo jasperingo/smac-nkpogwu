@@ -1,0 +1,49 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Match your cPanel version
+
+    - name: Install and Build
+      run: |
+        npm install
+        npm run build --if-present
+
+    - name: Deploy via Rsync
+      uses: Burnett01/rsync-deployments@7.0.1
+      with:
+        switches: -avzr --delete
+        path: ./
+        remote_path: /home/${{ secrets.SERVER_USER }}/public_html/your-app-folder
+        remote_host: ${{ secrets.SERVER_IP }}
+        remote_user: ${{ secrets.SERVER_USER }}
+        remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        # Exclude node_modules as we usually install them on the server or sync them carefully
+        args: --exclude '.git*' --exclude 'node_modules'
+
+    - name: Restart Node.js App
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /home/${{ secrets.SERVER_USER }}/public_html/your-app-folder
+          export PATH=$PATH:/home/${{ secrets.SERVER_USER }}/bin
+          npm install --production
+          # If using cPanel Passenger:
+          touch tmp/restart.txt

@@ -1,5 +1,5 @@
 CREATE TABLE `roles` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`created_datetime` datetime NOT NULL DEFAULT now(),
 	`updated_datetime` datetime,
 	`group_id` bigint unsigned,
