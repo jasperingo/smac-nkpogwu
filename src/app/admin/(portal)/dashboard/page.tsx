@@ -12,8 +12,6 @@ function DescriptionListItem({ term, detail }: { term: string; detail: string | 
   );
 }
 
-export const dynamic = 'force-dynamic';
-
 /**
  * Count programs in progress
  * Count programs not started

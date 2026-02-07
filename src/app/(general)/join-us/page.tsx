@@ -173,8 +173,6 @@ async function userSignUp(state: FormState, formData: FormData): Promise<FormSta
   }
 }
 
-export const dynamic = 'force-dynamic';
-
 export default async function SignUpPage() {
   const session = await getSession();
    

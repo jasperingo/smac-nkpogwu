@@ -6,8 +6,6 @@ import { resolvePaginationParams } from '@/utils/pagination';
 import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 import { findRoleAssigneesAndGroupsAndUsersByContactableRole } from '@/services/role-assignee-service';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   title: 'Contacts' + PAGE_METADATA_TITLE_SUFFIX,
   description: 'List of people that can be contact based on their roles in the church',
