@@ -46,4 +46,4 @@ jobs:
           export PATH=$PATH:/home/${{ secrets.SERVER_USER }}/bin
           npm install --production
           # If using cPanel Passenger:
-          touch tmp/restart.txt
+          touch tmp/restart.txtm
