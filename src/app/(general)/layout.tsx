@@ -46,7 +46,7 @@ export default async function GeneralLayout({ children }: Readonly<{ children: R
             <li className="mb-4">
               <div className="flex gap-2 items-start">
                 <Mail />
-                <a href="mailto:smacmission@yahoo.com" target="_blank">smacmission@yahoo.com</a>
+                <a href="mailto:smacnkpogwudeanery@gmail.com" target="_blank">smacnkpogwudeanery@gmail.com</a>
               </div>
             </li>
 
