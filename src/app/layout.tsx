@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { ToastContainer } from 'react-toastify';
 import './globals.css';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'ST Matthew\'s Anglican Church (Nkpogwu Deanery)',
   description: 'Diocese of Niger Delta North (Anglican Communion)',
