@@ -46,7 +46,7 @@ jobs:
           script: |
             source /home/${{ secrets.SERVER_USER }}/nodevenv/smac-app/20/bin/activate
             cd /home/${{ secrets.SERVER_USER }}/smac-app
-            npm install
+            npm install --include=dev
 
       - name: Run Database Migrations
         uses: appleboy/ssh-action@master
