@@ -8,6 +8,8 @@ import GroupListItem from '@/components/group-list-item';
 import PaginationList from '@/components/pagination-list';
 import GenericUnorderedList from '@/components/generic-unordered-list';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Groups' + PAGE_METADATA_TITLE_SUFFIX,
   description: 'List of church groups',

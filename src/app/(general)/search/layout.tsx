@@ -3,6 +3,8 @@ import SearchTabs from './tabs';
 import { getSession } from '@/utils/session';
 import { PAGE_METADATA_TITLE_SUFFIX } from '@/utils/constants';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Search' + PAGE_METADATA_TITLE_SUFFIX,
   description: 'Search results for programs, groups, contacts, and users',
