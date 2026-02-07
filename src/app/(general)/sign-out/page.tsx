@@ -10,6 +10,8 @@ async function userSignOut(state: any, formData: FormData) {
   redirect('/');
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function SignOutPage() {
   const session = await getSession();
 

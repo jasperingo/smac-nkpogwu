@@ -63,6 +63,8 @@ async function adminSignIn(state: FormState, formData: FormData): Promise<FormSt
   };
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminIndexPage() {
   const session = await getSession();
   

@@ -3,6 +3,8 @@ import AdminLayoutHeader from './header';
 import { getSession } from '@/utils/session';
 import { findUserById } from '@/services/user-service';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Admin Portal - ST Matthew\'s Anglican Church Nkpogwu',
 };
