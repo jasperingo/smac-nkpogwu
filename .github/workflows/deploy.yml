@@ -24,12 +24,24 @@ jobs:
 
       - name: Build Next.js App
         run: npm run build:compile
-
-      - name: Setup SSH Agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
+      
+      - name: Setup SSH with Passphrase
+        env:
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          # Create a helper script to provide the passphrase to ssh-add
+          echo 'echo $SSH_PASSPHRASE' > ~/.ssh_askpass
+          chmod +x ~/.ssh_askpass
+          
+          # Start the agent and pipe the key into ssh-add using the helper script
+          eval $(ssh-agent -s)
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=None SSH_ASKPASS=~/.ssh_askpass Build-And-Deploy=true ssh-add - >/dev/null
+          
+          # Make the agent socket available to all following steps
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
 
       - name: Deploy via Rsync
         run: |
