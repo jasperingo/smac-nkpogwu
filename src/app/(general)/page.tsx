@@ -36,6 +36,8 @@ function HomePageSection({ heading, seeMoreHref, children }: { heading: string; 
 
 const pagination = resolvePaginationParams(1, 4);
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const session = await getSession();
 
