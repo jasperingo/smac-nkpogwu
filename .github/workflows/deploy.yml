@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            source /home/${{ secrets.SERVER_USER }}/nodevenv/my-app/20/bin/activate
+            source /home/${{ secrets.SERVER_USER }}/nodevenv/smac-app/20/bin/activate
             cd /home/${{ secrets.SERVER_USER }}/smac-app
             npm install
 
@@ -56,6 +56,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            source /home/${{ secrets.SERVER_USER }}/nodevenv/my-app/20/bin/activate
+            source /home/${{ secrets.SERVER_USER }}/nodevenv/smac-app/20/bin/activate
             cd /home/${{ secrets.SERVER_USER }}/smac-app
             npm run db:migrate
