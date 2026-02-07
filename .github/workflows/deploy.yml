@@ -25,39 +25,34 @@ jobs:
       - name: Build Next.js App
         run: npm run build:compile
       
-      - name: Setup SSH with Passphrase
-        env:
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          # Create a helper script to provide the passphrase to ssh-add
-          echo 'echo $SSH_PASSPHRASE' > ~/.ssh_askpass
-          chmod +x ~/.ssh_askpass
-          
-          # Start the agent and pipe the key into ssh-add using the helper script
-          eval $(ssh-agent -s)
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=None SSH_ASKPASS=~/.ssh_askpass Build-And-Deploy=true ssh-add - >/dev/null
-          
-          # Make the agent socket available to all following steps
-          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
-          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
-
       - name: Deploy via Rsync
-        run: |
-          # Sync files (excluding node_modules and git)
-          # We use -e to specify the custom port for the SSH connection
-          rsync -avz --delete \
-            -e "ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no" \
-            --exclude '.git*' \
-            --exclude 'node_modules' \
-            ./ \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/smac-app/
+        uses: Burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr --delete --exclude='.git*' --exclude='node_modules'
+          path: ./
+          remote_path: /home/${{ secrets.SERVER_USER }}/smac-app
+          remote_host: ${{ secrets.SERVER_IP }}
+          remote_user: ${{ secrets.SERVER_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Install All Dependencies on Server
-        run: |
-          ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /home/${{ secrets.SERVER_USER }}/smac-app && npm install"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            source /home/${{ secrets.SERVER_USER }}/nodevenv/my-app/20/bin/activate
+            cd /home/${{ secrets.SERVER_USER }}/smac-app
+            npm install
 
       - name: Run Database Migrations
-        run: |
-          ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /home/${{ secrets.SERVER_USER }}/smac-app && npm run db:migrate"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            source /home/${{ secrets.SERVER_USER }}/nodevenv/my-app/20/bin/activate
+            cd /home/${{ secrets.SERVER_USER }}/smac-app
+            npm run db:migrate
