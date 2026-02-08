@@ -1,5 +1,5 @@
 import z from 'zod';
-import { storeImageToDisk } from '@/utils/storage';
+import { deleteImageFromDisk, storeImageToDisk } from '@/utils/storage';
 import { ProgramDefaultImage } from '@/models/entity';
 import { imageFileValidation } from '@/validations/images-validation';
 import { findProgramById, updateProgam } from '@/services/program-service';
@@ -23,11 +23,17 @@ async function programImageUpload(state: FormState, formData: FormData): Promise
   }
   
   try {
+    const currentProgram = await findProgramById(programId);
+    
+    if (currentProgram?.imageUrl) {
+      await deleteImageFromDisk(currentProgram.imageUrl);
+    }
+
     const fileUrl = await storeImageToDisk(image, 'program', programId);
 
-    const user = await updateProgam(programId, { imageUrl: fileUrl });
+    const program = await updateProgam(programId, { imageUrl: fileUrl });
   
-    if (user === null) {
+    if (program === null) {
       throw new Error('Update program image return value is null');
     }
     

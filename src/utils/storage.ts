@@ -6,11 +6,15 @@ import fs from 'fs/promises';
 export async function storeImageToDisk(file: File, namePrefix: string, nameSuffix: string | number) {
   const buffer = Buffer.from(await file.arrayBuffer());
   
-  const filename = `${namePrefix}-${nameSuffix}${file.name.substring(file.name.lastIndexOf('.'))}`;
+  const filename = `${namePrefix}-${nameSuffix}-${Date.now()}${file.name.substring(file.name.lastIndexOf('.'))}`;
     
-  const fileUrl = process.env.STORAGE_IMAGE_PATH + filename;
+  const filePath = process.env.STORAGE_IMAGE_PATH + filename;
 
-  await fs.writeFile(path.join(process.env.STORAGE_IMAGE_DIRECTORY!, fileUrl), buffer);
+  await fs.writeFile(path.join(process.env.STORAGE_IMAGE_DIRECTORY!, filePath), buffer);
 
-  return fileUrl;
+  return filePath;
+}
+
+export async function deleteImageFromDisk(filePath: string) {
+  await fs.rm(path.join(process.env.STORAGE_IMAGE_DIRECTORY!, filePath));
 }

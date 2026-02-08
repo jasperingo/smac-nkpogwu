@@ -1,5 +1,5 @@
 import z from 'zod';
-import { storeImageToDisk } from '@/utils/storage';
+import { deleteImageFromDisk, storeImageToDisk } from '@/utils/storage';
 import { GroupDefaultImage } from '@/models/entity';
 import { findGroupById, updateGroup } from '@/services/group-service';
 import { imageFileValidation } from '@/validations/images-validation';
@@ -23,6 +23,12 @@ async function groupImageUpload(state: FormState, formData: FormData): Promise<F
   }
   
   try {
+    const currentGroup = await findGroupById(groupId);
+
+    if (currentGroup?.imageUrl) {
+      await deleteImageFromDisk(currentGroup.imageUrl);
+    }
+
     const fileUrl = await storeImageToDisk(image, 'group', groupId);
 
     const group = await updateGroup(groupId, { imageUrl: fileUrl });

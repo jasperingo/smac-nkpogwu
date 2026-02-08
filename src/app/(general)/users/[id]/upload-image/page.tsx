@@ -1,5 +1,5 @@
 import z from 'zod';
-import { storeImageToDisk } from '@/utils/storage';
+import { deleteImageFromDisk, storeImageToDisk } from '@/utils/storage';
 import { UserDefaultImage } from '@/models/entity';
 import { findUserById, updateUser } from '@/services/user-service';
 import { imageFileValidation } from '@/validations/images-validation';
@@ -23,6 +23,12 @@ async function userImageUpload(state: FormState, formData: FormData): Promise<Fo
   }
   
   try {
+    const currentUser = await findUserById(userId);
+
+    if (currentUser?.imageUrl) {
+      await deleteImageFromDisk(currentUser.imageUrl);
+    }
+
     const fileUrl = await storeImageToDisk(image, 'user', userId);
 
     const user = await updateUser(userId, { imageUrl: fileUrl });
