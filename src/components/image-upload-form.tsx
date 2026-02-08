@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image';
 import { ChangeEvent, useActionState, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ButtonForm from '@/components/button-form';
@@ -66,7 +65,7 @@ export default function ImageUploadForm(
     <ButtonForm text="Upload image" isPending={isPending} responsiveness="none" action={formAction}>
       <input type="hidden" name={ownerInput} defaultValue={ownerId} />
 
-      <Image 
+      <img 
         width="64" 
         height="64" 
         alt={`${ownerId} image`} 

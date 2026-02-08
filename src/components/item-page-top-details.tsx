@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 export default function ItemPageTopDetails(
   { 
     title, 
@@ -23,7 +21,7 @@ export default function ItemPageTopDetails(
     <div className="bg-foreground p-4 mb-4 md:flex md:gap-4 md:items-center md:justify-center">
       {
         imageUrl && (
-          <Image 
+          <img 
             width="64" 
             height="64" 
             src={imageUrl} 

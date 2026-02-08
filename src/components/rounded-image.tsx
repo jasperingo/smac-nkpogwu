@@ -1,8 +1,6 @@
-import Image from 'next/image';
-
 export default function RoundedImage({ src, alt }: Readonly<{ src: string; alt?: string; }>) {
   return (
-    <Image
+    <img
       src={src} 
       width="64" 
       height="64" 

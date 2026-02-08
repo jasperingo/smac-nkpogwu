@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import ProgramStateDiv from './program-state-div';
 import { getDisplayDatetime } from '@/utils/datetime';
 import { GroupEntity, ProgramDefaultImage, ProgramEntity, UserEntity } from '@/models/entity';
@@ -22,7 +21,7 @@ export default function ProgramListItem(
   return (
     <li className="mb-4 md:mb-0">
       <Link href={`/programs/${program.programs.id}`} className="block border">
-        <Image
+        <img
           width="100" 
           height="64"
           alt={`${program.programs.id} image`}
