@@ -10,7 +10,7 @@ export async function storeImageToDisk(file: File, namePrefix: string, nameSuffi
     
   const fileUrl = process.env.STORAGE_IMAGE_PATH + filename;
 
-  await fs.writeFile(path.join(process.cwd(), process.env.STORAGE_IMAGE_DIRECTORY!, fileUrl), buffer);
+  await fs.writeFile(path.join(process.env.STORAGE_IMAGE_DIRECTORY!, fileUrl), buffer);
 
   return fileUrl;
 }
